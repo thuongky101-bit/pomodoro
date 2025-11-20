@@ -1,0 +1,1261 @@
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Study with a relaxed Pomodoro workspace that brings Gemini AI, sky-blue themes, and cozy focus tools together." name="description"/>
+<title>Pomodoro Study App — Gemini AI Focus Space</title>
+<style>
+    /*
+    =============================================
+    POMODORO STUDY APP — FOCUSED INTERFACE BUILD (v11.2)
+    =============================================
+    */
+    :root {
+      /* Theme Dark (Default) - kept in sync with file 2 */
+      --bg: #0f1222;
+      --panel: #171a2e;
+      --panel-rgb: 23, 26, 46; /* Added RGB helper for panels */
+      --muted: #212646;
+      --text: #f4f6ff;
+      --sub: #b7c1ff;
+      --acc: #6c8cff;
+      --acc-2: #27d3a2;
+      --warn: #ffb020;
+      --danger: #ff5c7a;
+      --shadow: 0px 1.8px 2.2px rgba(0, 0, 0, 0.054), 0px 4.3px 5.3px rgba(0, 0, 0, 0.077), 0px 8.1px 10px rgba(0, 0, 0, 0.095), 0px 14.5px 17.9px rgba(0, 0, 0, 0.113), 0px 27.2px 33.4px rgba(0, 0, 0, 0.136), 0px 65px 80px rgba(0, 0, 0, 0.19);
+      --radius: 16px;
+      --panel-opacity: 0.85;
+      --gradient-border: linear-gradient(135deg, var(--acc), var(--acc-2));
+    }
+    
+    /* === START: EXTRA THEMES === */
+    [data-theme='light'] {
+      --bg: #f5f0e8; --panel: #ffffff; --panel-rgb: 255, 255, 255; --muted: #eaddcf; --text: #4a4a4a; --sub: #8a817c; --acc: #d4a373; --acc-2: #a3b18a; --warn: #e76f51; --danger: #d00000;
+      --shadow: 0px 1.8px 2.2px rgba(0, 0, 0, 0.024), 0px 4.3px 5.3px rgba(0, 0, 0, 0.037), 0px 8.1px 10px rgba(0, 0, 0, 0.045), 0px 14.5px 17.9px rgba(0, 0, 0, 0.053), 0px 27.2px 33.4px rgba(0, 0, 0, 0.066), 0px 65px 80px rgba(0, 0, 0, 0.09);
+      --panel-opacity: 0.9;
+      /* Prevent dark fallback when no background */
+      --bg-image: none;
+    }
+
+    [data-theme='pastel'] {
+      --bg: #fde2e4; --panel: #fff1f2; --panel-rgb: 255, 241, 242; --muted: #fad2e1; --text: #595260; --sub: #8c7a8a; --acc: #c78283; --acc-2: #7ec4cf; --warn: #f9bf45; --danger: #d7263d;
+      --shadow: 0 5px 20px rgba(200,150,150,0.2);
+      --panel-opacity: 0.9;
+      /* Prevent dark fallback when no background */
+      --bg-image: none;
+    }
+    
+    [data-theme='lofi'] {
+      --bg: #2a2a3e; --panel: #3c3c52; --panel-rgb: 60, 60, 82; --muted: #4d4d66; --text: #e0e0ff; --sub: #a0a0c0; --acc: #ff8c69; --acc-2: #69c6ff; --warn: #ffd700; --danger: #ff6961;
+      /* === Replaced external GIF with inline data URI (offline-safe) === */
+      --bg-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc4MDAnIGhlaWdodD0nNjAwJz48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9J2cnIHgxPScwJyB5MT0nMCcgeDI9JzEnIHkyPScxJz48c3RvcCBvZmZzZXQ9JzAlJyBzdG9wLWNvbG9yPScjMmEyYTNlJy8+PHN0b3Agb2Zmc2V0PScxMDAlJyBzdG9wLWNvbG9yPScjM2MzYzUyJy8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9JzEwMCUnIGhlaWdodD0nMTAwJScgZmlsbD0ndXJsKCNnKScvPjwvc3ZnPg==');
+      --panel-opacity: 0.8;
+    }
+    
+    [data-theme='space'] {
+        --bg: #000000; --panel: #1a1a2e; --panel-rgb: 26, 26, 46; --muted: #2a2a4e; --text: #e0e0ff; --sub: #b0b0e0; --acc: #00aaff; --acc-2: #aaff00; --warn: #ffaa00; --danger: #ff0055;
+        /* === Replaced external GIF with inline data URI (offline-safe) === */
+        --bg-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc4MDAnIGhlaWdodD0nNjAwJz48ZGVmcz48cmFkaWFsR3JhZGllbnQgaWQ9J2cnIGN4PSc1MCUnIGN5PSc0MCUnIHI9JzcwJSc+PHN0b3Agb2Zmc2V0PScwJScgc3RvcC1jb2xvcj0nIzBiMGIxYScvPjxzdG9wIG9mZnNldD0nMTAwJScgc3RvcC1jb2xvcj0nIzAwMDAwMCcvPjwvcmFkaWFsR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPScxMDAlJyBoZWlnaHQ9JzEwMCUnIGZpbGw9J3VybCgjZyknLz48L3N2Zz4=');
+        --panel-opacity: 0.75;
+    }
+    /* === END: EXTRA THEMES === */
+
+    *:focus-visible {
+      outline: 2px solid var(--acc); outline-offset: 2px; border-radius: 4px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body {
+      margin:0; 
+      font-family: system-ui, -apple-system, 'Segoe UI Variable', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Inter', sans-serif; 
+      
+      background-color: var(--bg);
+      background-image: var(--bg-image, url('ảnh nền mặc định.jfif'));
+      background-repeat: var(--bg-repeat, repeat);
+      background-size: var(--bg-size, auto);
+      background-position: var(--bg-position, top left);
+      color:var(--text); 
+      transition: background 0.5s ease, color 0.5s ease, filter 0.5s ease;
+      text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+    a{color:var(--acc)}
+
+    .app{display:flex; min-height:100vh}
+    
+    .app-nav {
+        width: 60px;
+        padding: 16px 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        z-index: 100;
+    }
+    .nav-btn {
+        background: transparent;
+        border: none;
+        color: var(--sub);
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all .2s ease;
+        position: relative;
+    }
+    .nav-btn:hover { background: var(--muted); color: var(--text); }
+    .nav-btn.active { background: var(--acc); color: white; }
+    .nav-btn svg { width: 24px; height: 24px; }
+    .nav-btn .tooltip {
+        position: absolute;
+        left: 110%;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text);
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 12px;
+        box-shadow: var(--shadow);
+        white-space: nowrap;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity .2s ease, visibility .2s ease;
+        pointer-events: none;
+        z-index: 200;
+    }
+    .nav-btn:hover .tooltip { opacity: 1; visibility: visible; }
+
+    .app-content {
+        flex: 1;
+        padding: 24px;
+        overflow-y: auto;
+        max-height: 100vh;
+    }
+
+    .view { display: none; }
+    .view.active { display: grid; gap: 24px; animation: fadeIn .3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .main.reloading { opacity: 0; transition: opacity 0.2s ease-out; }
+
+    .panel-bg{
+        background: rgba(23, 26, 46, var(--panel-opacity));
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border:1px solid rgba(255,255,255,.08);
+    }
+    /* Thêm các quy tắc border cho theme light/pastel */
+    [data-theme='light'] .panel-bg, [data-theme='pastel'] .panel-bg { border:1px solid rgba(0,0,0,0.05); }
+    [data-theme='lofi'] .panel-bg { border:1px solid rgba(255,255,255,0.1); }
+    [data-theme='space'] .panel-bg { border:1px solid rgba(255,255,255,0.12); }
+
+
+header.app-header{display:flex; align-items:center; justify-content:space-between; padding:10px 14px; border-radius:var(--radius); box-shadow:var(--shadow); margin-bottom: 24px; position: relative; z-index: 2000;}
+    header .actions{display:flex; gap:8px; align-items:center}
+    
+    .btn {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      border: none; /* Sửa đổi: bỏ border mặc định */
+      padding: 10px 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: inset 0 -2px 0 rgba(0,0,0,0.08);
+      font-weight: 600;
+      transition: all .15s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn::before {
+        content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+        border: 2px solid transparent; border-radius: 12px; background: var(--gradient-border) border-box;
+        -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: destination-out; mask-composite: exclude; opacity: 0; transition: opacity 0.3s ease;
+    }
+    .btn:hover::before { opacity: 1; }
+    .btn:hover { background: rgba(255, 255, 255, 0.12); }
+    .btn:active { transform: translateY(1px) scale(0.98); filter: brightness(1); }
+    .btn:disabled { cursor: not-allowed; filter: brightness(0.8) saturate(0.5); }
+    .btn.ghost { background: transparent; border: 1px solid rgba(255, 255, 255, 0.2); }
+    .btn.ghost:hover { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.3); }
+    .btn.acc { background: var(--acc); color: white; }
+    .btn.warn { background: var(--warn); color: white; }
+    .btn.danger { background: var(--danger); color: white; }
+    .btn.small { padding: 6px 10px; font-size: 14px; border-radius: 9px; }
+    .btn.small::before { border-radius: 9px; }
+    .btn > svg { width: 16px; height: 16px; stroke-width: 2.5px; }
+
+    /* === START: CẬP NHẬT GIAO DIỆN QUẢN LÝ CHỦ ĐỀ === */
+    #view-topics { grid-template-columns: 1fr; }
+    .topic-item { background:rgba(255,255,255,.04); border:1px solid var(--muted); border-radius:12px; padding:8px; margin-bottom:8px; } /* Sửa đổi */
+    .topic-header, .sub-row { display:flex; align-items:center; gap:8px; position: relative; }
+    .topic-title { flex:1; font-weight:600; }
+    .chev { width:28px; height:28px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; flex-shrink: 0; }
+    .chev .ico { display:inline-block; transition: transform .18s ease; }
+    .chev[aria-expanded="false"] .ico { transform: rotate(-90deg); }
+    .subtopics { margin-top:8px; display:flex; flex-direction:column; gap:6px; }
+    .subtopics.hidden { display:none; }
+    
+    .topic-actions, .sub-row .actions {
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity .2s ease, visibility .2s ease;
+        display: flex;
+        gap: 6px;
+        align-items: center;
+    }
+    .topic-item:hover .topic-actions, .sub-row:hover .actions {
+        opacity: 1;
+        visibility: visible;
+    }
+    .actions-menu-btn {
+        padding: 0;
+        width: 28px;
+        height: 28px;
+        font-size: 1.2em;
+        line-height: 1;
+    }
+    .actions-menu {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        border-radius: 8px;
+        padding: 6px;
+        box-shadow: var(--shadow);
+        z-index: 10;
+        min-width: 150px;
+        display: none;
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .actions-menu.show { display: flex; }
+    .menu-item {
+        background: transparent; border: none; color: var(--text);
+        padding: 8px 10px; border-radius: 6px; text-align: left;
+        width: 100%; cursor: pointer; transition: background .2s ease;
+        display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500;
+    }
+    .menu-item:hover { background: var(--acc); color: white; }
+    .menu-item.danger:hover { background: var(--danger); }
+    /* === END: CẬP NHẬT GIAO DIỆN QUẢN LÝ CHỦ ĐỀ === */
+
+    .subtopic-btn{
+        flex:1; 
+        text-align:left;
+        background-color: rgba(0,0,0,0.02); /* Sửa đổi */
+    }
+    .subtopic-btn:hover {
+        background-color: var(--muted); /* Sửa đổi */
+    }
+    .subtopic-btn.active{
+        outline:2px solid var(--acc); 
+    }
+    .subtopic-btn.active:hover {
+        background: transparent; /* Giữ nền trong suốt khi di chuột qua */
+    }
+    
+    .panel{border-radius:var(--radius); padding:24px; box-shadow:var(--shadow)}
+
+    .timer-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .timer{display:grid; gap:16px; grid-template-columns: 1fr; align-items:center; text-align:center}
+    .big-time{font-size: clamp(60px, 12vw, 96px); letter-spacing:1px; font-weight:700; color: var(--text)}
+    .state{font-weight:700; letter-spacing:.6px}
+    .state.work{color:var(--acc-2)} /* Sửa đổi màu */
+    .state.break{color:var(--warn)}
+    .state.long{color:var(--danger)} /* Sửa đổi màu */
+    .controls{display:flex; flex-wrap:wrap; gap:12px; justify-content:center}    
+    #btnStart { padding: 14px 28px; font-size: 1.2em; }
+    #btnPause, #btnResume { padding: 12px 24px; font-size: 1.1em; }
+
+    /* === START: TÙY CHỈNH DẢI PHÂN CÁCH MỀM MẠI HƠN === */
+    #view-timer .panel-bg hr {
+        border: none; /* Bỏ đường viền mặc định */
+        height: 1px;  /* Đặt chiều cao cho đường kẻ */
+        background-color: var(--muted); /* Sử dụng màu phụ của theme */
+        opacity: 0.3; /* Làm cho nó mờ đi, hòa vào nền */
+        margin-top: 0; /* Điều chỉnh lại khoảng cách */
+    }
+    /* === END: TÙY CHỈNH DẢI PHÂN CÁCH MỀM MẠI HƠN === */
+
+    .stats-grid{display:grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap:12px}
+    .stat-card{background:rgba(255,255,255,0.04); border:1px solid var(--muted); border-radius:14px; padding:12px; text-align:center} /* Sửa đổi */
+    .stat-card h4{margin:4px 0 8px; color:var(--sub); font-weight:600; font-size: 14px;}
+    .stat-value{font-size: 20px; font-weight: 600;}
+    .tiny{font-size:12px; color:var(--sub)}
+    .history{display:grid; gap:8px; max-height:300px; overflow:auto; padding-right:6px}
+    .hist-item{display:grid; grid-template-columns: 1fr auto; gap:10px; align-items:start; background:rgba(255,255,255,0.04); border:1px solid var(--muted); border-radius:10px; padding:10px} /* Sửa đổi */
+
+    .row{display:flex; gap:8px; align-items:center}
+    .row > * {flex:1}
+    input[type="text"], input[type="password"], input[type="number"], select, textarea{width:100%; background:rgba(255,255,255,0.04); color:var(--text); border:1px solid var(--muted); border-radius:10px; padding:10px; outline:none}
+    textarea{min-height:80px; resize: vertical;}
+
+    .toasts{position:fixed; right:16px; bottom:16px; display:flex; flex-direction:column; gap:8px; z-index:9999}
+    .toast{
+        background: var(--panel); /* Sửa đổi */
+        border:1px solid var(--muted);
+        color:var(--text);
+        padding:10px 12px; border-radius:12px; box-shadow:var(--shadow);
+        animation: toast-in .3s ease; transform-origin: bottom right;
+    }
+    @keyframes toast-in { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+
+    .modal{position:fixed; inset:0; display:none; align-items:center; justify-content:center; background: rgba(0,0,0,var(--panel-opacity)); z-index:1000; backdrop-filter: blur(5px);} /* Sửa đổi: đồng bộ với file 1.html và thêm blur */
+    .modal.show{display:flex}
+    .modal-card{
+        width:min(720px, 94vw);
+        border-radius:16px;
+        padding:16px;
+        box-shadow:var(--shadow);
+        animation: modal-in .25s ease-out;
+        max-height: 90vh;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+    }
+    @keyframes modal-in { from { opacity: 0; transform: scale(0.92) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+    .modal-card h3{margin-top:0}
+    .dashboard-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+    .dashboard-table th, .dashboard-table td { padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--muted); }
+    .dashboard-table th { color: var(--sub); }
+
+    .footer-note{font-size:12px; color:var(--sub)}
+    .hidden{display:none !important}
+
+    .notes-list { display: flex; flex-direction: column; gap: 8px; max-height: 250px; overflow-y: auto; padding-right: 6px; }
+    .note-item { background: rgba(255,255,255,0.04); border-radius: 10px; padding: 10px; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; cursor: pointer; } /* Sửa đổi */
+    .note-content-wrapper { flex: 1; min-width: 0; }
+    .note-content { white-space: pre-wrap; word-break: break-word; max-height: 60px; overflow: hidden; position: relative; transition: max-height 0.35s ease-in-out; }
+    .note-content:not(.expanded)::after {
+        content: ''; position: absolute; bottom: 0; right: 0; width: 100%; height: 20px; background: linear-gradient(to top, var(--panel) 20%, transparent);
+    }
+    .note-content.expanded { max-height: 500px; }
+    .note-meta { font-size: 11px; color: var(--sub); margin-top: 4px; }
+    
+    .spinner { border: 2px solid var(--muted); border-top-color: var(--text); border-radius: 50%; width: 16px; height: 16px; animation: spin 1s linear infinite; } /* Sửa đổi */
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .panel-header h3 { margin: 0; }
+    .panel-header .actions { display: flex; gap: 8px; }
+    
+    .aux-panel { margin-top: 24px; }
+    .tab-nav { display: flex; gap: 4px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 16px; }
+    .tab-btn { background: transparent; border: none; color: var(--sub); padding: 8px 16px; cursor: pointer; border-bottom: 2px solid transparent; transition: all .2s ease; font-weight: 600; }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active { color: var(--acc); border-bottom-color: var(--acc); }
+    .tab-content {
+      display: none;
+      padding-top: 8px;
+    }
+    .tab-content.active {
+      animation: fadeIn 0.25s ease-out;
+    }
+    #tasks.tab-content.active,
+    #notes.tab-content.active,
+    #ai.tab-content.active {
+        display: block;
+    }
+
+    #settings-timer.tab-content.active,
+    #settings-ui.tab-content.active,
+    #settings-integrations.tab-content.active {
+        display: flex;
+    }
+
+    .settings-row-toggle {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 16px;
+    }
+    .settings-row-toggle span {
+      flex: 1;
+      cursor: pointer;
+    }
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .toggle-switch .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--muted);
+      transition: .3s;
+      border-radius: 24px;
+    }
+    .toggle-switch .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+    .toggle-switch input:checked + .slider {
+      background-color: var(--acc-2);
+    }
+    .toggle-switch input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+    
+    .chat-messages { max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; padding: 4px; }
+    .chat-msg { padding: 8px 12px; border-radius: 12px; max-width: 85%; word-break: break-word; }
+    .chat-msg.user { background: var(--acc); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+    .chat-msg.model { background: var(--muted); align-self: flex-start; border-bottom-left-radius: 4px; }
+    .chat-input-area { display: flex; gap: 8px; }
+
+    .methods-list { list-style: none; padding: 0; }
+    .method-item { align-items: flex-start; padding: 12px; display: flex; gap: 10px; border-radius: 8px; }
+    .method-item:hover { background: rgba(0,0,0,0.03); } /* Sửa đổi */
+    .method-item input[type="checkbox"] { width: 18px; height: 18px; margin-top: 2px; flex-shrink: 0;}
+    .method-item label { flex: 1; }
+    .method-item label.completed { text-decoration: line-through; color: var(--sub); }
+    .method-item .content-wrapper { flex: 1; cursor: pointer; }
+    .method-item .concept { font-size: 14px; color: var(--sub); margin-top: 8px; border-left: 2px solid var(--muted); padding-left: 12px; white-space: pre-wrap; word-break: break-word; }
+    .subtopic-todo-list { list-style: none; padding: 0; margin: 0; max-height: 100px; overflow-y: auto; text-align: left; }
+    .subtopic-todo-list li { display: flex; align-items: center; gap: 8px; padding: 4px; transition: all 0.2s ease-out; }
+    .subtopic-todo-list li.removing { transform: translateX(100%); opacity: 0; }
+    .subtopic-todo-list label { flex: 1; }
+
+    #youtube-player-container { position: absolute; top: -9999px; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.1); border-radius: 10px; } /* Sửa đổi */
+    ::-webkit-scrollbar-thumb { background: var(--muted); border-radius: 10px; border: 2px solid transparent; background-clip: content-box; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--sub); background-clip: content-box; }
+    
+    .timer-circle-container {
+        position: relative; width: clamp(250px, 40vw, 320px); height: clamp(250px, 40vw, 320px); margin: 24px auto; display: flex; align-items: center; justify-content: center;
+    }
+    .timer-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+    .timer-circle-bg, .timer-circle-progress { fill: none; stroke-width: 8; }
+    .timer-circle-bg { stroke: var(--muted); } /* Sửa đổi */
+    .timer-circle-progress { stroke: var(--acc); stroke-linecap: round; transition: stroke-dashoffset 0.3s linear, stroke 0.5s ease; }
+    @keyframes flash { 0%, 100% { box-shadow: 0 0 10px 2px transparent; } 50% { box-shadow: 0 0 20px 8px currentColor; } }
+    .timer-circle-container.finished { color: var(--acc-2); animation: flash 1s ease-out; }
+    @keyframes breathing-effect { 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
+    .timer-circle-container.breathing { animation: breathing-effect 3s ease-in-out infinite; }
+    
+    
+    
+    @media (max-width: 1024px) {
+      .app-content { padding: 20px; }
+      .panel { padding: 20px; }
+      .timer-circle-container { width: clamp(220px, 50vw, 300px); height: clamp(220px, 50vw, 300px); }
+    }
+
+    @media (max-width: 768px) {
+      .app { flex-direction: column; }
+      .app-nav { width: 100%; height: 60px; flex-direction: row; justify-content: center; border-right: none; border-top: 1px solid rgba(255,255,255,.08); order: 2; padding: 0 16px; }
+      .app-content { padding: 16px; order: 1; }
+      .panel { padding: 16px; }
+      .modal-card .tab-nav { overflow-x: auto; }
+    }
+
+    @media (max-width: 480px) {
+      .app-nav { height: 50px; }
+      .nav-btn { flex: 1; }
+      header.app-header { flex-direction: column; align-items: stretch; gap: 8px; }
+      .btn { padding: 8px 12px; }
+      .timer-circle-container { width: clamp(180px, 80vw, 220px); height: clamp(180px, 80vw, 220px); margin: 16px auto; }
+      .panel { padding: 12px; }
+      .app-content { padding: 12px; }
+    }
+
+    #view-timer.no-subtopic-selected > .panel-bg:not(:first-child) { display: none; }
+    #view-timer.no-subtopic-selected .timer-header > .presets { display: none; }
+    #view-timer.no-subtopic-selected .timer { display: none; }
+
+    header.app-header .actions #btnFullscreen { background: transparent; border: none; box-shadow: none; }
+    header.app-header .actions #btnFullscreen:hover { background: var(--muted); filter: none; }
+    header.app-header .actions #btnFullscreen:hover::before { opacity: 0; }
+
+    input[type="text"], input[type="password"], input[type="number"], select, textarea {
+        background: rgba(255,255,255,0.04) !important; /* Sửa đổi: chuyển sang nền trắng trong suốt */
+        color: var(--text);
+        border: 1px solid rgba(255, 255, 255, 0.1); /* Viền trắng mờ */
+        transition: background .2s ease, border-color .2s ease;
+    }
+    input[type="text"]:focus, input[type="password"]:focus, input[type="number"]:focus, select:focus, textarea:focus {
+        background: rgba(255,255,255,0.06) !important; /* Tinh chỉnh: sát mẫu hơn */
+        border-color: var(--acc);
+    }
+    /* === START: SỬA LỖI NỀN INPUT/SELECT TRÊN THEME SÁNG === */
+    [data-theme='light'] input, [data-theme='light'] select, [data-theme='light'] textarea,
+    [data-theme='pastel'] input, [data-theme='pastel'] select, [data-theme='pastel'] textarea {
+        background: rgba(0, 0, 0, 0.05) !important; /* Dùng nền đen mờ thay vì trắng mờ */
+        border-color: rgba(0, 0, 0, 0.1); /* Viền đen mờ trên theme sáng */
+    }
+
+    [data-theme='light'] input:focus, [data-theme='light'] select:focus, [data-theme='light'] textarea:focus,
+    [data-theme='pastel'] input:focus, [data-theme='pastel'] select:focus, [data-theme='pastel'] textarea:focus {
+        background: rgba(0, 0, 0, 0.07) !important; /* Tăng độ đậm khi focus */
+    }
+    /* === END: SỬA LỖI NỀN INPUT/SELECT TRÊN THEME SÁNG === */
+
+    /* Cải thiện nền và màu chữ cho option trong select theo theme hiện tại */
+    select option {
+        background: var(--panel);
+        color: var(--text);
+    }
+    
+    ::placeholder { color: var(--sub); opacity: 0.7; } /* Sửa đổi */
+    ::-ms-input-placeholder { color: var(--sub); }
+    :-ms-input-placeholder { color: var(--sub); }
+
+    
+    
+    .draggable-timer {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        color: var(--text);
+        padding: 8px 16px;
+        border-radius: 12px;
+        box-shadow: var(--shadow);
+        font-size: 2em;
+        font-weight: 600;
+        cursor: move;
+        user-select: none;
+        z-index: 9998;
+        opacity: 0;
+        transform: scale(0.9);
+        pointer-events: none;
+        transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+    body.bg-view-mode .draggable-timer {
+        opacity: 1;
+        transform: scale(1);
+        pointer-events: auto;
+    }
+    .app-nav, .panel-bg, .app-header .actions > *, .app-header > .row {
+        transition: opacity 0.35s ease, transform 0.35s ease, background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+    }
+    body.bg-view-mode .app-nav,
+    body.bg-view-mode .view.active > .panel-bg {
+        opacity: 0;
+        pointer-events: none;
+        transform: scale(0.98);
+    }
+    body.bg-view-mode .app-header {
+        background: transparent !important;
+        border-color: transparent !important;
+        box-shadow: none !important;
+    }
+    body.bg-view-mode .app-header .actions > *:not(#btnToggleBg),
+    body.bg-view-mode .app-header > .row {
+        opacity: 0;
+        pointer-events: none;
+    }
+    body.bg-view-mode #btnToggleBg {
+        opacity: 1;
+        pointer-events: auto;
+    }
+    .sound-permission-bar {
+      position: fixed; left: 50%; transform: translateX(-50%);
+      bottom: 48px; z-index: 9999;
+      border-radius: 12px; padding: 10px 14px;
+      display: none; align-items: center; gap: 10px;
+      box-shadow: var(--shadow);
+    }
+    .sound-permission-bar.show { display: flex; }
+    .sound-permission-bar .msg { font-size: 14px; color: var(--text); }
+    .draggable-timer { text-shadow: 0px 0px 8px rgba(0, 0, 0, 0.9); }
+
+    /* Giảm/loại bỏ bóng chữ cho theme sáng để tránh nhòe/lóa */
+    body[data-theme='light'],
+    body[data-theme='pastel'] { text-shadow: none; }
+    body[data-theme='light'] .draggable-timer,
+    body[data-theme='pastel'] .draggable-timer { text-shadow: none; }
+
+    /* ============================================= */
+/* ========================================================= */
+/* START: THI?T L?P PANEL KI?U M?  ?C (FROSTED GLASS)        */
+/* ========================================================= */
+
+/* --- 1.  p d?ng hi?u ?ng n?n m? chung cho t?t c? c c panel --- */
+.app-nav,
+.panel-bg,
+.modal-card,
+.actions-menu,
+.nav-btn .tooltip,
+.draggable-timer, 
+.sound-permission-bar,
+.toast,
+.topic-item,
+.stat-card,
+.hist-item,
+.method-item {
+    background: rgba(var(--panel-rgb), var(--panel-opacity));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+/* --- 2.  ?nh nghia vi?n cho t?ng lo?i panel --- */
+.app-nav {
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+.panel-bg,
+.modal-card,
+.actions-menu,
+.nav-btn .tooltip,
+.draggable-timer, 
+.sound-permission-bar,
+.toast,
+.topic-item,
+.stat-card,
+.hist-item,
+.method-item {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* --- 3. Tinh ch?nh vi?n cho c c theme S NG (Light/Pastel) --- */
+[data-theme='light'] .app-nav,
+[data-theme='light'] .panel-bg,
+[data-theme='light'] .modal-card,
+[data-theme='light'] .actions-menu,
+[data-theme='light'] .nav-btn .tooltip,
+[data-theme='light'] .draggable-timer,
+[data-theme='light'] .sound-permission-bar,
+[data-theme='light'] .toast,
+[data-theme='light'] .topic-item,
+[data-theme='light'] .stat-card,
+[data-theme='light'] .hist-item,
+[data-theme='light'] .method-item,
+[data-theme='pastel'] .app-nav,
+[data-theme='pastel'] .panel-bg,
+[data-theme='pastel'] .modal-card,
+[data-theme='pastel'] .actions-menu,
+[data-theme='pastel'] .nav-btn .tooltip,
+[data-theme='pastel'] .draggable-timer,
+[data-theme='pastel'] .sound-permission-bar,
+[data-theme='pastel'] .toast,
+[data-theme='pastel'] .topic-item,
+[data-theme='pastel'] .stat-card,
+[data-theme='pastel'] .hist-item,
+[data-theme='pastel'] .method-item {
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+/* --- 4. S?a l?i hi?u ?ng fade-out c?a ghi ch  cho ph  h?p --- */
+.note-content:not(.expanded)::after {
+    background: linear-gradient(to top, rgba(var(--panel-rgb), 1) 20%, transparent);
+}
+
+/* --- C c quy t?c c n l?i gi? nguy n t? file g?c --- */
+[data-theme='light'] .tab-nav,
+[data-theme='pastel'] .tab-nav {
+    border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+.subtopic-btn {
+    background-color: transparent;
+}
+.subtopic-btn:hover {
+    background-color: var(--muted);
+}
+.method-item[open] summary {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+[data-theme='light'] .method-item[open] summary,
+[data-theme='pastel'] .method-item[open] summary {
+    border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+
+    </style>
+</head>
+<body data-theme="default"> <div class="app" id="app">
+<nav class="app-nav">
+<button aria-label="Timer" class="nav-btn active" data-view="timer" id="navBtnTimer">
+<svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+<span class="tooltip">Timer</span>
+</button>
+<button aria-label="Topics" class="nav-btn" data-view="topics" id="navBtnTopics">
+<svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg>
+<span class="tooltip">Topics</span>
+</button>
+<button aria-label="Stats" class="nav-btn" data-view="stats" id="navBtnStats">
+<svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M3 3v18h18"></path><path d="m19 9-5 5-4-4-3 3"></path></svg>
+<span class="tooltip">Stats</span>
+</button>
+<button aria-label="Study Methods" class="nav-btn" data-view="methods" id="navBtnMethods">
+<svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M15.042 21.672L13.684 16.6s.408-1.947 1.25-3.25c.842-1.303 2.002-2.5 3.5-3.5s3.25-1.25 3.25-1.25l5.072 1.358c.27.072.358.42.128.628l-3.35 3.35a.499.499 0 0 1-.594.052l-2.07-1.486c-.44-.314-.82-.53-1.11-.665-.29-.135-.55-.22-.78-.245s-.45.045-.63.155c-.18.11-.3.29-.36.5-.06.21.02.48.18.78.16.3.385.68.665 1.11l1.486 2.07a.499.499 0 0 1-.052.594l-3.35 3.35c-.208.23-.556.142-.628-.128z"></path><path d="M12 15l-3-3 3-3 3 3-3 3z"></path><path d="M9.01 11.99l-3.005 3.004a.997.997 0 0 1-1.41-1.41l3.004-3.005-3.004-3.005a.997.997 0 0 1 1.41-1.41l3.005 3.004z"></path><path d="M5.01 11.99l-3.005 3.004a.997.997 0 0 1-1.41-1.41l3.004-3.005-3.004-3.005a.997.997 0 0 1 1.41-1.41l3.005 3.004z"></path></svg>
+<span class="tooltip">Study Methods</span>
+</button>
+<button aria-label="Settings" class="nav-btn" id="btnSettings" style="margin-top: auto;">
+<svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+<span class="tooltip">Settings</span>
+</button>
+<button aria-label="Guide" class="nav-btn" data-view="guide" id="navBtnGuide">
+<svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 1 1 5.82 1c0 2-3 2-3 4"></path><line x1="12" x2="12.01" y1="17" y2="17"></line></svg>
+<span class="tooltip">Guide</span>
+</button>
+</nav>
+<main class="app-content">
+<header class="app-header panel-bg">
+<div class="row" style="gap:12px; align-items:center; flex:0 1 auto">
+<strong>📚 Pomodoro Study App</strong>
+<span class="badge" id="selectedContext">No subtopic selected</span>
+</div>
+<div class="actions">
+<button class="btn ghost small" id="btnDashboard" title="Overview Dashboard">📊 Overview </button>
+<button class="btn ghost small" id="btnExport" title="Export JSON">⬇️ Export File</button>
+<label class="btn ghost small" for="importFile" title="Import JSON">⬆️ Import File</label>
+<input accept="application/json" id="importFile" style="display:none" type="file"/>
+<button class="btn small" id="btnToggleBg" title="Hide/Show interface">
+<svg fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+</button>
+<button class="btn small" id="btnFullscreen" title="Full screen">↗️</button>
+</div>
+</header>
+<div class="view active" id="view-timer">
+<section class="panel panel-bg">
+<div class="timer-header">
+<div class="hidden panel-bg" id="welcomePanel" style="text-align:center; padding: 20px; border-radius: var(--radius); width: 100%;">
+<h3>Welcome to Pomodoro Study App!</h3>
+<p>Start by choosing a <strong>Subtopic</strong> or create a new Topic/Subtopic.</p>
+<button class="btn acc" id="btnHelpCreateTopic">＋ Create Topic</button>
+</div>
+<div aria-label="Select preset mode" class="presets" role="group">
+<button class="btn small ghost" data-preset="A" id="btnPresetA"></button>
+<button class="btn small ghost" data-preset="B" id="btnPresetB"></button>
+</div>
+</div>
+<hr/>
+<div aria-live="polite" class="timer">
+<div class="badge" id="stateBadge">STATUS</div>
+<div class="timer-circle-container">
+<svg class="timer-svg" viewbox="0 0 100 100">
+<circle class="timer-circle-bg" cx="50" cy="50" r="45"></circle>
+<circle class="timer-circle-progress" cx="50" cy="50" r="45"></circle>
+</svg>
+<div class="big-time" id="timeDisplay">00:00</div>
+</div>
+<div class="tiny" id="cycleInfo">Shortcuts: <strong>Space</strong> = Start/Pause/Resume, <strong>N</strong> = Next/Skip</div>
+<div class="controls">
+<button aria-label="Start (Space)" class="btn acc" id="btnStart">▶️ Start</button>
+<button aria-label="Pause (Space)" class="btn" id="btnPause">⏸️ Pause</button>
+<button aria-label="Resume (Space)" class="btn" id="btnResume">⏵ Resume</button>
+<button aria-label="Skip (N)" class="btn warn" id="btnSkip">⏭️ Skip</button>
+<button class="btn danger" id="btnReset">↺ Reset</button>
+</div>
+<div class="tiny">Shortcuts: <strong>Space</strong> = Start/Pause/Resume, <strong>N</strong> = Next/Skip</div>
+</div>
+</section>
+<section class="panel panel-bg aux-panel">
+<nav class="tab-nav">
+<button class="tab-btn active" data-tab="tasks">Tasks</button>
+<button class="tab-btn" data-tab="notes">Notes</button>
+<button class="tab-btn" data-tab="ai">Gemini AI</button>
+</nav>
+<div class="tab-content active" id="tasks">
+<h4 style="margin: 0 0 8px; color: var(--sub);">To-do for this subtopic:</h4>
+<ul class="subtopic-todo-list" id="subtopicTasksList"></ul>
+<div class="row" style="gap:8px; margin-top: 8px;">
+<input id="newSubtopicTaskInput" placeholder="Add a new task..." type="text"/>
+<button class="btn small" id="btnAddSubtopicTask" style="flex: 0 1 auto;">Add</button>
+</div>
+</div>
+<div class="tab-content" id="notes">
+<div class="notes-list" id="generalNotesList"></div>
+<div class="add-note-area" style="margin-top: 12px;">
+<textarea id="newGeneralNoteText" placeholder="Add new note..."></textarea>
+<div style="text-align: right; margin-top: 8px;">
+<button class="btn acc small" id="btnAddGeneralNote">＋ Add Note</button>
+</div>
+</div>
+</div>
+<div class="tab-content" id="ai">
+<div class="panel-header" style="margin-bottom: 8px; padding: 0;">
+<h4 style="margin:0;">Gemini cho: <span id="currentSubtopicNameChat">(not selected)</span></h4>
+<div class="actions">
+<button class="btn small danger" id="btnClearChat" title="Clear history">🗑️</button>
+</div>
+</div>
+<div class="chat-messages" id="chatMessages"></div>
+<div id="aiPromptSuggestions" style="display: flex; gap: 6px; margin: 8px 0; flex-wrap: wrap;">
+<button class="btn small ghost" data-prompt="Explain the key concepts for this subtopic">Explain concept</button>
+<button class="btn small ghost" data-prompt="Create a detailed outline for this subtopic">Create outline</button>
+<button class="btn small ghost" data-prompt="List 5 important review questions for this subtopic">Create review questions</button>
+</div>
+<div class="chat-input-area">
+<input id="chatInput" placeholder="Ask Gemini anything..." type="text"/>
+<button class="btn acc" id="btnSendMessage">Send</button>
+</div>
+</div>
+</section>
+</div>
+<div class="view" id="view-topics">
+<div class="panel panel-bg">
+<div class="row" style="gap:8px; align-items: center; margin-bottom: 12px;">
+<h3 style="margin: 0;">Topic Manager</h3>
+<button class="btn small acc" id="btnAddTopic" style="margin-left: auto;">＋ Add Topic</button>
+</div>
+<div id="topicsList"></div>
+<div class="footer-note">Click the arrow to open/close the subtopic list.</div>
+</div>
+</div>
+<div class="view" id="view-stats">
+<section class="panel panel-bg">
+<h3 style="margin:0 0 12px 0;">Statistics &amp; History — <span id="currentSubtopicName">(not selected)</span></h3>
+<div class="stats-grid">
+<div class="stat-card"><h4>Total time</h4><div class="stat-value" id="statTotal">0 min</div></div>
+<div class="stat-card"><h4>Sessions</h4><div class="stat-value" id="statSessions">0</div></div>
+<div class="stat-card"><h4>Tasks completed</h4><div class="stat-value" id="statTasks">0</div></div>
+</div>
+<div style="margin-top:12px">
+<h4 style="margin:4px 0 8px; color:var(--sub)">History (WORK)</h4>
+<div class="history" id="historyList"></div>
+</div>
+</section>
+</div>
+<div class="view" id="view-methods">
+<div class="panel panel-bg">
+<h3 style="margin-top: 0;">💡 Effective Learning Methods</h3>
+<p class="tiny" style="margin-top: -8px; margin-bottom: 20px;">Click on each method to see details.</p>
+<div class="methods-container">
+<details class="method-item">
+<summary>The Feynman Technique: Deep Understanding with a Simple Explanation</summary>
+<div class="method-content">
+<p>The core principle of this technique is based on a single idea: "If you can't explain a topic simply, you don't really understand it." The goal is to turn complex knowledge into explanations so simple that even a child can understand.</p>
+<h4>Streamlined 4-Step Process</h4>
+<ol>
+<li><strong>Learn:</strong> Choose a topic and write down everything you know about it.</li>
+<li><strong>Teach:</strong> Pretend to re-teach the topic in the simplest language possible. Write or say it out loud.</li>
+<li><strong>Find &amp; Fix Errors:</strong> Whenever you get stuck, have to use complicated terminology, or can't explain fluently, you've found a gap in your knowledge. Go back to the original material and re-study it until you fill in that gap.</li>
+<li><strong>Simplify:</strong> Rearrange the final explanation, using simple examples or similes, to make it as coherent and understandable as possible.</li>
+</ol>
+<h4>Core</h4>
+<p>The Feynman Technique forces you to move from passive absorption (reading, listening) to actively processing information. The "stuck" process of explaining is the most powerful diagnostic tool, it shows exactly where you are weak.</p>
+<p><i>The fastest way to test and reinforce your understanding is to simply try teaching it to someone else.</i></p>
+</div>
+</details>
+<details class="method-item">
+<summary>Benjamin Franklin's Method of Writing: Learning to Write by Reproducing</summary>
+<div class="method-content">
+<p>Benjamin Franklin trained himself from poor to master writing skills using an active method, instead of just passively reading. The core of this method is analysis, reproduction, and comparison with a high-quality article.</p>
+<p>This is a classic example of "Deliberate Practice": focus on weaknesses, have clear goals, and get immediate feedback.</p>
+<h4>Core 3-Step Process</h4>
+<ol>
+<li><strong>Deconstruct:</strong> Read an excellent writing sample. Then, write down only the main ideas of each paragraph or sentence on a separate piece of paper.</li>
+<li><strong>Reconstruct:</strong> A few days later, once you've forgotten the style of the original, use those key notes to rewrite the entire article in your own language and expression.</li>
+<li><strong>Compare &amp; Correct:</strong> Compare your writing directly with the original. This is the most important step. It helps you immediately detect errors in vocabulary, sentence structure, and idea arrangement for correction.</li>
+</ol>
+<p>Franklin also practices advanced variations such as shuffling the order of main ideas to practice logical thinking, or turning prose into poetry to enrich vocabulary.</p>
+<h4>Golden Rule</h4>
+<p>The success of this method does not come from mindless repetition, but from a direct feedback loop. Comparing with the original forces you to confront and correct your specific weaknesses, turning learning from a vague process into a measurable exercise.</p>
+<p><i>To write better, don't just read. Choose a good article, analyze it, try to rewrite it, and compare to find errors.</i></p>
+</div>
+</details>
+<details class="method-item">
+<summary>The 80/20 Principle to Conquer New Fields</summary>
+<div class="method-content">
+<p>To avoid being overwhelmed when learning a new field, focus on the 20% of core knowledge that delivers 80% of the results (Minimum Effective Dose).</p>
+<h4>Core 20%: Apply the 5-Step Analysis Framework to identify the most important 20%:</h4>
+<ol>
+<li><strong>Determine Results:</strong> What is your ultimate goal? (for example, build a website).</li>
+<li><strong>Platform Analysis:</strong> Find 3-5 immutable principles of the industry.</li>
+<li><strong>Identifying Common Mistakes:</strong> Learn how to avoid mistakes that newbies often make.</li>
+<li><strong>Find the "Multiply Factor":</strong> What skills will make learning everything else easier? (e.g. music theory in music).</li>
+<li><strong>Mapping Practical Applications:</strong> Focus on the 20% of tasks that take up 80% of the industry's actual time.</li>
+</ol>
+</div>
+</details>
+<details class="method-item">
+<summary>Active Recall: A Core Principle for Deep Learning</summary>
+<div class="method-content">
+<p>Active recall is the act of attempting to retrieve information from the brain without looking at the material. This is a much more effective learning method than passively rereading, highlighting or summarizing.</p>
+<h4>The 20/80 Principle</h4>
+<p><strong>20% Core:</strong> The act of "straining your brain" to recall information will strengthen neural connections, helping to transfer knowledge into long-term memory. The feeling of difficulty when trying to remember is a sign that effective learning is taking place.</p>
+<p><strong>80% Results:</strong> You will remember knowledge deeper and longer, and know exactly where you are weak.</p>
+<h4>The Most Important Methods</h4>
+<ul>
+<li><strong>Self-testing:</strong> Instead of rereading your notes, cover them up and ask yourself questions. For example: Use flashcards and always answer before looking at the answer.</li>
+<li><strong>"Blurting" technique:</strong> After studying a topic, close the book and write down everything you can remember. Then, compare with the original document to fill in knowledge gaps.</li>
+<li><strong>Teach others:</strong> Explaining a concept to someone else forces you to retrieve, simplify, and reorganize information in a coherent way.</li>
+</ul>
+<h4>Outstanding Benefit: Breaking the "Illusion of Mastery"</h4>
+<p>The biggest mistake of passive learning is that it creates the "illusion of mastery" – the feeling of being familiar with the material but not being able to actually recall or explain it.</p>
+<p>Active recall serves as a diagnostic tool. Every time you can't remember something, you've pinpointed a gap in your knowledge. This allows you to focus your review on your weak points, instead of wasting time reviewing what you already know.</p>
+<p><i>In short: Don't just reread. Stop, cover the material, and ask yourself, "What do I really remember?"</i></p>
+</div>
+</details>
+<details class="method-item">
+<summary>Spaced Repetition: Learning at the Right Time</summary>
+<div class="method-content">
+<p>If Active Recall is about how to learn, Spaced Repetition is about when to learn. This is a review scheduling system to most effectively commit information to long-term memory.</p>
+<h4>Core Principle: Resist Forgetfulness 🧠</h4>
+<p>This method is based on the "Forgetting Curve", which shows that we forget information fastest immediately after learning it. Spaced repetition works by having you review a piece of information just before you're about to forget it.</p>
+<p>Each successful review will lengthen the time you remember that information. The first time you may forget after 1 day, but after reviewing, you will remember for 3 days, then 1 week, 1 month, and so on gradually.</p>
+<h4>Most Effective Tool: SRS Software 📱</h4>
+<p>Instead of manually scheduling, the most effective way is to use Spaced Repetition Software (SRS). Anki is considered the gold standard. It completely automates review scheduling for thousands of flashcards based on your self-assessed difficulty, ensuring you always review at the most optimal time.</p>
+<h4>The Biggest Mistake to Avoid ❌</h4>
+<p>The number one reason people fail with this method is "Review Overload". This happens when you create too many new cards every day or miss a few days of review, leading to a huge, frustrating backlog of cards.</p>
+<p><strong>Solution (20% action, 80% results):</strong> Be consistent. Set a realistic limit on the number of new cards each day (e.g. 10-20 cards) and maintain daily review. It is better to study little but consistently than to study all at once.</p>
+<h4>Vital Combination: AR + SR</h4>
+<p>Spaced Repetition (SR) and Active Recall (AR) are two sides of the same coin and cannot be separated. SR provides a schedule for WHEN to review. AR is the action you take WHILE reviewing. This combination ensures your recall efforts occur in the "sweet spot" of memory. Using Anki is the most effective way to implement this combination technique.</p>
+</div>
+</details>
+</div>
+</div>
+</div>
+<div class="view" id="view-guide">
+<div class="panel panel-bg">
+<h3 style="margin-top: 0;">📖 Explore Pomodoro Study App</h3>
+<p>
+                Welcome to a study space designed specifically for focus and efficiency. Let's explore the features that will accompany you on your journey to conquer knowledge.
+            </p>
+<h4>🚀 Get Started Quickly in Just 4 Steps</h4>
+<p>To keep your journey coherent, everything in the app is structured <strong>Large Topic → Subtopic</strong>.</p>
+<ol>
+<li>Open item <strong>📚 Theme</strong> from the side navigation bar.</li>
+<li>Press <strong>＋ Add Topic</strong> to create a large field (e.g. "English for Communication").</li>
+<li>Next to the theme you just created, click <strong>＋More</strong> to create a more detailed subtopic (e.g. "Lesson 1: IPA pronunciation practice").</li>
+<li>Select that child theme. Now you're ready to start your first session!</li>
+</ol>
+<hr/>
+<h4>✨ Notable Features</h4>
+<h4>Learning Methods 💡</h4>
+<p>More than just a watch, the app is also a mentor. Explore classic learning methods like Feynman, Active Recall... to optimize your learning ability.</p>
+<h4>Organizer</h4>
+<p>Easily organize your learning goals. Drag and drop to change the order of major topics or move a subtopic to a new area.</p>
+<h4>Integrated Tasks &amp; Notes 📝</h4>
+<p>Right from your watch screen, you can create to-do lists for each subtopic or jot down ideas that come to you without interrupting your work flow.</p>
+<h4>Zen Mode 🧘</h4>
+<p>When you need absolute focus, tap the eye icon (👁️) in the upper right corner. The interface will hide, leaving only the wallpaper and streamlined clock, helping you completely immerse yourself in the learning space.</p>
+<h4>Statistics &amp; Milestones 🏆</h4>
+<p>Track your journey through talking numbers. The application will automatically recognize and congratulate you when you reach important milestones (20 hours, 100 hours of study...), turning each effort into an achievement to be proud of.</p>
+<hr/>
+<h4>⌨️ Smart Shortcuts</h4>
+<ul>
+<li><kbd>Space</kbd>: Start / Pause / Resume session.</li>
+<li><kbd>N</kbd>: Skip the current session or break.</li>
+<li><kbd>Esc</kbd>: Close open windows (such as Settings).</li>
+</ul>
+<hr/>
+<h4>🛠️ Advanced Settings &amp; Integration</h4>
+<h4>Gemini AI Assistant 🧠</h4>
+<p>Turn the app into a smart companion. Ask and answer questions, explain concepts, or create an outline for a learning topic right in the "Gemini AI" tab.</p>
+<p><strong>Establish:</strong></p>
+<ol>
+<li>Go to Google AI Studio and generate a new API Key (free).</li>
+<li>Copy that API Key character string.</li>
+<li>Paste it into the "Gemini API Key" box in the app's Settings and Save.</li>
+</ol>
+<h4>YouTube Background Music 🎶</h4>
+<p>Create the perfect study space by playing a YouTube video or playlist (like lofi music, nature sounds) as background music.</p>
+<p><strong>Use:</strong> Paste the video/playlist link (URL) into the "YouTube background music" box.</p>
+<p><strong>Options:</strong> Check the box "Use video cover image as background" to automatically make your study space more lively.</p>
+<h4>Data Safety: Backup &amp; Restore 🛡️</h4>
+<p>We understand that your learning data is invaluable. The app automatically creates a backup of your progress every day to ensure nothing is lost.</p>
+<p><strong>Custom Backup:</strong> To give you full control, the app allows you to customize the number of days backups are kept. You can change this setting (from 1 to 30 days) in the "Backup settings" section. The default is 7 days, a reasonable balance between safety and capacity.</p>
+<p><strong>Data Recovery:</strong> If you accidentally deleted it, go to "Data Recovery", select a date in the past and click "Recover".</p>
+<p>⚠️ <strong>Important warning:</strong> This action will completely overwrite your current data with data from the backup. Be sure before doing it.</p>
+</div>
+</div>
+</main>
+</div>
+<div aria-labelledby="milestoneTitle" aria-modal="true" class="modal" id="modalMilestone" role="dialog">
+<div class="modal-card" style="width: min(600px, 94vw);">
+<h3 id="milestoneTitle">🎉 Congratulations!</h3>
+<p id="milestoneMessage" style="white-space: pre-wrap; line-height: 1.6;"></p>
+<div class="row" style="justify-content:flex-end; margin-top:12px">
+<button class="btn acc" id="btnMilestoneClose">Continue your journey!</button>
+</div>
+</div>
+</div>
+<div aria-labelledby="settingsTitle" aria-modal="true" class="modal" id="modalSettings" role="dialog">
+<div class="modal-card">
+<h3 id="settingsTitle">⚙️ Settings</h3>
+<nav class="tab-nav">
+<button class="tab-btn active" data-tab="settings-timer">Clock</button>
+<button class="tab-btn" data-tab="settings-ui">Interface &amp; Sound</button>
+<button class="tab-btn" data-tab="settings-integrations">Integration</button>
+</nav>
+<div class="settings-content">
+<div class="tab-content active" id="settings-timer" style="flex-direction:column; gap:20px;">
+<div>
+<h4>Pomodoro duration</h4>
+<div class="row" id="timerPresetSelector" style="margin-bottom:16px;">
+<button class="btn acc" data-preset-target="A"> Type A </button>
+<button class="btn ghost" data-preset-target="B"> Type B </button>
+</div>
+<div class="row">
+<label>WORK (minutes)<input id="set_work" min="1" type="number"/></label>
+<label>SHORT BREAKS (minutes)<input id="set_short" min="1" type="number"/></label>
+<label>LONG BREAK (minutes)<input id="set_long" min="1" type="number"/></label>
+</div>
+<div class="row">
+<label>Pomodoro cycle<input id="set_cycles" min="1" type="number"/></label>
+<label>Long vacation period<input id="set_interval" min="2" type="number"/></label>
+</div>
+</div>
+<div class="settings-row-toggle">
+<label for="set_autoStartNext">Automatically start the next session</label>
+<label class="toggle-switch">
+<input id="set_autoStartNext" type="checkbox"/>
+<span class="slider"></span>
+</label>
+</div>
+</div>
+<div class="tab-content" id="settings-ui" style="flex-direction: column; gap: 20px;">
+<div>
+<h4>Interface</h4>
+<div class="row">
+<label>Theme Interface
+                                <select id="set_theme_color">
+<option value="default">Default (Dark Blue)</option>
+<option value="light">Light - Milk Tea</option>
+<option value="pastel">Pastel - Cute</option>
+<option value="lofi">Lofi Study Room</option>
+<option value="space">Space Station</option>
+</select>
+</label>
+</div>
+<div class="row">
+<label>Background image
+                              <label class="btn small ghost" for="uploadBg">Upload new photos</label>
+<input accept="image/*" class="hidden" id="uploadBg" type="file"/>
+</label>
+<button class="btn small danger" id="btnClearBg">Remove background</button>
+</div>
+<div class="row">
+<label style="flex: 1;">Background transparency</label>
+<input id="set_panelOpacity" max="1" min="0.1" step="0.05" style="flex: 2;" type="range"/>
+</div>
+</div>
+<div>
+<h4>Sound</h4>
+<div class="row">
+<label>Volume (0–1)<input id="set_volume" max="1" min="0" step="0.05" type="number"/></label>
+<label>Alarm type
+                              <select id="set_theme">
+<option value="beep">Beep</option>
+<option value="chime">Chime</option>
+</select>
+</label>
+<button class="btn" id="btnTestSound" style="flex: 0 1 auto; align-self: center;">Test</button>
+</div>
+<div style="text-align: right; margin-top: 12px;">
+<button class="btn ghost small" id="btnToggleCustomSounds">Customize notification sounds</button>
+</div>
+<div class="hidden" id="customSoundsContainer" style="margin-top: 8px;">
+<div class="row" style="display: flex; gap: 8px; justify-content: flex-end;">
+<div>
+<small>WORK end alarm tone</small>
+<label class="btn small ghost" for="uploadSoundWork" title="WORK end alarm tone">WORK</label>
+<input accept="audio/*" class="hidden" id="uploadSoundWork" type="file"/>
+</div>
+<div>
+<small>SHORT BREAK end sound</small>
+<label class="btn small ghost" for="uploadSoundBreak" title="SHORT BREAK end sound">SHORT BREAK</label>
+<input accept="audio/*" class="hidden" id="uploadSoundBreak" type="file"/>
+</div>
+<div>
+<small>The sound signals the end of LONG BREAK</small>
+<label class="btn small ghost" for="uploadSoundLong" title="The sound signals the end of LONG BREAK">LONG BREAK</label>
+<input accept="audio/*" class="hidden" id="uploadSoundLong" type="file"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="tab-content" id="settings-integrations" style="flex-direction: column; gap: 20px;">
+<div>
+<h4>AI integration</h4>
+<label>Gemini API Key
+                          <input id="set_apiKey" placeholder="Paste your API Key here..." type="password"/>
+</label>
+<div class="tiny">Required to use AI features. Get free key at <a href="https://aistudio.google.com/app/apikey" rel="noopener noreferrer" target="_blank">Google AI Studio</a>.</div>
+</div>
+<div>
+<h4>🎵 YouTube background music</h4>
+<div class="row" style="gap:8px; align-items:center;">
+<input id="set_youtubeUrl" placeholder="Paste the YouTube link here..." style="flex:1;" type="text"/>
+</div>
+<div class="tiny" id="ytUrlFeedback" style="min-height: 1.2em; padding: 4px 0;"></div>
+<div class="row" style="margin-top: 4px;">
+<label style="flex: 0 1 auto; display: flex; align-items: center; gap: 8px; font-size: 14px;">
+<input id="set_ytThumbAsBg" type="checkbox"/>
+<span>Use video cover photo as background</span>
+</label>
+</div>
+<div class="row" style="margin-top: 8px;">
+<button class="btn small" id="btnToggleYtSound" style="flex:0 1 auto;" title="Stop will not play again until you press ▶️">▶️</button>
+<input id="ytSoundVolume" max="100" min="0" step="1" style="flex:1;" type="range" value="80"/>
+</div>
+<div class="tiny" style="text-align:center; margin-top:4px;">Volume</div>
+</div>
+<div>
+<h4>🛡️ Backup settings</h4>
+<div class="row">
+<label>Number of days of backups to keep
+                               <input id="set_backupDays" max="30" min="1" type="number"/>
+</label>
+</div>
+</div>
+<div>
+<h4>🛡️ Data recovery</h4>
+<p class="tiny">Restore data from an automatic daily backup. This action will overwrite your existing data.</p>
+<div class="row">
+<select id="backupList" style="flex: 3;"></select>
+<button class="btn warn small" id="btnRestoreBackup" style="flex: 1;">Recover</button>
+</div>
+</div>
+</div>
+</div>
+<div class="row" style="margin-top:16px; justify-content:flex-end">
+<button class="btn ghost" id="btnDefaults">Default</button>
+<button class="btn acc" id="btnSaveSettings">Save</button>
+<button class="btn" id="btnCloseSettings">Close</button>
+</div>
+</div>
+</div>
+<div aria-labelledby="noteTitle" aria-modal="true" class="modal" id="modalNote" role="dialog">
+<div class="modal-card">
+<h3 id="noteTitle">📝 Take notes for the session just completed</h3>
+<div class="row"><textarea id="noteText" placeholder="What did you learn? Hard? Next steps?"></textarea></div>
+<div class="row" style="justify-content:flex-end; margin-top:8px; gap: 12px;">
+<button class="btn" id="btnSummarizeNote">✨ Summary &amp; Suggestions</button>
+<button class="btn" id="btnSkipNote">Skip</button>
+<button class="btn acc" id="btnSaveNote">Save notes</button>
+</div>
+</div>
+</div>
+<div aria-labelledby="genericTitle" aria-modal="true" class="modal" id="modalGeneric" role="dialog">
+<div class="modal-card" style="width: min(450px, 94vw);">
+<h3 id="genericTitle">Title</h3>
+<p class="hidden" id="genericMessage"></p>
+<input class="hidden" id="genericInput" type="text"/>
+<div class="row" style="justify-content:flex-end; margin-top:12px">
+<button class="btn" id="btnGenericCancel">Cancel</button>
+<button class="btn acc" id="btnGenericOk">OK</button>
+</div>
+</div>
+</div>
+<div aria-labelledby="dashboardTitle" aria-modal="true" class="modal" id="modalDashboard" role="dialog">
+<div class="modal-card" style="width: min(800px, 95vw);">
+<div style="display: flex; justify-content: space-between; align-items: center;">
+<h3 id="dashboardTitle">📊 Overview</h3>
+<button class="btn ghost small" id="btnCloseDashboard">Close</button>
+</div>
+<p class="tiny">Aggregate time and number of sessions completed across all topics.</p>
+<div id="dashboardContent" style="max-height: 60vh; overflow-y: auto;"></div>
+</div>
+</div>
+<div class="toasts" id="toasts"></div>
+<audio id="audioWorkEnd"></audio>
+<audio id="audioBreakEnd"></audio>
+<audio id="audioLongEnd"></audio>
+<div id="youtube-player-container"></div>
+<div class="draggable-timer" id="draggableTimer">00:00</div>
+<div aria-live="polite" class="sound-permission-bar" id="soundPermissionBar" role="alert">
+<span class="msg">Tap "Turn on sound" to allow background music to play.</span>
+<button class="btn small acc" id="btnEnableSound">Turn on sound</button>
+</div>
+<!-- YouTube Iframe API is loaded dynamically when needed -->
+<!-- === START: Inline Minimal Sortable (Offline-Safe) === -->
+<script>
+// Minimal Sortable shim for offline single-file usage.
+// Supports: draggable selector, cross-list via same group, onEnd callback.
+(function(){
+  if (window.Sortable) return; // Respect existing if loaded
+  const DND = { src: null, from: null, selector: null, group: null };
+  function makeDraggable(container, selector){
+    Array.from(container.querySelectorAll(selector)).forEach(el => {
+      try { el.setAttribute('draggable','true'); } catch(_) {}
+    });
+  }
+  function closestItem(e, selector){
+    const t = e.target && e.target.closest ? e.target.closest(selector) : null;
+    return t || null;
+  }
+  function Sortable(container, opts){
+    this.el = container;
+    this.options = opts || {};
+    const selector = this.options.draggable || '*';
+    const group = this.options.group || null;
+    makeDraggable(container, selector);
+    const handleDragStart = (e) => {
+      const item = closestItem(e, selector);
+      if (!item) return;
+      DND.src = item; DND.from = container; DND.selector = selector; DND.group = group;
+      e.dataTransfer.effectAllowed = 'move';
+      try { e.dataTransfer.setData('text/plain', ''); } catch(_) {}
+    };
+    const handleDragOver = (e) => {
+      if (!DND.src) return;
+      // Only allow drop if same selector and group matches (or no group)
+      const sameGroup = (!group && !DND.group) || (group && DND.group && group === DND.group);
+      if (!sameGroup) return;
+      const target = closestItem(e, selector);
+      if (!target) return;
+      e.preventDefault();
+    };
+    const handleDrop = (e) => {
+      if (!DND.src) return;
+      const sameGroup = (!group && !DND.group) || (group && DND.group && group === DND.group);
+      if (!sameGroup) return;
+      const target = closestItem(e, selector);
+      if (!target) return;
+      e.preventDefault();
+      const from = DND.from;
+      const to = container;
+      const children = Array.from(from.querySelectorAll(DND.selector));
+      const oldIndex = children.indexOf(DND.src);
+      if (target && DND.src && target !== DND.src) {
+        to.insertBefore(DND.src, target);
+      }
+      const newChildren = Array.from(to.querySelectorAll(DND.selector));
+      const newIndex = newChildren.indexOf(DND.src);
+      if (typeof this.options.onEnd === 'function') {
+        try { this.options.onEnd({ oldIndex, newIndex, from, to, item: DND.src }); } catch(_) {}
+      }
+      DND.src = null; DND.from = null; DND.selector = null; DND.group = null;
+    };
+    this._listeners = { handleDragStart, handleDragOver, handleDrop };
+    container.addEventListener('dragstart', handleDragStart);
+    container.addEventListener('dragover', handleDragOver);
+    container.addEventListener('drop', handleDrop);
+    this.destroy = () => {
+      container.removeEventListener('dragstart', handleDragStart);
+      container.removeEventListener('dragover', handleDragOver);
+      container.removeEventListener('drop', handleDrop);
+    };
+  }
+  window.Sortable = Sortable;
+})();
+</script>
+<!-- === END: Inline Minimal Sortable === -->
+<script>
+    // Đã bỏ fixVietnameseUI: dùng trực tiếp tiếng Việt (UTF-8) trong HTML/JS
+    // Nút toàn màn hình: dùng biểu tượng ↗️/↙️ thay vì chữ
+    const _0x3ea952=_0x4681;(function(_0x54c27e,_0x3beaa1){const _0x3937bc=_0x4681,_0x4b76be=_0x54c27e();while(!![]){try{const _0x57677d=parseInt(_0x3937bc(0x1e5))/0x1*(-parseInt(_0x3937bc(0x35a))/0x2)+-parseInt(_0x3937bc(0x327))/0x3*(parseInt(_0x3937bc(0x2c8))/0x4)+parseInt(_0x3937bc(0x346))/0x5*(-parseInt(_0x3937bc(0x1b6))/0x6)+parseInt(_0x3937bc(0x1ce))/0x7*(-parseInt(_0x3937bc(0x36f))/0x8)+parseInt(_0x3937bc(0x40f))/0x9+parseInt(_0x3937bc(0x39c))/0xa*(-parseInt(_0x3937bc(0x3b4))/0xb)+parseInt(_0x3937bc(0x3d1))/0xc;if(_0x57677d===_0x3beaa1)break;else _0x4b76be['push'](_0x4b76be['shift']());}catch(_0x3946d0){_0x4b76be['push'](_0x4b76be['shift']());}}}(_0x40f8,0x9178f),window[_0x3ea952(0x2ce)]('load',()=>{try{updateFullscreenButton();}catch(_0x56389d){}}));const IS_FILE_PROTOCOL=window[_0x3ea952(0x368)][_0x3ea952(0x24f)]===_0x3ea952(0x1e1);function startYtApiWatchdog(){const _0x100ebf=_0x3ea952,_0x357bd3=document['getElementById']('ytUrlFeedback');if(!_0x357bd3)return;const _0x31d5b1=setTimeout(()=>{const _0x4aaa30=_0x4681;try{(!window['YT']||!window['YT'][_0x4aaa30(0x32a)])&&(_0x357bd3[_0x4aaa30(0x2e0)]=_0x4aaa30(0x2f5),_0x357bd3['style']['color']=_0x4aaa30(0x3b5));}catch(_0xdb255f){}},0x5dc),_0x1f3072=setTimeout(()=>{const _0xbf1ad8=_0x4681;try{(!window['YT']||!window['YT'][_0xbf1ad8(0x32a)])&&(_0x357bd3['textContent']=_0xbf1ad8(0x398),_0x357bd3[_0xbf1ad8(0x219)]['color']=_0xbf1ad8(0x391));}catch(_0xd0bc79){}},0x1b58);window[_0x100ebf(0x36b)]={'cancel'(){clearTimeout(_0x31d5b1),clearTimeout(_0x1f3072);}};}(function(){const _0x489adc=_0x3ea952,_0xeb4eab={'timer.cycleInfo':({current:current=0x0,target:target=0x0}={})=>_0x489adc(0x3ee)+current+'/'+target,'timer.selectSubtopicPrompt':_0x489adc(0x2c4)};window['t']=function _0x13d9b9(_0x42bf39,_0x4a2a0f){const _0x1eb20c=_0x489adc;try{const _0x2b2ebf=_0xeb4eab[_0x42bf39];if(typeof _0x2b2ebf==='function')return _0x2b2ebf(_0x4a2a0f||{});if(typeof _0x2b2ebf===_0x1eb20c(0x29d))return _0x2b2ebf;}catch(_0x389032){}return _0x42bf39;},window[_0x489adc(0x17f)]=function _0x350da3(_0x534e87){const _0x64b995=_0x489adc;try{localStorage[_0x64b995(0x2b3)](_0x64b995(0x3f8),_0x534e87||'vi');}catch(_0x203aa0){}return Promise['resolve']();};}());function ensureYouTubeAPI(){const _0x56d897=_0x3ea952;if(IS_FILE_PROTOCOL)return Promise['resolve'](![]);try{if(window['YT']&&window['YT'][_0x56d897(0x32a)])return Promise[_0x56d897(0x1f2)](!![]);}catch(_0x676870){}if(window[_0x56d897(0x339)])return window['__ytApiPromise'];return startYtApiWatchdog(),window[_0x56d897(0x339)]=new Promise((_0x68645e,_0x22f926)=>{const _0x443115=_0x56d897;try{const _0x57c32f=document[_0x443115(0x3d4)](_0x443115(0x252));_0x57c32f[_0x443115(0x3b2)]=_0x443115(0x1e7),_0x57c32f['async']=!![],_0x57c32f[_0x443115(0x254)]=!![],_0x57c32f[_0x443115(0x25f)]=()=>_0x68645e(!![]),_0x57c32f[_0x443115(0x366)]=()=>_0x22f926(new Error(_0x443115(0x303))),document[_0x443115(0x2e8)][_0x443115(0x336)](_0x57c32f);}catch(_0x585bc6){_0x22f926(_0x585bc6);}}),window['__ytApiPromise'];}const storageManager={'DB_NAME':'PomodoroAppDB','DB_VERSION':0x1,'db':null,async 'initDB'(){return new Promise((_0x4bef79,_0x5ce2a)=>{const _0x204319=_0x4681;if(this['db'])return _0x4bef79(this['db']);const _0x4e82a5=indexedDB[_0x204319(0x375)](this['DB_NAME'],this['DB_VERSION']);_0x4e82a5['onupgradeneeded']=_0x3a12ed=>{const _0x3c9471=_0x204319,_0x108a72=_0x3a12ed['target'][_0x3c9471(0x3e0)];!_0x108a72[_0x3c9471(0x3be)]['contains']('settings')&&_0x108a72['createObjectStore'](_0x3c9471(0x34c));!_0x108a72[_0x3c9471(0x3be)][_0x3c9471(0x22f)](_0x3c9471(0x345))&&_0x108a72[_0x3c9471(0x35d)](_0x3c9471(0x345),{'keyPath':'id'});if(!_0x108a72[_0x3c9471(0x3be)][_0x3c9471(0x22f)](_0x3c9471(0x2ae))){const _0x150bcf=_0x108a72[_0x3c9471(0x35d)]('subtopics',{'keyPath':'id'});_0x150bcf['createIndex'](_0x3c9471(0x3ac),'topicId');}!_0x108a72[_0x3c9471(0x3be)][_0x3c9471(0x22f)]('backups')&&_0x108a72[_0x3c9471(0x35d)]('backups',{'keyPath':_0x3c9471(0x32b)});},_0x4e82a5[_0x204319(0x363)]=_0x43b5d6=>{const _0x2da802=_0x204319;this['db']=_0x43b5d6[_0x2da802(0x1ee)][_0x2da802(0x3e0)],console[_0x2da802(0x316)](_0x2da802(0x360)),_0x4bef79(this['db']);},_0x4e82a5[_0x204319(0x366)]=_0x4c04f8=>{const _0x44b9bb=_0x204319;console['error'](_0x44b9bb(0x31b),_0x4c04f8[_0x44b9bb(0x1ee)][_0x44b9bb(0x402)]),_0x5ce2a(_0x4c04f8['target']['error']);};});},async '_getStore'(_0x123029,_0x73d840=_0x3ea952(0x238)){const _0x3106ae=_0x3ea952;await this[_0x3106ae(0x3af)]();const _0x245c27=this['db'][_0x3106ae(0x33b)]([_0x123029],_0x73d840);return _0x245c27[_0x3106ae(0x2c3)](_0x123029);},async 'getSettings'(){const _0x4cdc3b=_0x3ea952,_0x4e56ad=await this[_0x4cdc3b(0x304)](_0x4cdc3b(0x34c));return new Promise((_0x4e2fef,_0x561b2a)=>{const _0xbe1b63=_0x4cdc3b,_0x15d21f=_0x4e56ad['get']('main_settings');_0x15d21f[_0xbe1b63(0x363)]=()=>_0x4e2fef(_0x15d21f[_0xbe1b63(0x3e0)]),_0x15d21f[_0xbe1b63(0x366)]=()=>_0x561b2a(_0x15d21f[_0xbe1b63(0x2a9)]);});},async 'updateSettings'(_0x517584){const _0x2edc9a=_0x3ea952,_0x3a9044=await this[_0x2edc9a(0x304)](_0x2edc9a(0x34c),_0x2edc9a(0x23b));return new Promise((_0xa8f4cb,_0x4cf614)=>{const _0x4d5f90=_0x2edc9a,_0x2333a6=_0x3a9044[_0x4d5f90(0x25e)](_0x517584,'main_settings');_0x2333a6[_0x4d5f90(0x363)]=()=>_0xa8f4cb(_0x2333a6[_0x4d5f90(0x3e0)]),_0x2333a6[_0x4d5f90(0x366)]=()=>_0x4cf614(_0x2333a6[_0x4d5f90(0x2a9)]);});},async 'getAll'(_0x10db1d){const _0x571fad=_0x3ea952,_0x52a308=await this[_0x571fad(0x304)](_0x10db1d);return new Promise((_0x90b8e2,_0x54adca)=>{const _0x8fed5a=_0x571fad,_0x9ef110=_0x52a308[_0x8fed5a(0x1ad)]();_0x9ef110[_0x8fed5a(0x363)]=()=>_0x90b8e2(_0x9ef110[_0x8fed5a(0x3e0)]),_0x9ef110[_0x8fed5a(0x366)]=()=>_0x54adca(_0x9ef110[_0x8fed5a(0x2a9)]);});},async 'update'(_0x2695ae,_0x1a48f2){const _0x18cde3=_0x3ea952,_0x499a15=await this[_0x18cde3(0x304)](_0x2695ae,'readwrite');return new Promise((_0x31e980,_0x441828)=>{const _0x1b1f86=_0x18cde3,_0x3bb0a4=_0x499a15[_0x1b1f86(0x25e)](_0x1a48f2);_0x3bb0a4[_0x1b1f86(0x363)]=()=>_0x31e980(_0x3bb0a4[_0x1b1f86(0x3e0)]),_0x3bb0a4[_0x1b1f86(0x366)]=()=>_0x441828(_0x3bb0a4[_0x1b1f86(0x2a9)]);});},async 'add'(_0xa0427a,_0x54a535){const _0x28987d=_0x3ea952,_0x16041d=await this[_0x28987d(0x304)](_0xa0427a,_0x28987d(0x23b));return new Promise((_0x321803,_0xd3fb15)=>{const _0x4764be=_0x28987d,_0x46ee0f=_0x16041d['add'](_0x54a535);_0x46ee0f[_0x4764be(0x363)]=()=>_0x321803(_0x46ee0f[_0x4764be(0x3e0)]),_0x46ee0f['onerror']=()=>_0xd3fb15(_0x46ee0f[_0x4764be(0x2a9)]);});},async 'delete'(_0x4a5d4c,_0x255348){const _0x2bf973=_0x3ea952,_0x59fcb4=await this[_0x2bf973(0x304)](_0x4a5d4c,_0x2bf973(0x23b));return new Promise((_0x2341e2,_0xf49b7e)=>{const _0x3a6c8b=_0x2bf973,_0xedb708=_0x59fcb4['delete'](_0x255348);_0xedb708[_0x3a6c8b(0x363)]=()=>_0x2341e2(_0xedb708['result']),_0xedb708[_0x3a6c8b(0x366)]=()=>_0xf49b7e(_0xedb708[_0x3a6c8b(0x2a9)]);});},async 'save'(_0x4c6115){const _0xcdc614=_0x3ea952;return await this[_0xcdc614(0x3af)](),new Promise((_0x48ca7a,_0x493fec)=>{const _0x3e0b46=_0xcdc614,_0x526989=this['db']['transaction']([_0x3e0b46(0x34c),'topics',_0x3e0b46(0x2ae)],_0x3e0b46(0x23b)),_0xdcf1bf=_0x526989[_0x3e0b46(0x2c3)](_0x3e0b46(0x34c)),_0x1ef165=_0x526989[_0x3e0b46(0x2c3)](_0x3e0b46(0x345)),_0x5bb114=_0x526989['objectStore'](_0x3e0b46(0x2ae));_0xdcf1bf[_0x3e0b46(0x25e)](_0x4c6115[_0x3e0b46(0x34c)],'main_settings'),_0x1ef165[_0x3e0b46(0x23a)](),_0x5bb114[_0x3e0b46(0x23a)](),_0x4c6115[_0x3e0b46(0x345)][_0x3e0b46(0x294)](_0x376639=>{const _0x38e024=_0x3e0b46,{subtopics:_0xda19b4,..._0x1337f2}=_0x376639;_0x1ef165[_0x38e024(0x25e)](_0x1337f2),(_0xda19b4||[])[_0x38e024(0x294)](_0x73fd3f=>_0x5bb114[_0x38e024(0x25e)](_0x73fd3f));}),_0x526989[_0x3e0b46(0x19b)]=()=>_0x48ca7a(),_0x526989['onerror']=_0x3ab942=>_0x493fec(_0x3ab942['target']['error']);});},async 'autoBackup'(_0x3ccd13){const _0x27a097=_0x3ea952;await this[_0x27a097(0x3af)]();const _0x3fb4e0=new Date()['toISOString']()[_0x27a097(0x382)](0x0,0xa),_0x39333c=localStorage[_0x27a097(0x379)](_0x27a097(0x3a6));if(_0x3fb4e0!==_0x39333c){console[_0x27a097(0x316)](_0x27a097(0x1e8)+_0x3fb4e0+'...');const _0x2c6c23={'date':_0x3fb4e0,'data':JSON[_0x27a097(0x2ca)](JSON[_0x27a097(0x2d6)](_0x3ccd13))},_0x1b7844=this['db'][_0x27a097(0x33b)]([_0x27a097(0x193)],'readwrite'),_0x2edf60=_0x1b7844['objectStore'](_0x27a097(0x193)),_0x1b8798=_0x2edf60[_0x27a097(0x25e)](_0x2c6c23);_0x1b8798['onsuccess']=()=>{const _0x2f0dec=_0x27a097;localStorage[_0x2f0dec(0x2b3)](_0x2f0dec(0x3a6),_0x3fb4e0),console[_0x2f0dec(0x316)](_0x2f0dec(0x2d0)),this['cleanupOldBackups'](_0x3ccd13?.[_0x2f0dec(0x34c)]?.[_0x2f0dec(0x2f8)]||0x7);},_0x1b8798[_0x27a097(0x366)]=_0x27723e=>{const _0x465a54=_0x27a097;console[_0x465a54(0x2a9)](_0x465a54(0x38d),_0x27723e[_0x465a54(0x1ee)]['error']);};}},async 'cleanupOldBackups'(_0x11dcf9){const _0x20eed2=_0x3ea952;await this[_0x20eed2(0x3af)]();const _0x3de276=this['db']['transaction']([_0x20eed2(0x193)],_0x20eed2(0x23b)),_0x2df86d=_0x3de276[_0x20eed2(0x2c3)](_0x20eed2(0x193)),_0x283dd2=_0x2df86d['getAllKeys']();_0x283dd2['onsuccess']=()=>{const _0x570d44=_0x20eed2,_0x9341be=_0x283dd2['result'][_0x570d44(0x1fd)]()[_0x570d44(0x1b8)]();if(_0x9341be[_0x570d44(0x30e)]>_0x11dcf9){const _0x13541d=_0x9341be[_0x570d44(0x382)](_0x11dcf9);_0x13541d[_0x570d44(0x294)](_0xce4f7=>{const _0x432589=_0x570d44;_0x2df86d[_0x432589(0x228)](_0xce4f7),console[_0x432589(0x316)](_0x432589(0x322)+_0xce4f7);});}};},async 'getBackupList'(){return await this['initDB'](),new Promise((_0x4feecc,_0x1139de)=>{const _0x11ec79=_0x4681,_0x35e2ca=this['db'][_0x11ec79(0x33b)]([_0x11ec79(0x193)],_0x11ec79(0x238)),_0x37d9f1=_0x35e2ca[_0x11ec79(0x2c3)](_0x11ec79(0x193)),_0x1f2930=_0x37d9f1[_0x11ec79(0x1ad)]();_0x1f2930['onsuccess']=()=>_0x4feecc(_0x1f2930['result'][_0x11ec79(0x1fd)]((_0x188e7d,_0x4ca6f2)=>_0x4ca6f2[_0x11ec79(0x32b)][_0x11ec79(0x215)](_0x188e7d[_0x11ec79(0x32b)]))),_0x1f2930[_0x11ec79(0x366)]=_0x394747=>_0x1139de(_0x394747[_0x11ec79(0x1ee)][_0x11ec79(0x2a9)]);});},async 'restoreBackup'(_0x18a397){const _0x308dd2=_0x3ea952;return await this[_0x308dd2(0x3af)](),new Promise((_0x251740,_0x21d76b)=>{const _0x4fbd73=_0x308dd2,_0x1495f9=this['db'][_0x4fbd73(0x33b)]([_0x4fbd73(0x193)],_0x4fbd73(0x238)),_0x678709=_0x1495f9[_0x4fbd73(0x2c3)]('backups'),_0x44fc5b=_0x678709[_0x4fbd73(0x312)](_0x18a397);_0x44fc5b[_0x4fbd73(0x363)]=()=>{const _0x82ad94=_0x4fbd73;_0x44fc5b[_0x82ad94(0x3e0)]&&_0x44fc5b['result'][_0x82ad94(0x26f)]?(localStorage[_0x82ad94(0x2b3)](_0x82ad94(0x3f3),JSON[_0x82ad94(0x2d6)](_0x44fc5b['result'][_0x82ad94(0x26f)])),_0x251740(_0x44fc5b['result']['data'])):_0x21d76b(new Error(_0x82ad94(0x350)));},_0x44fc5b[_0x4fbd73(0x366)]=_0x4e2ac3=>_0x21d76b(_0x4e2ac3[_0x4fbd73(0x1ee)][_0x4fbd73(0x2a9)]);});},'exportData'(_0x3346d4){const _0x1d06a1=_0x3ea952;let _0x5c7d4c={};try{_0x5c7d4c=JSON[_0x1d06a1(0x2ca)](JSON[_0x1d06a1(0x2d6)](_0x3346d4||{}));}catch(_0x3171b3){_0x5c7d4c=_0x3346d4;}try{if(_0x5c7d4c&&_0x5c7d4c['settings'])_0x5c7d4c['settings']['apiKey']='';}catch(_0x59ecd0){}const _0x53d474=new Blob([JSON['stringify'](_0x5c7d4c,null,0x2)],{'type':_0x1d06a1(0x28a)}),_0xb885ff=document[_0x1d06a1(0x3d4)]('a'),_0x2f17fa=new Date(),_0x57958f=_0x38afa7=>(''+_0x38afa7)[_0x1d06a1(0x314)](0x2,'0');_0xb885ff['href']=URL['createObjectURL'](_0x53d474),_0xb885ff[_0x1d06a1(0x182)]=_0x1d06a1(0x2f1)+_0x2f17fa[_0x1d06a1(0x2b1)]()+_0x57958f(_0x2f17fa['getMonth']()+0x1)+_0x57958f(_0x2f17fa[_0x1d06a1(0x210)]())+'.json',_0xb885ff['click'](),URL[_0x1d06a1(0x1a2)](_0xb885ff[_0x1d06a1(0x222)]);},async 'importData'(_0x10ab8c){const _0x125e03=_0x3ea952,_0x3bc7cd=await _0x10ab8c[_0x125e03(0x1a6)](),_0x582cb1=JSON[_0x125e03(0x2ca)](_0x3bc7cd);if(!_0x582cb1['version']||!_0x582cb1[_0x125e03(0x34c)]||!Array['isArray'](_0x582cb1['topics']))throw new Error('Tệp\x20không\x20đúng\x20định\x20dạng');try{const _0x11ed68=window[_0x125e03(0x26f)]&&window[_0x125e03(0x26f)][_0x125e03(0x34c)]&&window['data']['settings'][_0x125e03(0x17e)]||'';(!('apiKey'in _0x582cb1[_0x125e03(0x34c)])||_0x582cb1['settings'][_0x125e03(0x17e)]==='')&&(_0x582cb1['settings'][_0x125e03(0x17e)]=_0x11ed68);}catch(_0x229594){}return localStorage[_0x125e03(0x2b3)](_0x125e03(0x3f3),JSON[_0x125e03(0x2d6)](_0x582cb1)),_0x582cb1;}},$=(_0x3c9d80,_0x1fa4ec=document)=>_0x1fa4ec[_0x3ea952(0x20f)](_0x3c9d80),$$=(_0x27722f,_0x5a27e4=document)=>Array[_0x3ea952(0x3c4)](_0x5a27e4[_0x3ea952(0x1ff)](_0x27722f));function on(_0x191b7c,_0xf3aa00,_0x2a4241){const _0xbae741=_0x3ea952;if(!_0x191b7c){console[_0xbae741(0x3f7)]('Missing\x20element',_0xf3aa00);return;}_0x191b7c[_0xbae741(0x2ce)](_0xf3aa00,_0x2a4241);}const formatMMSS=_0x1d9dac=>{const _0x47716d=_0x3ea952,_0xc1240f=Math['floor'](_0x1d9dac/0x3c)[_0x47716d(0x3ef)]()[_0x47716d(0x314)](0x2,'0'),_0x5ee2a4=Math[_0x47716d(0x1d8)](_0x1d9dac%0x3c)[_0x47716d(0x3ef)]()[_0x47716d(0x314)](0x2,'0');return _0xc1240f+':'+_0x5ee2a4;},uid=(_0x150172='id')=>_0x150172+'_'+Date[_0x3ea952(0x3e5)]()+'_'+Math[_0x3ea952(0x281)]()[_0x3ea952(0x3ef)](0x24)['slice'](0x2,0x9);let __releaseFocusTrap=null;function trapFocus(_0x97882b){const _0x13198a=_0x3ea952;try{const _0x227ea3=_0x97882b[_0x13198a(0x1ff)]('button,\x20[href],\x20input,\x20select,\x20textarea,\x20[tabindex]:not([tabindex=\x22-1\x22])');if(!_0x227ea3['length'])return;const _0x2baeec=_0x227ea3[0x0],_0x1148ba=_0x227ea3[_0x227ea3[_0x13198a(0x30e)]-0x1],_0x33ff96=_0x19804b=>{const _0x4d73d0=_0x13198a;if(_0x19804b[_0x4d73d0(0x29b)]===_0x4d73d0(0x400)){if(_0x19804b['shiftKey']&&document['activeElement']===_0x2baeec)_0x19804b[_0x4d73d0(0x412)](),_0x1148ba[_0x4d73d0(0x1b3)]();else!_0x19804b[_0x4d73d0(0x19e)]&&document[_0x4d73d0(0x20a)]===_0x1148ba&&(_0x19804b[_0x4d73d0(0x412)](),_0x2baeec['focus']());}};_0x97882b[_0x13198a(0x2ce)](_0x13198a(0x3ff),_0x33ff96),_0x2baeec[_0x13198a(0x1b3)](),__releaseFocusTrap=()=>{const _0x218973=_0x13198a;try{_0x97882b[_0x218973(0x364)]('keydown',_0x33ff96);}catch(_0x1655ea){}};}catch(_0x307b82){}}function releaseFocus(){if(__releaseFocusTrap){try{__releaseFocusTrap();}catch(_0x337c9d){}__releaseFocusTrap=null;}}const todayISO=()=>new Date()[_0x3ea952(0x3de)]();function toast(_0x2e39d3,_0x28420c=0xa28){const _0x283317=_0x3ea952,_0x1bf2bc=$(_0x283317(0x2fa)),_0x14ebb5=document[_0x283317(0x3d4)](_0x283317(0x1d3));_0x14ebb5[_0x283317(0x251)]=_0x283317(0x299),_0x14ebb5[_0x283317(0x2e0)]=_0x2e39d3,_0x1bf2bc[_0x283317(0x336)](_0x14ebb5),setTimeout(()=>{const _0x5a618a=_0x283317;_0x14ebb5[_0x5a618a(0x219)][_0x5a618a(0x1d6)]='0';},_0x28420c-0x12c),setTimeout(()=>_0x1bf2bc[_0x283317(0x1e6)](_0x14ebb5),_0x28420c);}function escapeHTML(_0x410915){const _0x5f423f=_0x3ea952;return _0x410915[_0x5f423f(0x18b)](/[&<>"']/g,_0x4dfa1b=>({'&':_0x5f423f(0x3c7),'<':_0x5f423f(0x319),'>':_0x5f423f(0x34f),'\x22':_0x5f423f(0x403),'\x27':'&#39;'}[_0x4dfa1b]));}function formatDaysHoursMinutes(_0x39ac1d){const _0x4a8055=_0x3ea952;if(!_0x39ac1d||_0x39ac1d<0x1)return _0x4a8055(0x39a);const _0x40e838=Math[_0x4a8055(0x1d8)](_0x39ac1d/0x3c),_0x58531c=_0x39ac1d%0x3c,_0x4ac400=_0x58531c[_0x4a8055(0x3ef)]()[_0x4a8055(0x314)](0x2,'0');return _0x40e838+'\x20tiếng\x20'+_0x4ac400+_0x4a8055(0x22d);}function formatGeminiResponse(_0x2bf02e){const _0x4db6f1=_0x3ea952;return _0x2bf02e[_0x4db6f1(0x18b)](/(\*\*|__|\*|_|#+\s*)/g,'');}function normalizeDataStructure(_0x3324c7){const _0x441d49=_0x3ea952;if(!_0x3324c7||typeof _0x3324c7!==_0x441d49(0x1ca))return;const _0x4703cf=_0x3324c7[_0x441d49(0x34c)]||{},_0x44c17e={...defaults[_0x441d49(0x34c)],..._0x4703cf,'durations':{...defaults[_0x441d49(0x34c)][_0x441d49(0x212)],..._0x4703cf['durations']||{}}};if(!Array[_0x441d49(0x1c1)](_0x44c17e[_0x441d49(0x24e)]))_0x44c17e['achievedMilestones']=[];_0x3324c7[_0x441d49(0x34c)]=_0x44c17e,_0x3324c7['topics']=Array[_0x441d49(0x1c1)](_0x3324c7[_0x441d49(0x345)])?_0x3324c7[_0x441d49(0x345)]:[],_0x3324c7[_0x441d49(0x345)][_0x441d49(0x294)](_0x49674b=>{const _0x5862ba=_0x441d49;_0x49674b[_0x5862ba(0x2ae)]=Array[_0x5862ba(0x1c1)](_0x49674b[_0x5862ba(0x2ae)])?_0x49674b[_0x5862ba(0x2ae)]:[],_0x49674b[_0x5862ba(0x2ae)][_0x5862ba(0x294)](_0x4350a2=>{const _0x58dc3f=_0x5862ba;_0x4350a2[_0x58dc3f(0x348)]=_0x4350a2['tasks']||[],_0x4350a2[_0x58dc3f(0x34b)]=_0x4350a2['generalNotes']||[],_0x4350a2[_0x58dc3f(0x2d4)]=_0x4350a2[_0x58dc3f(0x2d4)]||[],_0x4350a2[_0x58dc3f(0x260)]=_0x4350a2['chatHistory']||[],_0x4350a2[_0x58dc3f(0x18d)]=_0x4350a2[_0x58dc3f(0x18d)]||{'totalMinutes':0x0,'sessionsCompleted':0x0,'tasksCompleted':0x0},_0x4350a2[_0x58dc3f(0x30c)]=_0x4350a2['sessions']||[],_0x4350a2[_0x58dc3f(0x279)]=_0x4350a2[_0x58dc3f(0x279)]||{'state':'idle','prevState':null,'remaining':0x0,'segmentTotal':0x0,'cycleIndex':0x0};});});}function extractYouTubeID(_0x424dac){if(!_0x424dac)return null;const _0x4803b5=/^.*(?:youtu.be\/|shorts\/|live\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([A-Za-z0-9_-]{11}).*/,_0x37ca86=_0x424dac['match'](_0x4803b5);return _0x37ca86?_0x37ca86[0x1]:null;}let sessionYoutubeUrl='';function getActiveYoutubeUrl(){const _0x2f5462=_0x3ea952;try{if(sessionYoutubeUrl)return sessionYoutubeUrl;const _0x30d8d0=document[_0x2f5462(0x292)](_0x2f5462(0x27e)),_0xb489b0=(_0x30d8d0&&_0x30d8d0[_0x2f5462(0x24c)]?_0x30d8d0['value']:'')[_0x2f5462(0x261)]();return _0xb489b0;}catch(_0x1d7fdd){return'';}}function getActiveVideoId(){return extractYouTubeID(getActiveYoutubeUrl());}function handleYoutubeUrlInput(){const _0x4bd09d=_0x3ea952,_0x3db906=$(_0x4bd09d(0x227)),_0x1f2c10=$(_0x4bd09d(0x37f)),_0x56d1b3=$('#btnToggleYtSound'),_0x57f38d=_0x3db906[_0x4bd09d(0x24c)][_0x4bd09d(0x261)](),_0x2290a8=extractYouTubeID(_0x57f38d);if(_0x2290a8){_0x1f2c10[_0x4bd09d(0x2e0)]=_0x4bd09d(0x38e),_0x1f2c10['style']['color']=_0x4bd09d(0x309),_0x56d1b3['disabled']=![],sessionYoutubeUrl=_0x57f38d;try{ytUserPaused=![];}catch(_0x44693b){}try{const _0xcdefc4=_0x4bd09d(0x333)+_0x2290a8+'/maxresdefault.jpg',_0xaf2136=new Image();_0xaf2136[_0x4bd09d(0x25f)]=async()=>{const _0x297164=_0x4bd09d;data[_0x297164(0x34c)][_0x297164(0x25b)]=_0xcdefc4;try{await saveData();}catch(_0x22c1c4){}applyCustomBg();},_0xaf2136[_0x4bd09d(0x366)]=async()=>{const _0x3148c2=_0x4bd09d,_0xd86ef=_0x3148c2(0x333)+_0x2290a8+_0x3148c2(0x3a0);data['settings'][_0x3148c2(0x25b)]=_0xd86ef;try{await saveData();}catch(_0x35e8b6){}applyCustomBg();},_0xaf2136[_0x4bd09d(0x3b2)]=_0xcdefc4;}catch(_0x865e0){}try{if(IS_FILE_PROTOCOL){const _0x2ff9cb=_ytUnlocked?0x0:0x1;fallbackLoadVideo(_0x2290a8,{'autoplay':0x1,'mute':_0x2ff9cb});try{setTimeout(()=>{try{fallbackPostMessage('playVideo');}catch(_0x15a7bf){}},0xfa);}catch(_0x4721f8){}!_ytUnlocked&&showSoundPermission();try{setTimeout(()=>{const _0x245ba9=_0x4bd09d,_0x29d2b0=document[_0x245ba9(0x292)]('ytUrlFeedback');if(_0x29d2b0)_0x29d2b0[_0x245ba9(0x2e0)]='Đang\x20phát';},0x1f4);}catch(_0x12c694){}}else ensureYouTubeAPI()['then'](()=>{const _0x167cf6=_0x4bd09d;updateYouTubePlayer();try{if(_ytUnlocked)ytFadeInPlay();else ytPlayer&&ytPlayer[_0x167cf6(0x1b4)]&&ytPlayer['playVideo']&&(ytPlayer[_0x167cf6(0x1b4)](),ytPlayer[_0x167cf6(0x2a1)](),_ytPrimed=!![],showSoundPermission());}catch(_0x370605){}})['catch'](()=>{});}catch(_0x139e78){}}else{if(_0x57f38d===''){_0x1f2c10[_0x4bd09d(0x2e0)]='',_0x56d1b3['disabled']=!![];if(IS_FILE_PROTOCOL)try{fallbackStop();}catch(_0x25f9c6){}else ytPlayer&&ytPlayer[_0x4bd09d(0x365)]&&ytPlayer[_0x4bd09d(0x365)]();}else _0x1f2c10['textContent']='❌\x20Link\x20không\x20hợp\x20lệ\x20hoặc\x20không\x20được\x20hỗ\x20trợ.',_0x1f2c10[_0x4bd09d(0x219)][_0x4bd09d(0x250)]=_0x4bd09d(0x391),_0x56d1b3[_0x4bd09d(0x310)]=!![];}}function applyTheme(_0x4884d2){const _0x23ab8b=_0x3ea952,_0x2102b4=_0x4884d2||data[_0x23ab8b(0x34c)][_0x23ab8b(0x197)]||_0x23ab8b(0x377);document['body'][_0x23ab8b(0x3b7)][_0x23ab8b(0x197)]=_0x2102b4;const _0x476cef=[_0x23ab8b(0x3f4),_0x23ab8b(0x1b7)][_0x23ab8b(0x2ad)](_0x2102b4),_0x3c8f93=_0x2102b4===_0x23ab8b(0x3d6)||_0x2102b4===_0x23ab8b(0x278),_0x50ef89=data['settings'][_0x23ab8b(0x25b)],_0x32327d=()=>{const _0x162f99=_0x23ab8b;try{document['body'][_0x162f99(0x219)][_0x162f99(0x1f0)]='';}catch(_0x278b93){}};if(_0x50ef89&&!data[_0x23ab8b(0x34c)][_0x23ab8b(0x33f)])document[_0x23ab8b(0x3d8)]['style'][_0x23ab8b(0x1a7)](_0x23ab8b(0x418),_0x23ab8b(0x1be)+_0x50ef89+')'),_0x32327d();else{if(_0x50ef89&&data[_0x23ab8b(0x34c)][_0x23ab8b(0x33f)])document[_0x23ab8b(0x3d8)][_0x23ab8b(0x219)][_0x23ab8b(0x1a7)]('--bg-image',_0x23ab8b(0x1be)+_0x50ef89+')'),_0x32327d();else{if(_0x476cef)document[_0x23ab8b(0x3d8)]['style'][_0x23ab8b(0x1e9)](_0x23ab8b(0x418)),_0x32327d();else _0x3c8f93?(document[_0x23ab8b(0x3d8)][_0x23ab8b(0x219)][_0x23ab8b(0x1a7)](_0x23ab8b(0x418),_0x23ab8b(0x3bc)),_0x32327d()):(document[_0x23ab8b(0x3d8)][_0x23ab8b(0x219)]['setProperty']('--bg-image',''),document[_0x23ab8b(0x3d8)][_0x23ab8b(0x219)][_0x23ab8b(0x1f0)]=_0x23ab8b(0x2e9));}}}const defaults={'version':0xb,'settings':{'apiKey':'','currentView':_0x3ea952(0x26a),'preset':'A','autoStartNext':!![],'soundOn':!![],'volume':0.8,'soundTheme':_0x3ea952(0x33e),'theme':_0x3ea952(0x377),'cyclesA':0x4,'longBreakIntervalA':0x4,'cyclesB':0x4,'longBreakIntervalB':0x4,'durations':{'A_work':0x19,'A_short':0x5,'A_long':0xf,'B_work':0x32,'B_short':0xa,'B_long':0x1e},'selectedTopicId':'','selectedSubtopicId':'','collapsedTopics':{},'customBg':'','customSounds':{'work_end':'','break_end':'','long_end':''},'youtubeUrl':'','youtubeVolume':0x50,'useYtThumbnailAsBg':!![],'panelOpacity':0.85,'panelBlur':0xa,'backupDaysToKeep':0x7,'achievedMilestones':[]},'topics':[{'id':uid('t'),'name':_0x3ea952(0x1ba),'subtopics':[{'id':uid('s'),'name':_0x3ea952(0x245),'tasks':[],'generalNotes':[],'summaries':[],'chatHistory':[],'stats':{'totalMinutes':0x0,'sessionsCompleted':0x0,'tasksCompleted':0x0},'sessions':[],'timerState':{'state':_0x3ea952(0x2e5),'prevState':null,'remaining':0x0,'segmentTotal':0x0,'cycleIndex':0x0}}]}]};let data,editingPreset='A',AUDIO_CTX=null;function ensureAudio(){const _0x4e0efd=_0x3ea952;if(!AUDIO_CTX)AUDIO_CTX=new(window[(_0x4e0efd(0x396))]||window[(_0x4e0efd(0x33d))])();}function tone(_0x3918f0=0x370,_0x570cfa=0xc8,_0x5acb2e=0.2,_0x51f7c7='sine',_0x261d21=0x0){const _0x44e23e=_0x3ea952;ensureAudio();const _0x43325c=AUDIO_CTX,_0x34e3dc=_0x43325c['createOscillator'](),_0x3f7419=_0x43325c[_0x44e23e(0x31f)]();_0x34e3dc[_0x44e23e(0x199)]=_0x51f7c7,_0x34e3dc[_0x44e23e(0x213)]['value']=_0x3918f0,_0x34e3dc[_0x44e23e(0x407)](_0x3f7419),_0x3f7419[_0x44e23e(0x407)](_0x43325c[_0x44e23e(0x188)]);const _0x5a0c8d=_0x43325c['currentTime']+_0x261d21;_0x3f7419[_0x44e23e(0x320)][_0x44e23e(0x27c)](0x0,_0x5a0c8d),_0x3f7419[_0x44e23e(0x320)]['linearRampToValueAtTime'](_0x5acb2e,_0x5a0c8d+0.01),_0x3f7419[_0x44e23e(0x320)]['exponentialRampToValueAtTime'](0.0001,_0x5a0c8d+_0x570cfa/0x3e8),_0x34e3dc[_0x44e23e(0x31d)](_0x5a0c8d),_0x34e3dc[_0x44e23e(0x3b0)](_0x5a0c8d+_0x570cfa/0x3e8+0.05);}function playSound(_0x1265f7){const _0x45504b=_0x3ea952;if(!data[_0x45504b(0x34c)][_0x45504b(0x23d)])return;const _0x1afa01=Math[_0x45504b(0x1bc)](0x0,Math[_0x45504b(0x3a4)](0x1,data[_0x45504b(0x34c)][_0x45504b(0x374)]??0.8)),_0x273ac2=data[_0x45504b(0x34c)][_0x45504b(0x330)]?.[_0x1265f7];let _0x31db99;if(_0x1265f7==='work_end')_0x31db99=$(_0x45504b(0x2bb));else{if(_0x1265f7===_0x45504b(0x272))_0x31db99=$('#audioBreakEnd');else{if(_0x1265f7==='long_end')_0x31db99=$(_0x45504b(0x25d));}}if(_0x273ac2&&_0x31db99){_0x273ac2[_0x45504b(0x2bd)](_0x45504b(0x20b))||_0x273ac2[_0x45504b(0x2bd)](_0x45504b(0x344))||_0x273ac2[_0x45504b(0x2bd)](_0x45504b(0x2a4))?(_0x31db99['src']=_0x273ac2,_0x31db99[_0x45504b(0x374)]=_0x1afa01,_0x31db99['play']()[_0x45504b(0x301)](_0x4922fc=>console[_0x45504b(0x2a9)](_0x45504b(0x389),_0x4922fc))):getStoredFileUrl(_0x273ac2)[_0x45504b(0x1bb)](_0x40d04c=>{const _0x3d5cfd=_0x45504b;_0x40d04c&&(_0x31db99['src']=_0x40d04c,_0x31db99[_0x3d5cfd(0x374)]=_0x1afa01,_0x31db99['play']()[_0x3d5cfd(0x301)](_0x1bc700=>console[_0x3d5cfd(0x2a9)](_0x3d5cfd(0x389),_0x1bc700)));});return;}const _0x2f2000=data[_0x45504b(0x34c)]['soundTheme']||'beep';if(_0x2f2000===_0x45504b(0x33e)){if(_0x1265f7===_0x45504b(0x41a))tone(0x370,0xfa,_0x1afa01),tone(0x294,0xb4,_0x1afa01*0.8,_0x45504b(0x355),0.22);else{if(_0x1265f7==='break_end')tone(0x294,0xdc,_0x1afa01*0.9);else _0x1265f7===_0x45504b(0x20e)&&(tone(0x208,0xc8,_0x1afa01),tone(0x30c,0xc8,_0x1afa01,_0x45504b(0x355),0.22),tone(0x410,0xdc,_0x1afa01,'sine',0.44));}}else{if(_0x1265f7===_0x45504b(0x41a))tone(0x4b0,0xa0,_0x1afa01*0.9,_0x45504b(0x288)),tone(0x384,0xdc,_0x1afa01*0.8,'triangle',0.18);else{if(_0x1265f7==='break_end')tone(0x370,0xf0,_0x1afa01*0.8,_0x45504b(0x288));else _0x1265f7===_0x45504b(0x20e)&&(tone(0x258,0xdc,_0x1afa01*0.9,'triangle'),tone(0x3b6,0xf0,_0x1afa01*0.9,_0x45504b(0x288),0.22),tone(0x4b0,0xf0,_0x1afa01,'triangle',0.44));}}}async function saveData(){const _0x44e526=_0x3ea952;try{await storageManager[_0x44e526(0x1a0)](data);}catch(_0x96380b){console[_0x44e526(0x2a9)](_0x44e526(0x1df),_0x96380b),toast(_0x44e526(0x24d)+_0x96380b['message']);}}async function ensureValidSelection(){const _0x25326b=_0x3ea952,_0x2916e3=data['settings'];if(!data[_0x25326b(0x345)]||data['topics'][_0x25326b(0x30e)]===0x0){_0x2916e3[_0x25326b(0x1b2)]='',_0x2916e3['selectedSubtopicId']='',await saveData();return;}const _0x3f427f=data[_0x25326b(0x345)][_0x25326b(0x1c0)](_0x281a7f=>_0x281a7f['id']===_0x2916e3[_0x25326b(0x1b2)]),_0x372c06=_0x3f427f?.['subtopics'][_0x25326b(0x1c0)](_0x23b43c=>_0x23b43c['id']===_0x2916e3[_0x25326b(0x3c0)]);if(!_0x3f427f||!_0x372c06){const _0x5740b4=data[_0x25326b(0x345)][0x0],_0x436ffb=_0x5740b4?.[_0x25326b(0x2ae)]?.[0x0];_0x2916e3[_0x25326b(0x1b2)]=_0x5740b4?.['id']||'',_0x2916e3[_0x25326b(0x3c0)]=_0x436ffb?.['id']||'',await saveData();}}function showInputModal(_0x1de2e4,_0x3746ca,_0x4e3bc0=''){const _0x36c5da=_0x3ea952;$('#genericTitle')[_0x36c5da(0x2e0)]=_0x1de2e4,$('#genericMessage')[_0x36c5da(0x367)][_0x36c5da(0x328)]('hidden');const _0x517925=$(_0x36c5da(0x1b1));_0x517925[_0x36c5da(0x24c)]=_0x4e3bc0,_0x517925['classList']['remove'](_0x36c5da(0x2aa)),$(_0x36c5da(0x40c))['classList'][_0x36c5da(0x328)](_0x36c5da(0x2cf));try{trapFocus($('#modalGeneric'));}catch(_0x22fc96){}_0x517925['focus'](),_0x517925['select']();const _0x2ab90a=()=>{const _0x2bbfb0=_0x36c5da;_0x3746ca(_0x517925[_0x2bbfb0(0x24c)]),_0x4f8c01();},_0x546b60=()=>_0x4f8c01(),_0x2cc595=_0x5a13dc=>{const _0x4d37fa=_0x36c5da;if(_0x5a13dc['key']===_0x4d37fa(0x3fe))_0x2ab90a();if(_0x5a13dc['key']===_0x4d37fa(0x3cd))_0x546b60();};$(_0x36c5da(0x27a))[_0x36c5da(0x282)]=_0x2ab90a,$('#btnGenericCancel')[_0x36c5da(0x282)]=_0x546b60,_0x517925['onkeydown']=_0x2cc595;function _0x4f8c01(){const _0x4e4e66=_0x36c5da;$(_0x4e4e66(0x40c))['classList']['remove'](_0x4e4e66(0x2cf)),$(_0x4e4e66(0x27a))[_0x4e4e66(0x282)]=null,$(_0x4e4e66(0x305))[_0x4e4e66(0x282)]=null,_0x517925[_0x4e4e66(0x31a)]=null;try{releaseFocus();}catch(_0x4c50f3){}}}function showConfirmModal(_0x457d19,_0x174d9e,_0x523597){const _0xecbe19=_0x3ea952;$(_0xecbe19(0x22b))[_0xecbe19(0x2e0)]=_0x457d19;const _0x5a7c64=$(_0xecbe19(0x2d2));_0x5a7c64[_0xecbe19(0x2e0)]=_0x174d9e,_0x5a7c64['classList'][_0xecbe19(0x295)](_0xecbe19(0x2aa)),$('#genericInput')[_0xecbe19(0x367)][_0xecbe19(0x328)](_0xecbe19(0x2aa)),$(_0xecbe19(0x40c))[_0xecbe19(0x367)][_0xecbe19(0x328)](_0xecbe19(0x2cf));try{trapFocus($(_0xecbe19(0x40c)));}catch(_0x1acc18){}const _0x40a1fa=()=>{_0x523597(!![]),_0x5ae131();},_0x12b7a5=()=>{_0x523597(![]),_0x5ae131();};$(_0xecbe19(0x27a))[_0xecbe19(0x282)]=_0x40a1fa,$(_0xecbe19(0x305))[_0xecbe19(0x282)]=_0x12b7a5;function _0x5ae131(){const _0x41627a=_0xecbe19;$('#modalGeneric')[_0x41627a(0x367)][_0x41627a(0x295)]('show'),$('#btnGenericOk')['onclick']=null,$(_0x41627a(0x305))['onclick']=null;try{releaseFocus();}catch(_0x48ef76){}}}async function switchView(_0x5f49f7){const _0x594828=_0x3ea952;$$('.view')[_0x594828(0x294)](_0x30c2a5=>_0x30c2a5['classList'][_0x594828(0x295)]('active')),$(_0x594828(0x2e7)+_0x5f49f7)['classList'][_0x594828(0x328)]('active'),$$('.nav-btn')[_0x594828(0x294)](_0x2c258c=>_0x2c258c[_0x594828(0x367)][_0x594828(0x295)]('active'));const _0x67711f=$('.nav-btn[data-view=\x22'+_0x5f49f7+'\x22]');if(_0x67711f)_0x67711f[_0x594828(0x367)]['add'](_0x594828(0x384));data['settings'][_0x594828(0x235)]=_0x5f49f7,await saveData(),_0x5f49f7===_0x594828(0x18d)&&renderDashboard();}function closeAllMenus(){const _0x3b3679=_0x3ea952;$$(_0x3b3679(0x3ce))['forEach'](_0x478d67=>_0x478d67[_0x3b3679(0x367)][_0x3b3679(0x295)](_0x3b3679(0x2cf)));}function renderTopics(){const _0x1a6709=_0x3ea952,_0x5c371e=$(_0x1a6709(0x2b6));if(!_0x5c371e)return;_0x5c371e[_0x1a6709(0x28f)]='';const _0x2c0b8c=data[_0x1a6709(0x34c)]['collapsedTopics']||{};data[_0x1a6709(0x345)][_0x1a6709(0x294)](_0x2fea2f=>{const _0x5543d2=_0x1a6709,_0x2f9e41=document['createElement'](_0x5543d2(0x1d3));_0x2f9e41[_0x5543d2(0x251)]='topic-item',_0x2f9e41[_0x5543d2(0x3b7)]['tid']=_0x2fea2f['id'];const _0x388b35=document[_0x5543d2(0x3d4)](_0x5543d2(0x1d3));_0x388b35[_0x5543d2(0x251)]=_0x5543d2(0x263);const _0x2f5601=!!_0x2c0b8c[_0x2fea2f['id']],_0x28fe7f=document[_0x5543d2(0x3d4)](_0x5543d2(0x2f6));_0x28fe7f['className']=_0x5543d2(0x40d),_0x28fe7f[_0x5543d2(0x196)](_0x5543d2(0x2de),_0x5543d2(0x27b)),_0x28fe7f['setAttribute']('aria-expanded',String(!_0x2f5601)),_0x28fe7f[_0x5543d2(0x28f)]=_0x5543d2(0x25c);const _0x1f7cd9=document['createElement']('div');_0x1f7cd9[_0x5543d2(0x251)]='topic-title',_0x1f7cd9[_0x5543d2(0x2e0)]=_0x2fea2f[_0x5543d2(0x3c6)];const _0x508ce2=document[_0x5543d2(0x3d4)](_0x5543d2(0x1d3));_0x508ce2['className']=_0x5543d2(0x3fb);const _0x1d4f86=document[_0x5543d2(0x3d4)](_0x5543d2(0x2f6));_0x1d4f86[_0x5543d2(0x251)]=_0x5543d2(0x2a6),_0x1d4f86[_0x5543d2(0x28f)]=_0x5543d2(0x1a5),_0x1d4f86['title']='Thêm\x20Chủ\x20đề\x20con';const _0x40e75f=document[_0x5543d2(0x3d4)]('div');_0x40e75f[_0x5543d2(0x219)]['position']='relative';const _0x476237=document[_0x5543d2(0x3d4)]('button');_0x476237['className']=_0x5543d2(0x352),_0x476237[_0x5543d2(0x28f)]=_0x5543d2(0x3fa),_0x476237['title']=_0x5543d2(0x1cf);const _0x2080f3=document[_0x5543d2(0x3d4)](_0x5543d2(0x1d3));_0x2080f3['className']=_0x5543d2(0x1d5);const _0x3ee7e9=document[_0x5543d2(0x3d4)](_0x5543d2(0x2f6));_0x3ee7e9[_0x5543d2(0x251)]=_0x5543d2(0x249),_0x3ee7e9[_0x5543d2(0x28f)]=_0x5543d2(0x247);const _0x22fca4=document[_0x5543d2(0x3d4)](_0x5543d2(0x2f6));_0x22fca4[_0x5543d2(0x251)]=_0x5543d2(0x2cc),_0x22fca4[_0x5543d2(0x28f)]=_0x5543d2(0x269),_0x2080f3[_0x5543d2(0x2a8)](_0x3ee7e9,_0x22fca4),_0x40e75f[_0x5543d2(0x2a8)](_0x476237,_0x2080f3),_0x508ce2[_0x5543d2(0x2a8)](_0x1d4f86,_0x40e75f),_0x388b35[_0x5543d2(0x2a8)](_0x28fe7f,_0x1f7cd9,_0x508ce2);const _0x3211b5=document['createElement'](_0x5543d2(0x1d3));_0x3211b5[_0x5543d2(0x251)]=_0x5543d2(0x2ae)+(_0x2f5601?_0x5543d2(0x34e):''),_0x3211b5['dataset']['tid']=_0x2fea2f['id'],_0x2fea2f[_0x5543d2(0x2ae)][_0x5543d2(0x294)](_0x5be3d0=>{const _0x588268=_0x5543d2,_0x1f08a3=document[_0x588268(0x3d4)](_0x588268(0x1d3));_0x1f08a3['className']=_0x588268(0x390),_0x1f08a3[_0x588268(0x3b7)][_0x588268(0x2ec)]=_0x5be3d0['id'];const _0x16c75e=document[_0x588268(0x3d4)](_0x588268(0x2f6));_0x16c75e['className']=_0x588268(0x3bd),_0x16c75e[_0x588268(0x2e0)]='•\x20'+_0x5be3d0['name'],_0x16c75e['dataset'][_0x588268(0x2ec)]=_0x5be3d0['id'],_0x16c75e[_0x588268(0x3b7)]['tid']=_0x2fea2f['id'];if(data['settings'][_0x588268(0x3c0)]===_0x5be3d0['id'])_0x16c75e[_0x588268(0x367)][_0x588268(0x328)]('active');const _0x42fd58=document[_0x588268(0x3d4)](_0x588268(0x1d3));_0x42fd58['className']=_0x588268(0x3ca);const _0x42e6e6=document[_0x588268(0x3d4)](_0x588268(0x1d3));_0x42e6e6[_0x588268(0x219)][_0x588268(0x2b8)]=_0x588268(0x223);const _0x44703f=document[_0x588268(0x3d4)]('button');_0x44703f[_0x588268(0x251)]=_0x588268(0x352),_0x44703f[_0x588268(0x28f)]='...',_0x44703f[_0x588268(0x2de)]=_0x588268(0x1cf);const _0x483b7a=document[_0x588268(0x3d4)](_0x588268(0x1d3));_0x483b7a[_0x588268(0x251)]=_0x588268(0x1d5);const _0x39bb56=document[_0x588268(0x3d4)](_0x588268(0x2f6));_0x39bb56[_0x588268(0x251)]='menu-item',_0x39bb56[_0x588268(0x28f)]='Sửa\x20tên\x20Chủ\x20đề\x20con';const _0x35a943=document['createElement'](_0x588268(0x2f6));_0x35a943[_0x588268(0x251)]=_0x588268(0x2cc),_0x35a943['innerHTML']=_0x588268(0x3b6),_0x483b7a['append'](_0x39bb56,_0x35a943),_0x42e6e6[_0x588268(0x2a8)](_0x44703f,_0x483b7a),_0x42fd58[_0x588268(0x2a8)](_0x42e6e6),_0x1f08a3[_0x588268(0x2a8)](_0x16c75e,_0x42fd58),_0x3211b5['appendChild'](_0x1f08a3),_0x16c75e[_0x588268(0x2ce)](_0x588268(0x1c8),()=>selectSubtopic(_0x2fea2f['id'],_0x5be3d0['id'])),_0x44703f[_0x588268(0x2ce)]('click',_0x4a92b5=>{const _0x4b4891=_0x588268;_0x4a92b5[_0x4b4891(0x3c1)](),closeAllMenus(),_0x483b7a[_0x4b4891(0x367)]['toggle'](_0x4b4891(0x2cf));}),_0x39bb56[_0x588268(0x2ce)](_0x588268(0x1c8),()=>showInputModal(_0x588268(0x39b),async _0x210954=>{const _0x1bb838=_0x588268;if(!_0x210954)return;_0x5be3d0[_0x1bb838(0x3c6)]=_0x210954,await storageManager[_0x1bb838(0x268)]('subtopics',_0x5be3d0),renderAll();},_0x5be3d0[_0x588268(0x3c6)])),_0x35a943[_0x588268(0x2ce)](_0x588268(0x1c8),()=>showConfirmModal(_0x588268(0x24a),_0x588268(0x2b4)+_0x5be3d0[_0x588268(0x3c6)]+'\x22?\x20Mọi\x20dữ\x20liệu\x20liên\x20quan\x20sẽ\x20bị\x20mất.',async _0x2f8d9b=>{const _0x28201c=_0x588268;if(!_0x2f8d9b)return;_0x2fea2f[_0x28201c(0x2ae)]=_0x2fea2f[_0x28201c(0x2ae)][_0x28201c(0x28e)](_0x15ee62=>_0x15ee62['id']!==_0x5be3d0['id']);const _0x379493=data[_0x28201c(0x34c)];_0x379493['selectedSubtopicId']===_0x5be3d0['id']&&(_0x379493[_0x28201c(0x3c0)]='',_0x379493[_0x28201c(0x1b2)]='',ensureValidSelection()),await storageManager[_0x28201c(0x228)]('subtopics',_0x5be3d0['id']),renderAll();}));}),_0x28fe7f[_0x5543d2(0x2ce)](_0x5543d2(0x1c8),async()=>{const _0x5d1a68=_0x5543d2;_0x2f5601?delete _0x2c0b8c[_0x2fea2f['id']]:_0x2c0b8c[_0x2fea2f['id']]=!![],data[_0x5d1a68(0x34c)]['collapsedTopics']=_0x2c0b8c,await storageManager['updateSettings'](data[_0x5d1a68(0x34c)]),renderTopics();}),_0x476237[_0x5543d2(0x2ce)]('click',_0x226dd6=>{const _0x51da5e=_0x5543d2;_0x226dd6[_0x51da5e(0x3c1)](),closeAllMenus(),_0x2080f3['classList']['toggle'](_0x51da5e(0x2cf));}),_0x1d4f86['addEventListener'](_0x5543d2(0x1c8),()=>showInputModal('Tên\x20Chủ\x20đề\x20con\x20mới?',async _0x2fea07=>{const _0x1ca7ff=_0x5543d2;if(!_0x2fea07)return;const _0x2b1664={'id':uid('s'),'topicId':_0x2fea2f['id'],'name':_0x2fea07,'tasks':[],'generalNotes':[],'summaries':[],'chatHistory':[],'stats':{'totalMinutes':0x0,'sessionsCompleted':0x0,'tasksCompleted':0x0},'sessions':[],'timerState':{'state':_0x1ca7ff(0x2e5),'prevState':null,'remaining':0x0,'segmentTotal':0x0,'cycleIndex':0x0}};_0x2fea2f[_0x1ca7ff(0x2ae)][_0x1ca7ff(0x243)](_0x2b1664),await storageManager[_0x1ca7ff(0x328)](_0x1ca7ff(0x2ae),_0x2b1664),renderTopics();})),_0x3ee7e9['addEventListener'](_0x5543d2(0x1c8),()=>showInputModal(_0x5543d2(0x2fd),async _0x12e5aa=>{const _0x246fe3=_0x5543d2;if(!_0x12e5aa)return;_0x2fea2f[_0x246fe3(0x3c6)]=_0x12e5aa,await storageManager[_0x246fe3(0x268)]('topics',_0x2fea2f),renderTopics();},_0x2fea2f[_0x5543d2(0x3c6)])),_0x22fca4['addEventListener'](_0x5543d2(0x1c8),()=>showConfirmModal('Xác\x20nhận\x20xóa',_0x5543d2(0x2e2)+_0x2fea2f[_0x5543d2(0x3c6)]+_0x5543d2(0x1f3),async _0x2bb6bf=>{const _0x16a543=_0x5543d2;if(!_0x2bb6bf)return;data[_0x16a543(0x345)]=data[_0x16a543(0x345)][_0x16a543(0x28e)](_0x360a59=>_0x360a59['id']!==_0x2fea2f['id']),delete _0x2c0b8c[_0x2fea2f['id']];data[_0x16a543(0x34c)][_0x16a543(0x1b2)]===_0x2fea2f['id']&&(data[_0x16a543(0x34c)][_0x16a543(0x1b2)]='',data[_0x16a543(0x34c)]['selectedSubtopicId']='',ensureValidSelection());await storageManager[_0x16a543(0x228)](_0x16a543(0x345),_0x2fea2f['id']);for(const _0x4d5239 of _0x2fea2f[_0x16a543(0x2ae)]){await storageManager[_0x16a543(0x228)](_0x16a543(0x2ae),_0x4d5239['id']);}renderAll();})),_0x2f9e41[_0x5543d2(0x2a8)](_0x388b35,_0x3211b5),_0x5c371e['appendChild'](_0x2f9e41);});if(window[_0x1a6709(0x347)]){const _0x1ff468=document[_0x1a6709(0x292)](_0x1a6709(0x3b3));if(_0x1ff468){if(_0x1ff468['_sortable'])try{_0x1ff468['_sortable'][_0x1a6709(0x18a)]();}catch(_0x3e9059){}_0x1ff468[_0x1a6709(0x340)]=new Sortable(_0x1ff468,{'animation':0x96,'draggable':_0x1a6709(0x1a3),'onEnd':async function(_0x3d2efc){const _0x21c61a=_0x1a6709;if(_0x3d2efc['oldIndex']===_0x3d2efc[_0x21c61a(0x2f0)])return;const _0x43d1b2=data[_0x21c61a(0x345)]['splice'](_0x3d2efc[_0x21c61a(0x413)],0x1)[0x0];data[_0x21c61a(0x345)]['splice'](_0x3d2efc[_0x21c61a(0x2f0)],0x0,_0x43d1b2),await saveData(),renderTopics();}}),_0x1ff468[_0x1a6709(0x1ff)]('.subtopics')[_0x1a6709(0x294)](_0x3b920b=>{new Sortable(_0x3b920b,{'group':'subtopics-group','animation':0x96,'draggable':'.sub-row','onEnd':async function(_0x15544c){const _0x53830a=_0x4681,_0x892a93=_0x15544c[_0x53830a(0x3c4)]?.['dataset']?.[_0x53830a(0x315)]||_0x15544c['from']?.[_0x53830a(0x38b)]('.topic-item')?.[_0x53830a(0x3b7)]?.[_0x53830a(0x315)],_0x5ccd19=_0x15544c['to']?.[_0x53830a(0x3b7)]?.['tid']||_0x15544c['to']?.[_0x53830a(0x38b)]('.topic-item')?.[_0x53830a(0x3b7)]?.[_0x53830a(0x315)],_0x46ffbc=data[_0x53830a(0x345)][_0x53830a(0x1c0)](_0x4cf269=>_0x4cf269['id']===_0x892a93),_0x560e10=data[_0x53830a(0x345)][_0x53830a(0x1c0)](_0x147a38=>_0x147a38['id']===_0x5ccd19);if(!_0x46ffbc||!_0x560e10)return;let _0x229a39=null;const _0x29d8c2=_0x15544c[_0x53830a(0x22e)]?.[_0x53830a(0x3b7)]?.[_0x53830a(0x2ec)]||_0x15544c['item']?.[_0x53830a(0x20f)](_0x53830a(0x338))?.[_0x53830a(0x3b7)]?.[_0x53830a(0x2ec)];if(_0x29d8c2){const _0x44abe3=_0x46ffbc[_0x53830a(0x2ae)][_0x53830a(0x1ea)](_0x168a13=>_0x168a13['id']===_0x29d8c2);if(_0x44abe3>=0x0)_0x229a39=_0x46ffbc[_0x53830a(0x2ae)][_0x53830a(0x253)](_0x44abe3,0x1)[0x0];}!_0x229a39&&(_0x229a39=_0x46ffbc[_0x53830a(0x2ae)]['splice'](_0x15544c['oldIndex'],0x1)[0x0]);if(!_0x229a39)return;_0x229a39[_0x53830a(0x3ed)]=_0x560e10['id'],_0x560e10[_0x53830a(0x2ae)][_0x53830a(0x253)](_0x15544c[_0x53830a(0x2f0)],0x0,_0x229a39),data[_0x53830a(0x34c)][_0x53830a(0x3c0)]===_0x229a39['id']&&(data['settings'][_0x53830a(0x1b2)]=_0x560e10['id']),await saveData(),renderTopics();}});});}}}function selectSubtopic(_0x1e0e9e,_0x343113){const _0x13361c=_0x3ea952,_0x215226=$(_0x13361c(0x266)),_0x13a432=getCurrentSubtopic();_0x13a432&&timer[_0x13361c(0x416)]!=='idle'&&(_0x13a432[_0x13361c(0x279)]={'state':timer[_0x13361c(0x416)],'prevState':timer[_0x13361c(0x2ff)],'remaining':timer[_0x13361c(0x3b8)],'segmentTotal':timer[_0x13361c(0x2dd)],'cycleIndex':timer[_0x13361c(0x2d8)]}),_0x215226[_0x13361c(0x367)][_0x13361c(0x328)](_0x13361c(0x399)),setTimeout(async()=>{const _0x807d9e=_0x13361c;data[_0x807d9e(0x34c)][_0x807d9e(0x1b2)]=_0x1e0e9e,data[_0x807d9e(0x34c)][_0x807d9e(0x3c0)]=_0x343113;const _0x41accf=getCurrentSubtopic();_0x41accf['timerState']?(timer[_0x807d9e(0x416)]=_0x41accf[_0x807d9e(0x279)][_0x807d9e(0x416)],timer[_0x807d9e(0x2ff)]=_0x41accf[_0x807d9e(0x279)]['prevState']||null,timer[_0x807d9e(0x3b8)]=_0x41accf[_0x807d9e(0x279)][_0x807d9e(0x3b8)],timer['segmentTotal']=_0x41accf['timerState'][_0x807d9e(0x2dd)],timer[_0x807d9e(0x2d8)]=_0x41accf['timerState'][_0x807d9e(0x2d8)]):timer['reset'](),await saveData(),timer['updateUI'](),renderAll(),switchView('timer'),_0x215226[_0x807d9e(0x367)]['remove'](_0x807d9e(0x399));},0xc8);}function getCurrentSubtopic(){const _0x5dde1e=_0x3ea952,_0x1a673a=data[_0x5dde1e(0x34c)][_0x5dde1e(0x1b2)],_0x55bba7=data[_0x5dde1e(0x34c)][_0x5dde1e(0x3c0)];if(!_0x1a673a||!_0x55bba7)return null;const _0x178b4c=data[_0x5dde1e(0x345)]['find'](_0x1658c2=>_0x1658c2['id']===_0x1a673a);if(!_0x178b4c)return null;return _0x178b4c[_0x5dde1e(0x2ae)]['find'](_0x1c9ff1=>_0x1c9ff1['id']===_0x55bba7)||null;}function renderContextBadge(){const _0x2477ea=_0x3ea952,_0x1f86c5=getCurrentSubtopic(),_0x3c5f84=_0x1f86c5?_0x1f86c5[_0x2477ea(0x3c6)]:_0x2477ea(0x356),_0x207e2a=$(_0x2477ea(0x2ab)),_0x2f3f5e=$(_0x2477ea(0x3c8)),_0x117ad1=$(_0x2477ea(0x184));if(_0x207e2a)_0x207e2a[_0x2477ea(0x2e0)]=_0x1f86c5?_0x2477ea(0x2d5)+_0x1f86c5[_0x2477ea(0x3c6)]:_0x2477ea(0x37b);if(_0x2f3f5e)_0x2f3f5e['textContent']=_0x3c5f84;if(_0x117ad1)_0x117ad1[_0x2477ea(0x2e0)]=_0x3c5f84;}function renderSubtopicTasks(){const _0x3423da=_0x3ea952,_0x2e576d=getCurrentSubtopic(),_0x15b72d=$(_0x3423da(0x273)),_0x36dd3a=$(_0x3423da(0x1fc));if(!_0x15b72d||!_0x36dd3a)return;const _0x5b8fd6=_0x36dd3a[_0x3423da(0x3c3)];if(!_0x2e576d){_0x15b72d[_0x3423da(0x28f)]='<li\x20class=\x22tiny\x22\x20style=\x22opacity:\x200.7;\x22>Chọn\x20chủ\x20đề\x20con\x20để\x20xem\x20to-do\x20list.</li>',_0x5b8fd6[_0x3423da(0x367)][_0x3423da(0x328)]('hidden');return;}_0x5b8fd6[_0x3423da(0x367)]['remove']('hidden'),_0x15b72d['innerHTML']='';const _0x4d13bd=_0x2e576d[_0x3423da(0x348)]?_0x2e576d[_0x3423da(0x348)]['filter'](_0x3ab1af=>!_0x3ab1af[_0x3423da(0x3ad)]):[];_0x4d13bd['length']===0x0&&(_0x15b72d['innerHTML']=_0x3423da(0x381)),_0x4d13bd[_0x3423da(0x294)](_0x166bbf=>{const _0x28609c=_0x3423da,_0x4ad148=document[_0x28609c(0x3d4)]('li');_0x4ad148[_0x28609c(0x28f)]=_0x28609c(0x3a8)+_0x166bbf['id']+_0x28609c(0x36d)+_0x166bbf['id']+'\x22>'+escapeHTML(_0x166bbf['text'])+'</label>',_0x4ad148['querySelector'](_0x28609c(0x2d9))[_0x28609c(0x2ce)](_0x28609c(0x298),_0x2bb672=>toggleSubtopicTask(_0x2bb672[_0x28609c(0x1ee)]['id'],_0x4ad148)),_0x15b72d[_0x28609c(0x336)](_0x4ad148);});}async function addSubtopicTask(){const _0x4720ed=_0x3ea952,_0x1a708f=getCurrentSubtopic();if(!_0x1a708f){toast(t(_0x4720ed(0x290)));return;}const _0x3a8fdb=$(_0x4720ed(0x1fc)),_0x116991=_0x3a8fdb[_0x4720ed(0x24c)]['trim']();if(_0x116991){if(!_0x1a708f[_0x4720ed(0x348)])_0x1a708f[_0x4720ed(0x348)]=[];_0x1a708f[_0x4720ed(0x348)][_0x4720ed(0x243)]({'id':uid(_0x4720ed(0x3c5)),'text':_0x116991,'isCompleted':![],'createdAt':todayISO()}),await saveData(),renderSubtopicTasks(),_0x3a8fdb[_0x4720ed(0x24c)]='';}_0x3a8fdb[_0x4720ed(0x1b3)]();}async function toggleSubtopicTask(_0x44eb06,_0x21c01b){const _0x3ecf5f=_0x3ea952,_0x43b04a=getCurrentSubtopic();if(!_0x43b04a||!_0x43b04a[_0x3ecf5f(0x348)])return;const _0x459b70=_0x43b04a['tasks'][_0x3ecf5f(0x1c0)](_0x30148f=>_0x30148f['id']===_0x44eb06);_0x459b70&&(_0x459b70[_0x3ecf5f(0x3ad)]=!![],_0x43b04a[_0x3ecf5f(0x18d)][_0x3ecf5f(0x2dc)]=(_0x43b04a[_0x3ecf5f(0x18d)][_0x3ecf5f(0x2dc)]||0x0)+0x1,await saveData(),_0x21c01b[_0x3ecf5f(0x367)]['add']('removing'),setTimeout(()=>{renderSubtopicTasks(),renderStatsHistory();},0xc8));}const timer={'state':_0x3ea952(0x2e5),'prevState':null,'tickHandle':null,'endAt':null,'remaining':0x0,'segmentTotal':0x0,'cyclesTarget':0x4,'cycleIndex':0x0,'mode':'A','persistInterval':0x3c*0x3e8,'lastPersist':0x0,async 'setPreset'(_0x26f195,{silent:silent=![]}={}){const _0x40f5c2=_0x3ea952,_0x766f1e=data[_0x40f5c2(0x34c)];this[_0x40f5c2(0x1bf)]=_0x26f195,this[_0x40f5c2(0x31c)]=_0x26f195==='A'?_0x766f1e[_0x40f5c2(0x411)]:_0x766f1e['cyclesB'],_0x766f1e[_0x40f5c2(0x311)]=_0x26f195,await saveData(),this['state']===_0x40f5c2(0x2e5)&&this['reset']();},'currentDurations'(){const _0x1b4a32=_0x3ea952,_0x50a42a=data['settings'][_0x1b4a32(0x212)];return this[_0x1b4a32(0x1bf)]==='A'?{'work':_0x50a42a[_0x1b4a32(0x3d0)],'short':_0x50a42a['A_short'],'long':_0x50a42a[_0x1b4a32(0x1d4)]}:{'work':_0x50a42a['B_work'],'short':_0x50a42a[_0x1b4a32(0x3cb)],'long':_0x50a42a[_0x1b4a32(0x23f)]};},'currentConfig'(){const _0x63afc4=_0x3ea952,_0x544835=data['settings'];return this[_0x63afc4(0x1bf)]==='A'?{'cycles':_0x544835[_0x63afc4(0x411)],'interval':_0x544835[_0x63afc4(0x324)]}:{'cycles':_0x544835[_0x63afc4(0x3f5)],'interval':_0x544835[_0x63afc4(0x239)]};},'updateUI'(){const _0x36e54f=_0x3ea952,_0x381eb8=$(_0x36e54f(0x3ba)),_0x555d30=$(_0x36e54f(0x410)),_0x51fa5a=$(_0x36e54f(0x1aa));if(!_0x381eb8||!_0x555d30||!_0x51fa5a)return;$(_0x36e54f(0x1f1))[_0x36e54f(0x367)]['toggle'](_0x36e54f(0x2aa),this['state']!==_0x36e54f(0x2e5)),$(_0x36e54f(0x321))[_0x36e54f(0x367)][_0x36e54f(0x1fa)]('hidden',!['work','break',_0x36e54f(0x369)][_0x36e54f(0x2ad)](this[_0x36e54f(0x416)])),$(_0x36e54f(0x26e))['classList']['toggle'](_0x36e54f(0x2aa),this[_0x36e54f(0x416)]!==_0x36e54f(0x264));let _0x3803ed=_0x36e54f(0x2eb);if(this[_0x36e54f(0x416)]===_0x36e54f(0x2b7))_0x381eb8[_0x36e54f(0x2e0)]=_0x36e54f(0x26d),_0x381eb8['className']=_0x36e54f(0x187),_0x3803ed=_0x36e54f(0x32d);else{if(this[_0x36e54f(0x416)]==='break')_0x381eb8[_0x36e54f(0x2e0)]=_0x36e54f(0x2fe),_0x381eb8[_0x36e54f(0x251)]=_0x36e54f(0x2c0),_0x3803ed=_0x36e54f(0x325);else{if(this['state']===_0x36e54f(0x369))_0x381eb8[_0x36e54f(0x2e0)]=_0x36e54f(0x21d),_0x381eb8[_0x36e54f(0x251)]=_0x36e54f(0x262),_0x3803ed=_0x36e54f(0x391);else this[_0x36e54f(0x416)]==='paused'?(_0x381eb8[_0x36e54f(0x2e0)]=_0x36e54f(0x1f8),_0x381eb8[_0x36e54f(0x251)]=_0x36e54f(0x246)):(_0x381eb8[_0x36e54f(0x2e0)]=_0x36e54f(0x341),_0x381eb8[_0x36e54f(0x251)]=_0x36e54f(0x246));}}[_0x36e54f(0x2b7),'break','long_break'][_0x36e54f(0x2ad)](this[_0x36e54f(0x416)])?_0x51fa5a['classList']['add'](_0x36e54f(0x29e)):_0x51fa5a[_0x36e54f(0x367)]['remove'](_0x36e54f(0x29e));_0x555d30[_0x36e54f(0x219)][_0x36e54f(0x29c)]=_0x3803ed,_0x51fa5a[_0x36e54f(0x367)][_0x36e54f(0x295)](_0x36e54f(0x241));const _0x2b53ad=$(_0x36e54f(0x386));if(_0x2b53ad)_0x2b53ad[_0x36e54f(0x2e0)]=formatMMSS(this[_0x36e54f(0x3b8)]);const _0x1c201f=_0x555d30['r']['baseVal'][_0x36e54f(0x24c)],_0x265b59=0x2*Math['PI']*_0x1c201f,_0x4d329a=this[_0x36e54f(0x2dd)]>0x0?_0x265b59-this[_0x36e54f(0x3b8)]/this[_0x36e54f(0x2dd)]*_0x265b59:_0x265b59;_0x555d30['style'][_0x36e54f(0x296)]=_0x265b59,_0x555d30[_0x36e54f(0x219)][_0x36e54f(0x1fe)]=isNaN(_0x4d329a)?_0x265b59:_0x4d329a;const _0x577610=$('#cycleInfo');if(_0x577610){const _0x29e9f7=this[_0x36e54f(0x2fc)]();_0x577610['textContent']=t('timer.cycleInfo',{'current':this[_0x36e54f(0x2d8)],'target':_0x29e9f7[_0x36e54f(0x1c7)]});}const _0x222306=$(_0x36e54f(0x18f));if(_0x222306)_0x222306[_0x36e54f(0x2e0)]=formatMMSS(this[_0x36e54f(0x3b8)]);},'persistTimerState'(_0x3979f5=![]){const _0x2bcadd=_0x3ea952;try{const _0x372cf8=getCurrentSubtopic();if(!_0x372cf8)return;const _0x591cfd={'state':this['state'],'prevState':this[_0x2bcadd(0x2ff)],'remaining':this[_0x2bcadd(0x3b8)],'segmentTotal':this[_0x2bcadd(0x2dd)],'cycleIndex':this[_0x2bcadd(0x2d8)]};_0x372cf8[_0x2bcadd(0x279)]=_0x591cfd;try{localStorage[_0x2bcadd(0x2b3)](_0x2bcadd(0x380)+_0x372cf8['id'],JSON[_0x2bcadd(0x2d6)](_0x591cfd));}catch(_0x636ada){}this[_0x2bcadd(0x1de)]=Date[_0x2bcadd(0x3e5)]();}catch(_0x525d78){}},'_startTick'(){const _0x54efc9=_0x3ea952;if(this[_0x54efc9(0x37c)])clearInterval(this[_0x54efc9(0x37c)]);this[_0x54efc9(0x37c)]=setInterval(()=>{const _0x165f45=_0x54efc9;this[_0x165f45(0x3b8)]>0x0&&(this[_0x165f45(0x3b8)]-=0x1,this[_0x165f45(0x1ae)](),this[_0x165f45(0x37d)]()),this['remaining']<=0x0&&(clearInterval(this[_0x165f45(0x37c)]),this['tickHandle']=null,this[_0x165f45(0x232)]());},0x3e8);},'_onFinishSegment'(){const _0x3a6579=_0x3ea952;if(this['state']===_0x3a6579(0x2b7)){const _0x4c6197=getCurrentSubtopic();if(_0x4c6197){const _0x2188fc=this[_0x3a6579(0x371)]()[_0x3a6579(0x2b7)];_0x4c6197[_0x3a6579(0x18d)][_0x3a6579(0x3e2)]=(_0x4c6197[_0x3a6579(0x18d)][_0x3a6579(0x3e2)]||0x0)+_0x2188fc,_0x4c6197[_0x3a6579(0x18d)][_0x3a6579(0x331)]=(_0x4c6197['stats'][_0x3a6579(0x331)]||0x0)+0x1;const _0x3c1ce1={'id':uid(_0x3a6579(0x26b)),'dateISO':todayISO(),'durationMinutes':_0x2188fc,'mode':this['mode'],'note':''};if(!_0x4c6197[_0x3a6579(0x30c)])_0x4c6197['sessions']=[];_0x4c6197[_0x3a6579(0x30c)][_0x3a6579(0x409)](_0x3c1ce1),saveData(),renderStatsHistory(),checkAndShowMilestones();}this[_0x3a6579(0x2d8)]++;}playSound(this[_0x3a6579(0x416)]===_0x3a6579(0x2b7)?_0x3a6579(0x41a):_0x3a6579(0x272));const _0x4ff342=$(_0x3a6579(0x1aa));if(_0x4ff342)_0x4ff342[_0x3a6579(0x367)][_0x3a6579(0x328)](_0x3a6579(0x241));data['settings'][_0x3a6579(0x32c)]?this[_0x3a6579(0x416)]==='work'?this[_0x3a6579(0x3d7)]():this[_0x3a6579(0x2be)]():(this[_0x3a6579(0x37c)]&&(clearInterval(this[_0x3a6579(0x37c)]),this[_0x3a6579(0x37c)]=null),this[_0x3a6579(0x416)]=_0x3a6579(0x2e5),this[_0x3a6579(0x2ff)]=null,this[_0x3a6579(0x1ae)](),toast(_0x3a6579(0x3f0)));},'beginWork'(){const _0xc383ef=_0x3ea952;this[_0xc383ef(0x2ff)]=this[_0xc383ef(0x416)],this[_0xc383ef(0x416)]=_0xc383ef(0x2b7);const _0x40fe78=this['currentDurations']()['work']*0x3c;this[_0xc383ef(0x2dd)]=_0x40fe78;if(this[_0xc383ef(0x2ff)]!=='paused')this[_0xc383ef(0x3b8)]=_0x40fe78;this['_startTick'](),this[_0xc383ef(0x1ae)]();},'beginBreak'(){const _0x476844=_0x3ea952;this[_0x476844(0x2ff)]=this[_0x476844(0x416)];const _0x2ee8a8=this[_0x476844(0x2fc)](),_0x250cf4=this['currentDurations']();if(this['cycleIndex']>0x0&&this[_0x476844(0x2d8)]%_0x2ee8a8[_0x476844(0x2b5)]===0x0){this['state']='long_break';const _0x517516=_0x250cf4[_0x476844(0x18c)]*0x3c;this[_0x476844(0x2dd)]=_0x517516;if(this[_0x476844(0x2ff)]!==_0x476844(0x264))this[_0x476844(0x3b8)]=_0x517516;toast(_0x476844(0x283));}else{this['state']=_0x476844(0x1f4);const _0x2d0866=_0x250cf4[_0x476844(0x2ea)]*0x3c;this[_0x476844(0x2dd)]=_0x2d0866;if(this[_0x476844(0x2ff)]!==_0x476844(0x264))this[_0x476844(0x3b8)]=_0x2d0866;}this['_startTick'](),this[_0x476844(0x1ae)]();},async 'start'(){const _0x525b82=_0x3ea952;if(!getCurrentSubtopic()){toast(_0x525b82(0x39f));return;}ensureAudio();if(this['state']===_0x525b82(0x2e5))this[_0x525b82(0x2d8)]=this[_0x525b82(0x2d8)]||0x0,this['beginWork']();else this['state']===_0x525b82(0x264)&&this['resume']();await this[_0x525b82(0x37d)](!![]);},async 'pause'(){const _0x26db43=_0x3ea952;this[_0x26db43(0x37c)]&&(clearInterval(this['tickHandle']),this['tickHandle']=null),this[_0x26db43(0x2ff)]=this[_0x26db43(0x416)],this[_0x26db43(0x416)]=_0x26db43(0x264),this[_0x26db43(0x1ae)](),await this[_0x26db43(0x37d)](!![]);},async 'resume'(){const _0x49a23f=_0x3ea952;if(this[_0x49a23f(0x416)]!=='paused')return;this[_0x49a23f(0x416)]=this[_0x49a23f(0x2ff)]||_0x49a23f(0x2b7),this[_0x49a23f(0x3b1)](),this[_0x49a23f(0x1ae)](),await this[_0x49a23f(0x37d)](!![]);},async 'skip'(){const _0x4ff6b6=_0x3ea952;this[_0x4ff6b6(0x3b8)]=0x0,this[_0x4ff6b6(0x37c)]&&(clearInterval(this[_0x4ff6b6(0x37c)]),this[_0x4ff6b6(0x37c)]=null),this['_onFinishSegment'](),await this[_0x4ff6b6(0x37d)](!![]);},async 'reset'(){const _0x309899=_0x3ea952;this['tickHandle']&&(clearInterval(this['tickHandle']),this[_0x309899(0x37c)]=null),this['state']=_0x309899(0x2e5),this['prevState']=null,this[_0x309899(0x3b8)]=0x0,this[_0x309899(0x2dd)]=0x0,this['cycleIndex']=0x0,this[_0x309899(0x1ae)](),await this['persistTimerState'](!![]);}};async function deleteSummary(_0x1d4da6){const _0x31e900=_0x3ea952;showConfirmModal(_0x31e900(0x24a),_0x31e900(0x37e),async _0xd2e5db=>{const _0x3b8596=_0x31e900;if(!_0xd2e5db)return;const _0x2ceb12=getCurrentSubtopic();if(!_0x2ceb12||!_0x2ceb12[_0x3b8596(0x2d4)])return;const _0x280c58=[..._0x2ceb12['summaries']];_0x2ceb12[_0x3b8596(0x2d4)]=_0x2ceb12[_0x3b8596(0x2d4)]['filter'](_0x2f13aa=>_0x2f13aa['id']!==_0x1d4da6);try{await storageManager[_0x3b8596(0x268)]('subtopics',_0x2ceb12),renderSummaries(),toast(_0x3b8596(0x1fb));}catch(_0x597950){console[_0x3b8596(0x2a9)](_0x3b8596(0x392),_0x597950),_0x2ceb12[_0x3b8596(0x2d4)]=_0x280c58,toast(_0x3b8596(0x240));}});}function exportSummary(_0x1d7b61){const _0x47ad3e=_0x3ea952,_0x3fb13b=new Blob([_0x1d7b61[_0x47ad3e(0x1e2)]],{'type':_0x47ad3e(0x1ef)}),_0x535875=document[_0x47ad3e(0x3d4)]('a'),_0x43a799=new Date(_0x1d7b61['createdAt']),_0x127982=_0x1963fd=>(''+_0x1963fd)[_0x47ad3e(0x314)](0x2,'0');_0x535875['href']=URL[_0x47ad3e(0x209)](_0x3fb13b),_0x535875[_0x47ad3e(0x182)]=_0x47ad3e(0x26c)+_0x43a799[_0x47ad3e(0x2b1)]()+_0x127982(_0x43a799[_0x47ad3e(0x200)]()+0x1)+_0x127982(_0x43a799[_0x47ad3e(0x210)]())+'.txt',_0x535875[_0x47ad3e(0x1c8)](),URL['revokeObjectURL'](_0x535875[_0x47ad3e(0x222)]);}function renderStatsHistory(){const _0x180a53=_0x3ea952,_0x30620f=getCurrentSubtopic(),_0x1c0014=$('#statTotal'),_0x16a3ab=$(_0x180a53(0x2f7)),_0x400dd7=$(_0x180a53(0x1cd)),_0x25c33a=$(_0x180a53(0x414));if(!_0x1c0014||!_0x16a3ab||!_0x400dd7||!_0x25c33a)return;if(!_0x30620f){_0x1c0014['textContent']=_0x180a53(0x39a),_0x16a3ab[_0x180a53(0x2e0)]='0',_0x400dd7[_0x180a53(0x2e0)]='0',_0x25c33a[_0x180a53(0x28f)]=_0x180a53(0x287);return;}const _0x32d111=_0x30620f['stats']&&_0x30620f[_0x180a53(0x18d)][_0x180a53(0x3e2)]?_0x30620f[_0x180a53(0x18d)][_0x180a53(0x3e2)]:0x0,_0x1da71c=_0x30620f[_0x180a53(0x18d)]&&_0x30620f[_0x180a53(0x18d)]['sessionsCompleted']?_0x30620f[_0x180a53(0x18d)]['sessionsCompleted']:0x0,_0x244d29=_0x30620f[_0x180a53(0x348)]?_0x30620f[_0x180a53(0x348)][_0x180a53(0x28e)](_0x4be601=>_0x4be601[_0x180a53(0x3ad)])['length']:0x0;_0x1c0014[_0x180a53(0x2e0)]=formatDaysHoursMinutes(_0x32d111),_0x16a3ab['textContent']=String(_0x1da71c),_0x400dd7['textContent']=String(_0x244d29),_0x25c33a[_0x180a53(0x28f)]='';const _0x29760b=Array[_0x180a53(0x1c1)](_0x30620f[_0x180a53(0x30c)])?_0x30620f[_0x180a53(0x30c)]:[];if(_0x29760b[_0x180a53(0x30e)]===0x0){_0x25c33a[_0x180a53(0x28f)]=_0x180a53(0x393);return;}_0x29760b[_0x180a53(0x294)](_0x2d8ac3=>{const _0x38c42f=_0x180a53,_0x53d6c9=document[_0x38c42f(0x3d4)]('div');_0x53d6c9[_0x38c42f(0x251)]=_0x38c42f(0x276);const _0x375f20=document['createElement'](_0x38c42f(0x1d3)),_0x4dbf4f=_0x2d8ac3[_0x38c42f(0x3d3)]?new Date(_0x2d8ac3['dateISO']):new Date(),_0x194c5d=_0x2d8ac3['durationMinutes']!=null?_0x2d8ac3[_0x38c42f(0x277)]:_0x2d8ac3[_0x38c42f(0x372)]||0x0;_0x375f20[_0x38c42f(0x28f)]=_0x38c42f(0x370)+_0x4dbf4f[_0x38c42f(0x307)]()+'\x20·\x20'+_0x194c5d+_0x38c42f(0x30a)+(_0x2d8ac3[_0x38c42f(0x1bf)]||'')+'</div>'+(_0x38c42f(0x22a)+(_0x2d8ac3[_0x38c42f(0x1c4)]?escapeHTML(_0x2d8ac3[_0x38c42f(0x1c4)]):_0x38c42f(0x3a7))+_0x38c42f(0x2b0)),_0x53d6c9[_0x38c42f(0x336)](_0x375f20),_0x25c33a[_0x38c42f(0x336)](_0x53d6c9);});}function renderGeneralNotes(){const _0x3b6fda=_0x3ea952,_0x5e1194=$(_0x3b6fda(0x237));if(!_0x5e1194)return;const _0x4560a2=getCurrentSubtopic();if(!_0x4560a2){_0x5e1194['innerHTML']='<div\x20class=\x22tiny\x22>Vui\x20lòng\x20chọn\x20một\x20chủ\x20đề\x20con.</div>';return;}_0x4560a2['generalNotes']=_0x4560a2[_0x3b6fda(0x34b)]||[];if(_0x4560a2[_0x3b6fda(0x34b)]['length']===0x0){_0x5e1194['innerHTML']='<div\x20class=\x22tiny\x22>Chưa\x20có\x20ghi\x20chú.</div>';return;}_0x5e1194[_0x3b6fda(0x28f)]='',_0x4560a2[_0x3b6fda(0x34b)][_0x3b6fda(0x294)](_0x1c4c80=>{const _0x407f5e=_0x3b6fda,_0x45a68b=document[_0x407f5e(0x3d4)](_0x407f5e(0x1d3));_0x45a68b['className']=_0x407f5e(0x280);const _0x30f15c=document[_0x407f5e(0x3d4)](_0x407f5e(0x1d3));_0x30f15c[_0x407f5e(0x251)]=_0x407f5e(0x2a3),_0x30f15c[_0x407f5e(0x2e0)]=typeof _0x1c4c80===_0x407f5e(0x29d)?_0x1c4c80:_0x1c4c80[_0x407f5e(0x1a6)]||'';const _0x57bc88=document['createElement']('div');_0x57bc88[_0x407f5e(0x251)]=_0x407f5e(0x2f4),_0x57bc88[_0x407f5e(0x2e0)]=_0x1c4c80[_0x407f5e(0x2c9)]?new Date(_0x1c4c80[_0x407f5e(0x2c9)])[_0x407f5e(0x307)]():'';const _0x14c0e9=document[_0x407f5e(0x3d4)](_0x407f5e(0x1d3)),_0x5cde2d=document[_0x407f5e(0x3d4)](_0x407f5e(0x2f6));_0x5cde2d[_0x407f5e(0x251)]=_0x407f5e(0x275),_0x5cde2d[_0x407f5e(0x2e0)]=_0x407f5e(0x208),_0x5cde2d[_0x407f5e(0x282)]=async _0xb76d3c=>{const _0x56e1af=_0x407f5e;_0xb76d3c['stopPropagation']();const _0x2dd21a=getCurrentSubtopic();if(!_0x2dd21a)return;_0x2dd21a['generalNotes']=(_0x2dd21a[_0x56e1af(0x34b)]||[])['filter'](_0x5be332=>(_0x5be332['id']||_0x5be332)!==(_0x1c4c80['id']||_0x1c4c80)),await saveData(),renderGeneralNotes();},_0x14c0e9[_0x407f5e(0x336)](_0x5cde2d);const _0x7dd552=document[_0x407f5e(0x3d4)]('div');_0x7dd552[_0x407f5e(0x251)]=_0x407f5e(0x23e),_0x7dd552['append'](_0x30f15c,_0x57bc88),_0x45a68b[_0x407f5e(0x2a8)](_0x7dd552,_0x14c0e9),_0x5e1194[_0x407f5e(0x336)](_0x45a68b);});}function addGeneralNote(){const _0x2b55d9=_0x3ea952;showInputModal(_0x2b55d9(0x3bf),async _0x4b0bae=>{const _0x1eaf8f=_0x2b55d9;if(!_0x4b0bae)return;const _0x405f3f=getCurrentSubtopic();if(!_0x405f3f){toast(_0x1eaf8f(0x194));return;}_0x405f3f[_0x1eaf8f(0x34b)]=_0x405f3f[_0x1eaf8f(0x34b)]||[],_0x405f3f['generalNotes']['unshift']({'id':uid('gn'),'text':_0x4b0bae,'createdAt':todayISO()}),await saveData(),renderGeneralNotes();},'');}async function summarizeNotes(){const _0x3342f1=_0x3ea952,_0x308b08=getCurrentSubtopic();if(!_0x308b08){toast(_0x3342f1(0x192));return;}const _0x3a1cf9=(_0x308b08['generalNotes']||[])[_0x3342f1(0x1eb)](_0x45b3f9=>typeof _0x45b3f9==='string'?_0x45b3f9:_0x45b3f9[_0x3342f1(0x1a6)]||'')['filter'](Boolean);if(_0x3a1cf9[_0x3342f1(0x30e)]===0x0){toast(_0x3342f1(0x1f5));return;}const _0x22a9ae=$(_0x3342f1(0x2d7));_0x22a9ae&&(_0x22a9ae[_0x3342f1(0x310)]=!![],_0x22a9ae[_0x3342f1(0x28f)]='<div\x20class=\x22spinner\x22></div>');try{const _0x4b92cd=_0x3342f1(0x2b9)+_0x3a1cf9[_0x3342f1(0x3eb)]('\x0a-\x20'),_0x4109ea=await callGeminiAPI(_0x4b92cd);if(!_0x308b08[_0x3342f1(0x2d4)])_0x308b08[_0x3342f1(0x2d4)]=[];_0x308b08[_0x3342f1(0x2d4)]['unshift']({'id':uid(_0x3342f1(0x3a5)),'content':_0x4109ea||_0x3342f1(0x2b2),'createdAt':todayISO()}),await saveData(),renderSummaries();}catch(_0xd9b48e){console[_0x3342f1(0x2a9)](_0xd9b48e),toast(_0x3342f1(0x1da));}finally{_0x22a9ae&&(_0x22a9ae[_0x3342f1(0x310)]=![],_0x22a9ae[_0x3342f1(0x2e0)]=_0x3342f1(0x230));}}function renderSummaries(){const _0x2405f4=_0x3ea952,_0x9f0aa5=$(_0x2405f4(0x2ee));if(!_0x9f0aa5)return;const _0x5b67bb=getCurrentSubtopic();if(!_0x5b67bb){_0x9f0aa5[_0x2405f4(0x28f)]=_0x2405f4(0x2c6);return;}_0x9f0aa5[_0x2405f4(0x28f)]='';if(!_0x5b67bb[_0x2405f4(0x2d4)]||_0x5b67bb[_0x2405f4(0x2d4)]['length']===0x0){_0x9f0aa5['innerHTML']='<div\x20class=\x22tiny\x22>Chưa\x20có\x20tóm\x20tắt\x20nào.</div>';return;}_0x5b67bb[_0x2405f4(0x2d4)][_0x2405f4(0x294)](_0x439885=>{const _0xc2428b=_0x2405f4,_0x26510=document['createElement'](_0xc2428b(0x1d3));_0x26510['className']='note-item';const _0x59e942=document[_0xc2428b(0x3d4)](_0xc2428b(0x1d3));_0x59e942[_0xc2428b(0x251)]=_0xc2428b(0x23e);const _0x180a7a=document[_0xc2428b(0x3d4)](_0xc2428b(0x1d3));_0x180a7a[_0xc2428b(0x251)]='note-content',_0x180a7a[_0xc2428b(0x2e0)]=_0x439885['content'];const _0x3951fb=document[_0xc2428b(0x3d4)](_0xc2428b(0x1d3));_0x3951fb[_0xc2428b(0x251)]=_0xc2428b(0x2f4),_0x3951fb[_0xc2428b(0x2e0)]=new Date(_0x439885[_0xc2428b(0x2c9)])[_0xc2428b(0x307)](),_0x59e942[_0xc2428b(0x2a8)](_0x180a7a,_0x3951fb);const _0x1bb8ef=document[_0xc2428b(0x3d4)](_0xc2428b(0x1d3)),_0x587eaf=document[_0xc2428b(0x3d4)](_0xc2428b(0x2f6));_0x587eaf[_0xc2428b(0x251)]=_0xc2428b(0x2a6),_0x587eaf['textContent']='Xuất',_0x587eaf[_0xc2428b(0x282)]=_0x426d32=>{const _0x2b3c65=_0xc2428b;_0x426d32[_0x2b3c65(0x3c1)](),exportSummary(_0x439885);};const _0x51d3c1=document[_0xc2428b(0x3d4)](_0xc2428b(0x2f6));_0x51d3c1[_0xc2428b(0x251)]=_0xc2428b(0x275),_0x51d3c1['textContent']=_0xc2428b(0x208),_0x51d3c1['onclick']=_0x4288b3=>{const _0x1e3af6=_0xc2428b;_0x4288b3[_0x1e3af6(0x3c1)](),deleteSummary(_0x439885['id']);},_0x1bb8ef[_0xc2428b(0x2a8)](_0x587eaf,_0x51d3c1),_0x26510['append'](_0x59e942,_0x1bb8ef),_0x26510[_0xc2428b(0x2ce)]('click',()=>_0x180a7a[_0xc2428b(0x367)]['toggle'](_0xc2428b(0x180))),_0x9f0aa5[_0xc2428b(0x336)](_0x26510);});}function loadEditingPresetFields(){const _0xdb09a9=_0x3ea952,_0x5aa70d=data[_0xdb09a9(0x34c)],_0x2451dc=_0x5aa70d[_0xdb09a9(0x212)];editingPreset==='A'?($(_0xdb09a9(0x343))[_0xdb09a9(0x24c)]=_0x2451dc[_0xdb09a9(0x3d0)],$(_0xdb09a9(0x28d))[_0xdb09a9(0x24c)]=_0x2451dc[_0xdb09a9(0x3e7)],$(_0xdb09a9(0x23c))[_0xdb09a9(0x24c)]=_0x2451dc[_0xdb09a9(0x1d4)],$(_0xdb09a9(0x24b))[_0xdb09a9(0x24c)]=_0x5aa70d[_0xdb09a9(0x411)],$(_0xdb09a9(0x2db))[_0xdb09a9(0x24c)]=_0x5aa70d[_0xdb09a9(0x324)]):($(_0xdb09a9(0x343))[_0xdb09a9(0x24c)]=_0x2451dc[_0xdb09a9(0x1cb)],$('#set_short')[_0xdb09a9(0x24c)]=_0x2451dc[_0xdb09a9(0x3cb)],$('#set_long')['value']=_0x2451dc[_0xdb09a9(0x23f)],$(_0xdb09a9(0x24b))['value']=_0x5aa70d[_0xdb09a9(0x3f5)],$(_0xdb09a9(0x2db))[_0xdb09a9(0x24c)]=_0x5aa70d[_0xdb09a9(0x239)]);}function highlightPresetSelector(){const _0x350b49=_0x3ea952;$$(_0x350b49(0x1d0))['forEach'](_0x3baebc=>{const _0x2fdf7b=_0x350b49,_0x191127=_0x3baebc[_0x2fdf7b(0x3b7)][_0x2fdf7b(0x2a5)]===editingPreset;_0x3baebc['classList'][_0x2fdf7b(0x1fa)](_0x2fdf7b(0x226),_0x191127),_0x3baebc[_0x2fdf7b(0x367)][_0x2fdf7b(0x1fa)](_0x2fdf7b(0x3f2),!_0x191127);});}function openSettings(){const _0x459caa=_0x3ea952,_0x35b08a=data['settings'];editingPreset=_0x35b08a[_0x459caa(0x311)],$('#set_apiKey')['value']=_0x35b08a[_0x459caa(0x17e)]||'',loadEditingPresetFields(),highlightPresetSelector(),$('#set_volume')[_0x459caa(0x24c)]=_0x35b08a['volume']??0.8,$(_0x459caa(0x257))['value']=_0x35b08a[_0x459caa(0x284)]||'beep',$('#set_theme_color')[_0x459caa(0x24c)]=_0x35b08a['theme']||_0x459caa(0x377);const _0x432f43=getActiveYoutubeUrl();$('#set_youtubeUrl')[_0x459caa(0x24c)]=_0x432f43||'';const _0x4c1fec=extractYouTubeID(_0x432f43);$('#btnToggleYtSound')[_0x459caa(0x310)]=!_0x4c1fec;$(_0x459caa(0x37f))&&($(_0x459caa(0x37f))[_0x459caa(0x2e0)]='');$(_0x459caa(0x242))[_0x459caa(0x24c)]=_0x35b08a[_0x459caa(0x1ab)]||0x50,$(_0x459caa(0x265))[_0x459caa(0x3f9)]=!!_0x35b08a['useYtThumbnailAsBg'],$('#set_panelOpacity')[_0x459caa(0x24c)]=_0x35b08a[_0x459caa(0x36a)]||0.85;$(_0x459caa(0x1ac))&&($(_0x459caa(0x1ac))[_0x459caa(0x3f9)]=!!_0x35b08a[_0x459caa(0x32c)]);$(_0x459caa(0x33a))&&($('#set_backupDays')[_0x459caa(0x24c)]=_0x35b08a[_0x459caa(0x2f8)]||0x7);const _0x5538ad=$(_0x459caa(0x291));_0x5538ad&&storageManager[_0x459caa(0x3d9)]()[_0x459caa(0x1bb)](_0x32e51c=>{const _0x3855e4=_0x459caa;_0x5538ad[_0x3855e4(0x28f)]=_0x3855e4(0x19a),_0x32e51c&&_0x32e51c['length']>0x0?_0x32e51c[_0x3855e4(0x294)](_0x4ef790=>{const _0x3d966d=_0x3855e4,_0xa05e8e=document[_0x3d966d(0x3d4)]('option');_0xa05e8e[_0x3d966d(0x24c)]=_0x4ef790[_0x3d966d(0x32b)],_0xa05e8e[_0x3d966d(0x2e0)]='Bản\x20sao\x20lưu\x20ngày:\x20'+new Date(_0x4ef790[_0x3d966d(0x32b)])[_0x3d966d(0x2a0)](_0x3d966d(0x1a8)),_0x5538ad['appendChild'](_0xa05e8e);}):_0x5538ad[_0x3855e4(0x28f)]=_0x3855e4(0x317);});$(_0x459caa(0x3df))[_0x459caa(0x367)][_0x459caa(0x328)](_0x459caa(0x2cf));try{trapFocus($('#modalSettings'));}catch(_0x22a8e9){}}function closeSettings(){const _0x51d14e=_0x3ea952;$(_0x51d14e(0x3df))[_0x51d14e(0x367)][_0x51d14e(0x295)](_0x51d14e(0x2cf));try{releaseFocus();}catch(_0x4b68cf){}}async function setDefaults(){const _0x3e00ac=_0x3ea952;data[_0x3e00ac(0x34c)][_0x3e00ac(0x212)]={'A_work':0x19,'A_short':0x5,'A_long':0xf,'B_work':0x32,'B_short':0xa,'B_long':0x1e},data[_0x3e00ac(0x34c)][_0x3e00ac(0x411)]=0x4,data[_0x3e00ac(0x34c)]['longBreakIntervalA']=0x4,data[_0x3e00ac(0x34c)][_0x3e00ac(0x3f5)]=0x4,data[_0x3e00ac(0x34c)]['longBreakIntervalB']=0x4,data[_0x3e00ac(0x34c)][_0x3e00ac(0x311)]='A',data[_0x3e00ac(0x34c)][_0x3e00ac(0x374)]=0.8,data['settings'][_0x3e00ac(0x284)]=_0x3e00ac(0x33e),await saveData(),openSettings(),toast(_0x3e00ac(0x207));}async function saveSettings(){const _0x88d5c1=_0x3ea952,_0x527f05=data[_0x88d5c1(0x34c)];_0x527f05['apiKey']=$(_0x88d5c1(0x39e))[_0x88d5c1(0x24c)][_0x88d5c1(0x261)]();const _0x508c9b=_0x527f05[_0x88d5c1(0x212)];editingPreset==='A'?(_0x508c9b['A_work']=clampInt($('#set_work')['value'],0x1,0x3e7),_0x508c9b[_0x88d5c1(0x3e7)]=clampInt($('#set_short')[_0x88d5c1(0x24c)],0x1,0x3e7),_0x508c9b[_0x88d5c1(0x1d4)]=clampInt($(_0x88d5c1(0x23c))['value'],0x1,0x3e7),_0x527f05[_0x88d5c1(0x411)]=clampInt($(_0x88d5c1(0x24b))[_0x88d5c1(0x24c)],0x1,0xc),_0x527f05[_0x88d5c1(0x324)]=clampInt($(_0x88d5c1(0x2db))[_0x88d5c1(0x24c)],0x2,0xc)):(_0x508c9b[_0x88d5c1(0x1cb)]=clampInt($('#set_work')[_0x88d5c1(0x24c)],0x1,0x3e7),_0x508c9b[_0x88d5c1(0x3cb)]=clampInt($(_0x88d5c1(0x28d))['value'],0x1,0x3e7),_0x508c9b[_0x88d5c1(0x23f)]=clampInt($(_0x88d5c1(0x23c))[_0x88d5c1(0x24c)],0x1,0x3e7),_0x527f05[_0x88d5c1(0x3f5)]=clampInt($(_0x88d5c1(0x24b))[_0x88d5c1(0x24c)],0x1,0xc),_0x527f05[_0x88d5c1(0x239)]=clampInt($(_0x88d5c1(0x2db))['value'],0x2,0xc));_0x527f05[_0x88d5c1(0x374)]=clampFloat($('#set_volume')[_0x88d5c1(0x24c)],0x0,0x1,0.8),_0x527f05['soundTheme']=$('#set_theme')[_0x88d5c1(0x24c)]===_0x88d5c1(0x351)?_0x88d5c1(0x351):_0x88d5c1(0x33e),_0x527f05[_0x88d5c1(0x197)]=$(_0x88d5c1(0x1cc))['value'],_0x527f05[_0x88d5c1(0x36a)]=parseFloat($(_0x88d5c1(0x231))[_0x88d5c1(0x24c)])||0.85,_0x527f05[_0x88d5c1(0x32c)]=!!($(_0x88d5c1(0x1ac))&&$(_0x88d5c1(0x1ac))[_0x88d5c1(0x3f9)]);$(_0x88d5c1(0x33a))&&(_0x527f05[_0x88d5c1(0x2f8)]=clampInt($(_0x88d5c1(0x33a))[_0x88d5c1(0x24c)],0x1,0x1e));_0x527f05[_0x88d5c1(0x197)]==='light'||_0x527f05['theme']===_0x88d5c1(0x278)?(_0x527f05[_0x88d5c1(0x33f)]=![],typeof _0x527f05[_0x88d5c1(0x25b)]===_0x88d5c1(0x29d)&&_0x527f05['customBg'][_0x88d5c1(0x2ad)](_0x88d5c1(0x35e))&&(_0x527f05[_0x88d5c1(0x25b)]='')):_0x527f05[_0x88d5c1(0x33f)]=!![];const _0x56d20c=$(_0x88d5c1(0x227))[_0x88d5c1(0x24c)]['trim']();_0x527f05[_0x88d5c1(0x33f)]=$(_0x88d5c1(0x265))[_0x88d5c1(0x3f9)],_0x527f05[_0x88d5c1(0x1ab)]=parseInt($(_0x88d5c1(0x242))[_0x88d5c1(0x24c)],0xa),sessionYoutubeUrl=_0x56d20c;try{if(!IS_FILE_PROTOCOL){if(ytPlayer&&ytPlayer[_0x88d5c1(0x318)])ytPlayer[_0x88d5c1(0x318)](_0x527f05[_0x88d5c1(0x1ab)]);}else try{fallbackPostMessage(_0x88d5c1(0x318),[_0x527f05[_0x88d5c1(0x1ab)]]);}catch(_0x1d486c){}}catch(_0x295e53){}await saveData(),applyTheme(),applyCustomBg(),applyPanelOpacity(),updatePresetButtonsText(),timer[_0x88d5c1(0x40b)](_0x527f05['preset'],{'silent':!![]}),closeSettings(),toast(_0x88d5c1(0x218));}function clampInt(_0xdeeaab,_0xa68f10,_0x240394){const _0x1692e9=_0x3ea952;_0xdeeaab=parseInt(_0xdeeaab||0x0,0xa);if(isNaN(_0xdeeaab))_0xdeeaab=_0xa68f10;return Math[_0x1692e9(0x1bc)](_0xa68f10,Math[_0x1692e9(0x3a4)](_0x240394,_0xdeeaab));}function clampFloat(_0x113475,_0x5ab531,_0x529a85,_0x31ffa8){_0x113475=parseFloat(_0x113475);if(Number['isNaN'](_0x113475))_0x113475=_0x31ffa8;return Math['max'](_0x5ab531,Math['min'](_0x529a85,_0x113475));}const dbPromise=new Promise((_0x1990db,_0x4b052e)=>{const _0x37b4ed=_0x3ea952,_0x1a9202=indexedDB[_0x37b4ed(0x375)]('pomodoro_files',0x1);_0x1a9202[_0x37b4ed(0x19c)]=_0x148e99=>_0x148e99['target']['result'][_0x37b4ed(0x35d)](_0x37b4ed(0x259)),_0x1a9202[_0x37b4ed(0x363)]=_0x5993c0=>_0x1990db(_0x5993c0[_0x37b4ed(0x1ee)][_0x37b4ed(0x3e0)]),_0x1a9202[_0x37b4ed(0x366)]=_0x2e666c=>_0x4b052e(_0x2e666c);}),fileCache={};function handleFileUpload(_0x307624,_0x53f402){if(!_0x307624)return;dbPromise['then'](_0x420384=>{const _0x41cce6=_0x4681,_0x273e15=uid('file'),_0x115049=_0x420384[_0x41cce6(0x33b)](_0x41cce6(0x259),_0x41cce6(0x23b));_0x115049[_0x41cce6(0x2c3)](_0x41cce6(0x259))[_0x41cce6(0x25e)](_0x307624,_0x273e15),_0x115049['oncomplete']=()=>_0x53f402(_0x273e15),_0x115049['onerror']=()=>toast(_0x41cce6(0x361));});}function getStoredFileUrl(_0x11c4ff){const _0x555562=_0x3ea952;if(!_0x11c4ff)return Promise[_0x555562(0x1f2)]('');if(fileCache[_0x11c4ff])return Promise[_0x555562(0x1f2)](fileCache[_0x11c4ff]);return dbPromise[_0x555562(0x1bb)](_0x5c124e=>new Promise(_0x375275=>{const _0x3e4a77=_0x555562,_0x1b392f=_0x5c124e[_0x3e4a77(0x33b)](_0x3e4a77(0x259),_0x3e4a77(0x238)),_0xd15e8a=_0x1b392f[_0x3e4a77(0x2c3)]('files')[_0x3e4a77(0x312)](_0x11c4ff);_0xd15e8a[_0x3e4a77(0x363)]=_0x51701c=>{const _0x30fbb4=_0x3e4a77,_0x1d8c89=_0x51701c[_0x30fbb4(0x1ee)][_0x30fbb4(0x3e0)];if(_0x1d8c89){const _0x4ac3de=URL[_0x30fbb4(0x209)](_0x1d8c89);fileCache[_0x11c4ff]=_0x4ac3de,_0x375275(_0x4ac3de);}else _0x375275('');},_0xd15e8a['onerror']=()=>_0x375275('');}));}function _0x40f8(){const _0x150f2b=['contains','Tóm\x20tắt','#set_panelOpacity','_onFinishSegment','fixed','Đã\x20chuyển\x20sang\x20Kiểu\x20','currentView','-9999px','#generalNotesList','readonly','longBreakIntervalB','clear','readwrite','#set_long','soundOn','note-content-wrapper','B_long','Không\x20thể\x20lưu\x20thay\x20đổi.','finished','#ytSoundVolume','push','.\x20Vui\x20lòng\x20thử\x20lại\x20với\x20nội\x20dung\x20khác.','Chủ\x20đề\x20con\x20mẫu','badge','Sửa\x20tên\x20Chủ\x20đề','exitFullscreen','menu-item','Xác\x20nhận\x20xóa','#set_cycles','value','Lỗi\x20lưu\x20dữ\x20liệu:\x20','achievedMilestones','protocol','color','className','script','splice','defer','#btnExport','?\x20Thao\x20tác\x20này\x20sẽ\x20dừng\x20và\x20đặt\x20lại\x20phiên\x20làm\x20việc\x20hiện\x20tại.','#set_theme','function','files','offsetHeight','customBg','<span\x20class=\x22ico\x22>▼</span>','#audioLongEnd','put','onload','chatHistory','trim','badge\x20state\x20long','topic-header','paused','#set_ytThumbAsBg','.app-content','clientX','update','Xóa\x20Chủ\x20đề','timer','sess','summary_','LÀM\x20VIỆC','#btnResume','data','Initialization\x20error:','</p>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<table\x20class=\x22dashboard-table\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<thead><tr><th>Chủ\x20đề</th><th>Chủ\x20đề\x20con</th><th>Thời\x20gian</th><th>Phiên</th><th>Nhiệm\x20vụ</th></tr></thead>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<tbody>','break_end','#subtopicTasksList','Lỗi\x20mạng\x20khi\x20kết\x20nối\x20đến\x20Gemini.\x20Vui\x20lòng\x20kiểm\x20tra\x20kết\x20nối\x20internet.','btn\x20small\x20danger','hist-item','durationMinutes','pastel','timerState','#btnGenericOk','Mở/đóng\x20subtopics','setValueAtTime','getSettings','set_youtubeUrl','code','note-item','random','onclick','Tuyệt\x20vời!\x20Đã\x20đến\x20lúc\x20nghỉ\x20dài.','soundTheme','AutoBackup\x20error:','json','<div\x20class=\x22tiny\x22>Chưa\x20có\x20dữ\x20liệu</div>','triangle','Nội\x20dung\x20bị\x20chặn\x20vì:\x20','application/json','fullscreenchange','#btnSendMessage','#set_short','filter','innerHTML','timer.selectSubtopicPrompt','#backupList','getElementById','Đã\x20dừng\x20nhạc\x20nền.','forEach','remove','strokeDasharray','#btnMilestoneClose','change','toast','role','key','stroke','string','breathing','getPlayerState','toLocaleDateString','playVideo','textarea','note-content','blob:','presetTarget','btn\x20small','left','append','error','hidden','#selectedContext','API\x20response\x20structure\x20is\x20unexpected:','includes','subtopics','#milestoneMessage','</div>','getFullYear','(Không\x20tạo\x20được\x20tóm\x20tắt)','setItem','Bạn\x20có\x20chắc\x20muốn\x20xóa\x20Chủ\x20đề\x20con\x20\x22','interval','#topicsList','work','position','Tóm\x20tắt\x20các\x20ghi\x20chú\x20sau\x20theo\x20gạch\x20đầu\x20dòng,\x20ngắn\x20gọn,\x20rõ\x20ràng:\x0a\x0a','reduce','#audioWorkEnd','#modalMilestone','startsWith','beginWork','mousedown','badge\x20state\x20break','#btnRestoreBackup','\x22\x0a\x0aHãy\x20tạo\x20một\x20bản\x20tóm\x20tắt\x20ngắn\x20gọn\x20về\x20những\x20gì\x20đã\x20làm\x20và\x20đề\x20xuất\x20một\x20bước\x20hợp\x20lý\x20tiếp\x20theo.\x20Định\x20dạng\x20câu\x20trả\x20lời\x20như\x20sau:\x0a\x0a---\x0a**✨\x20Tóm\x20tắt\x20AI:**\x0a[Tóm\x20tắt\x20ở\x20đây]\x0a\x0a**🚀\x20Gợi\x20ý\x20tiếp\x20theo:**\x0a[Gợi\x20ý\x20ở\x20đây]','objectStore','Vui\x20lòng\x20chọn\x20một\x20Chủ\x20đề\x20con\x20trước\x20khi\x20thực\x20hiện\x20thao\x20tác.','Gemini\x20API\x20Error:','<div\x20class=\x22tiny\x22>Vui\x20lòng\x20chọn\x20một\x20chủ\x20đề\x20con\x20để\x20xem\x20tóm\x20tắt.</div>','transition','4eAhdxk','createdAt','parse','view','menu-item\x20danger','statusText','addEventListener','show','Daily\x20backup\x20successful.','getBoundingClientRect','#genericMessage','http:','summaries','Chủ\x20đề\x20con:\x20','stringify','#btnSummarize','cycleIndex','input','#btnHelpCreateTopic','#set_interval','tasksCompleted','segmentTotal','title','Lỗi\x20từ\x20Gemini:\x20','textContent','#btnToggleCustomSounds','Bạn\x20có\x20chắc\x20muốn\x20xóa\x20Chủ\x20đề\x20\x22','Lỗi:\x20Không\x20thể\x20bật\x20chế\x20độ\x20toàn\x20màn\x20hình:\x20','tagName','idle','Vui\x20lòng\x20nhập\x20ghi\x20chú\x20trước\x20khi\x20tóm\x20tắt.','#view-','head','radial-gradient(1200px\x20800px\x20at\x2010%\x20-10%,\x20#20285b\x200%,\x20#0f1222\x2050%,\x20#0b0e1a\x20100%)','short','var(--muted)','sid','round','#summariesList','Đã\x20lưu\x20âm\x20báo\x20hết\x20NGHỈ\x20DÀI.','newIndex','pomodoro_backup_','/maxresdefault.jpg','right','note-meta','Đang\x20tải\x20API\x20YouTube...','button','#statSessions','backupDaysToKeep','model','#toasts','\x20|\x20<strong>Tổng\x20nhiệm\x20vụ:</strong>\x20','currentConfig','Đổi\x20tên\x20Chủ\x20đề','NGHỈ\x20NGẮN','prevState','Xác\x20nhận\x20chuyển\x20đổi','catch','subtopic','Failed\x20to\x20load\x20YouTube\x20API','_getStore','#btnGenericCancel','requestFullscreen','toLocaleString','#uploadSoundBreak','var(--acc-2)','\x27\x20·\x20Mode\x20','POST','sessions','Sự\x20cống\x20hiến\x20của\x20bạn\x20thật\x20đáng\x20kinh\x20ngạc.\x20Bạn\x20đã\x20trở\x20thành\x20một\x20chuyên\x20gia,\x20một\x20người\x20mà\x20người\x20khác\x20tìm\x20đến\x20để\x20học\x20hỏi\x20và\x20xin\x20lời\x20khuyên.\x20Kỹ\x20năng\x20của\x20bạn\x20không\x20chỉ\x20là\x20một\x20công\x20cụ,\x20nó\x20đã\x20trở\x20thành\x20một\x20phần\x20con\x20người\x20bạn.\x0aLời\x20nhắn\x20của\x20tôi\x20dành\x20cho\x20bạn\x20là:\x20Hãy\x20luôn\x20giữ\x20cho\x20mình\x20\x22tâm\x20trí\x20của\x20người\x20mới\x20bắt\x20đầu\x22.\x20Đừng\x20để\x20kiến\x20thức\x20sâu\x20rộng\x20của\x20mình\x20biến\x20thành\x20sự\x20tự\x20mãn.\x20Hãy\x20tiếp\x20tục\x20học\x20hỏi\x20từ\x20những\x20lĩnh\x20vực\x20khác,\x20lắng\x20nghe\x20những\x20người\x20mới\x20vào\x20nghề\x20và\x20không\x20ngừng\x20đặt\x20câu\x20hỏi.\x20Giờ\x20đây,\x20vai\x20trò\x20của\x20bạn\x20không\x20chỉ\x20là\x20làm\x20tốt\x20công\x20việc\x20của\x20mình,\x20mà\x20còn\x20là\x20nâng\x20đỡ\x20và\x20truyền\x20cảm\x20hứng\x20cho\x20những\x20người\x20đi\x20sau.','length','resume','disabled','preset','get','Bạn\x20không\x20còn\x20là\x20người\x20mới\x20nữa.\x20Bạn\x20đã\x20có\x20năng\x20lực,\x20sự\x20tự\x20tin\x20và\x20có\x20thể\x20tạo\x20ra\x20những\x20kết\x20quả\x20đáng\x20tự\x20hào.\x20Bạn\x20xứng\x20đáng\x20được\x20công\x20nhận\x20vì\x20sự\x20kiên\x20trì\x20của\x20mình.\x0aBây\x20giờ,\x20thử\x20thách\x20của\x20bạn\x20là\x20chuyển\x20từ\x20\x22làm\x20theo\x22\x20sang\x20\x22thấu\x20hiểu\x22.\x20Hãy\x20tự\x20hỏi\x20mình\x20\x22Tại\x20sao\x20nó\x20lại\x20hoạt\x20động\x20như\x20vậy?\x22.\x20Hãy\x20thử\x20dạy\x20lại\x20cho\x20người\x20khác,\x20vì\x20đó\x20là\x20cách\x20tốt\x20nhất\x20để\x20củng\x20cố\x20kiến\x20thức\x20của\x20chính\x20mình.\x20Đây\x20là\x20lúc\x20để\x20tinh\x20chỉnh,\x20tối\x20ưu\x20hóa\x20và\x20bắt\x20đầu\x20hình\x20thành\x20phong\x20cách\x20độc\x20đáo\x20của\x20riêng\x20bạn.\x20Hãy\x20biến\x20sự\x20thành\x20thạo\x20thành\x20nghệ\x20thuật.','padStart','tid','log','<option\x20value=\x22\x22>Không\x20có\x20bản\x20sao\x20lưu\x20nào</option>','setVolume','&lt;','onkeydown','IndexedDB\x20error:','cyclesTarget','start','candidates','createGain','gain','#btnPause','Deleted\x20old\x20backup:\x20','#btnReset','longBreakIntervalA','var(--warn)','#btnFullscreen','780405dAoZLY','add','Gửi\x20bạn,\x20100\x20giờ\x20(Định\x20Hình)','Player','date','autoStartNext','var(--acc)','PlayerState','getVolume','customSounds','sessionsCompleted','blockReason','https://img.youtube.com/vi/','#btnDashboard','#btnSkipNote','appendChild','Chưa\x20có\x20link\x20hợp\x20lệ.\x20Dán\x20link\x20rồi\x20bấm\x20▶️.','.subtopic-btn','__ytApiPromise','#set_backupDays','transaction','#importFile','webkitAudioContext','beep','useYtThumbnailAsBg','_sortable','SẴN\x20SÀNG','scrollTop','#set_work','http','topics','15dvVrIt','Sortable','tasks','#aiPromptSuggestions\x20button','Ẩn\x20giao\x20diện','generalNotes','settings','parts','\x20hidden','&gt;','Không\x20tìm\x20thấy\x20bản\x20sao\x20lưu.','chime','btn\x20small\x20ghost\x20actions-menu-btn','#btnToggleBg','Gửi\x20bạn,\x205.000\x20giờ\x20(Tinh\x20Thông)','sine','(chưa\x20chọn)','ArrowLeft','pause','BUFFERING','16438NJsPfW','abs','cancel','createObjectStore','img.youtube.com/vi/','origin','IndexedDB\x20initialized\x20successfully.','Lỗi\x20lưu\x20file.','https://www.youtube.com','onsuccess','removeEventListener','stopVideo','onerror','classList','location','long_break','panelOpacity','__ytApiWatchdog','Âm\x20thanh\x20đã\x20được\x20bật!','\x22\x20title=\x22Hoàn\x20thành\x20task\x22>\x20<label\x20for=\x22','allow','168IimTPI','<div\x20class=\x22hist-meta\x22>','currentDurations','workMinutes','importData','volume','open','beforeunload','default','Vui\x20lòng\x20chọn\x20một\x20bản\x20sao\x20lưu.','getItem','.nav-btn[data-view]','Chưa\x20chọn\x20Chủ\x20đề\x20con','tickHandle','persistTimerState','Bạn\x20có\x20chắc\x20muốn\x20xóa\x20tóm\x20tắt\x20này?','#ytUrlFeedback','timerState_','<li\x20class=\x22tiny\x22\x20style=\x22opacity:\x200.7;\x22>Tuyệt\x20vời!\x20Không\x20còn\x20task\x20nào.</li>','slice','.modal','active','.actions-menu-btn','#timeDisplay','<p\x20class=\x22tiny\x22><strong>Tổng\x20thời\x20gian:</strong>\x20','#btnAddTopic','Lỗi\x20phát\x20âm\x20thanh:','</td><td>','closest','status','Backup\x20failed:','OK.\x20Link\x20hợp\x20lệ.\x20Đang\x20chuẩn\x20bị\x20phát...','ArrowUp','sub-row','var(--danger)','Failed\x20to\x20delete\x20summary:','<div\x20class=\x22tiny\x22>Chưa\x20có\x20phiên\x20nào</div>','innerHeight','soundPermissionBar','AudioContext','#btnAddSubtopicTask','Không\x20tải\x20được\x20API\x20YouTube.\x20Kiểm\x20tra\x20mạng\x20hoặc\x20tải\x20lại\x20trang.','reloading','0\x20phút','Đổi\x20tên\x20Chủ\x20đề\x20con','30IRBHNo','Đã\x20cập\x20nhật\x20hình\x20nền.','#set_apiKey','Hãy\x20chọn\x20một\x20Chủ\x20đề\x20con\x20trước\x20khi\x20bắt\x20đầu','/hqdefault.jpg','.actions-menu','#welcomePanel','ytUrlFeedback','min','sum','lastBackupDate','<span\x20class=\x22tiny\x22>(chưa\x20có\x20ghi\x20chú)</span>','<input\x20type=\x22checkbox\x22\x20id=\x22','btnToggleYtSound','exportData','<div\x20class=\x22tiny\x22>Chưa\x20có\x20tin\x20nhắn\x20nào.</div>','by_topic','isCompleted','#modalDashboard','initDB','stop','_startTick','src','topicsList','2053546QaqPNR','var(--sub)','Xóa\x20Chủ\x20đề\x20con','dataset','remaining','user','#stateBadge','width','none','btn\x20subtopic-btn','objectStoreNames','Thêm\x20ghi\x20chú','selectedSubtopicId','stopPropagation','hours','parentElement','from','task','name','&amp;','#currentSubtopicName','\x20|\x20<strong>Tổng\x20phiên:</strong>\x20','actions','B_short','.presets\x20button','Escape','.actions-menu.show','#btnEnableSound','A_work','25618500TZvxgU','#uploadSoundLong','dateISO','createElement','Dựa\x20vào\x20thông\x20tin\x20sau:\x0a-\x20Chủ\x20đề:\x20\x22','light','beginBreak','body','getBackupList','Lỗi:\x20','Xác\x20nhận\x20phục\x20hồi','bg-view-mode','offsetWidth','toISOString','#modalSettings','result','Hiện\x20giao\x20diện','totalMinutes','aria-pressed','sound_unlocked','now','Chúc\x20mừng\x20bạn\x20đã\x20làm\x20được\x20điều\x20khó\x20nhất:\x20Bắt\x20đầu.\x0aĐừng\x20lo\x20lắng\x20nếu\x20bây\x20giờ\x20bạn\x20cảm\x20thấy\x20mình\x20thật\x20vụng\x20về,\x20chậm\x20chạp\x20và\x20liên\x20tục\x20mắc\x20lỗi.\x20Mọi\x20bậc\x20thầy\x20đều\x20từng\x20là\x20một\x20\x22thảm\x20họa\x22\x20khi\x20mới\x20bắt\x20đầu.\x20Hãy\x20nhớ\x20rằng\x20mục\x20tiêu\x20của\x20bạn\x20lúc\x20này\x20không\x20phải\x20là\x20sự\x20hoàn\x20hảo,\x20mà\x20là\x20sự\x20hiện\x20diện.\x20Mỗi\x20giờ\x20bạn\x20dành\x20ra\x20để\x20luyện\x20tập\x20là\x20một\x20chiến\x20thắng\x20trước\x20sự\x20trì\x20hoãn\x20và\x20nỗi\x20sợ\x20thất\x20bại.\x0aHãy\x20kiên\x20nhẫn\x20với\x20chính\x20mình,\x20tận\x20hưởng\x20từng\x20tiến\x20bộ\x20nhỏ\x20nhất\x20và\x20đừng\x20bao\x20giờ\x20so\x20sánh\x20khởi\x20đầu\x20của\x20mình\x20với\x20\x22đoạn\x20giữa\x22\x20của\x20người\x20khác.\x20Bạn\x20đang\x20xây\x20dựng\x20nền\x20móng,\x20và\x20một\x20nền\x20móng\x20vững\x20chắc\x20cần\x20thời\x20gian.\x20Cứ\x20tiếp\x20tục\x20nhé!','A_short','#btnPresetA','Gửi\x20bạn,\x201.000\x20giờ\x20(Vững\x20Vàng)','#view-timer','join','flex','topicId','Chu\x20kỳ\x20','toString','Phiên\x20đã\x20hoàn\x20thành!\x20Nhấn\x20Bắt\x20đầu\x20để\x20bắt\x20đầu\x20phiên\x20tiếp\x20theo.','getIframe','ghost','pomodoroData_v11','lofi','cyclesB','Đang\x20phát\x20nhạc\x20nền...','warn','lang','checked','...','topic-actions','#btnSummarizeNote','values','Enter','keydown','Tab','innerWidth','errorCode','&quot;','Thật\x20vinh\x20dự\x20khi\x20được\x20trò\x20chuyện\x20cùng\x20bạn.\x20Không\x20có\x20nhiều\x20người\x20trên\x20thế\x20giới\x20đạt\x20đến\x20cấp\x20độ\x20này.\x20Bạn\x20không\x20chỉ\x20thành\x20thạo\x20một\x20kỹ\x20năng,\x20bạn\x20đã\x20định\x20nghĩa\x20lại\x20nó.\x20Sự\x20nỗ\x20lực\x20và\x20hy\x20sinh\x20của\x20bạn\x20đã\x20tạo\x20ra\x20những\x20điều\x20phi\x20thường.\x0aCó\x20lẽ\x20bây\x20giờ\x20bạn\x20không\x20còn\x20nghĩ\x20về\x20việc\x20học\x20kỹ\x20năng\x20nữa,\x20mà\x20là\x20về\x20việc\x20để\x20lại\x20di\x20sản.\x20Bạn\x20sẽ\x20truyền\x20lại\x20ngọn\x20đuốc\x20này\x20như\x20thế\x20nào?\x20Bạn\x20sẽ\x20phá\x20vỡ\x20những\x20giới\x20hạn\x20nào\x20tiếp\x20theo\x20mà\x20chưa\x20ai\x20từng\x20nghĩ\x20tới?\x20Thế\x20giới\x20đang\x20dõi\x20theo\x20những\x20gì\x20bạn\x20làm,\x20không\x20phải\x20để\x20học\x20theo\x20một\x20công\x20thức,\x20mà\x20để\x20được\x20truyền\x20cảm\x20hứng\x20từ\x20chính\x20hành\x20trình\x20và\x20sự\x20sáng\x20tạo\x20của\x20bạn.\x0aCảm\x20ơn\x20bạn\x20vì\x20đã\x20cho\x20chúng\x20tôi\x20thấy\x20những\x20giới\x20hạn\x20của\x20con\x20người\x20có\x20thể\x20được\x20đẩy\x20xa\x20đến\x20nhường\x20nào.','yt-fallback','auto','connect','#noteText','unshift','Đã\x20lưu\x20âm\x20báo\x20hết\x20LÀM\x20VIỆC.','setPreset','#modalGeneric','btn\x20small\x20ghost\x20chev','cueVideoById','9637272oJUHOQ','.timer-circle-progress','cyclesA','preventDefault','oldIndex','#historyList','promptFeedback','state','Vui\x20lòng\x20nhập\x20Gemini\x20API\x20Key\x20trong\x20phần\x20Cài\x20đặt.','--bg-image','altKey','work_end','ArrowDown','apiKey','loadLanguage','expanded','#chatInput','download','#uploadSoundWork','#currentSubtopicNameChat','absolute','#btnAddGeneralNote','badge\x20state\x20work','destination','#uploadBg','destroy','replace','long','stats','mousemove','#draggableTimer','no-subtopic-selected','Phục\x20hồi\x20dữ\x20liệu\x20thành\x20công!\x20Tải\x20lại\x20trang...','Chọn\x20chủ\x20đề\x20con\x20trước.','backups','Chọn\x20một\x20chủ\x20đề\x20con\x20trước.','flatMap','setAttribute','theme','#btnSaveSettings','type','<option\x20value=\x22\x22>--\x20Chọn\x20ngày\x20để\x20phục\x20hồi\x20--</option>','oncomplete','onupgradeneeded','block','shiftKey','#btnSettings','save','pointerdown','revokeObjectURL','.topic-item','unMute','＋\x20Thêm','text','setProperty','vi-VN','#btnCloseSettings','.timer-circle-container','youtubeVolume','#set_autoStartNext','getAll','updateUI','#btnToggleYtSound','top','#genericInput','selectedTopicId','focus','mute','Nhập\x20thất\x20bại:\x20','1354146hGVghW','space','reverse','Lỗi\x20HTTP:\x20','Chủ\x20đề\x20mẫu','then','max','#customSoundsContainer','url(','mode','find','isArray','<div\x20class=\x22tiny\x22>Chọn\x20chủ\x20đề\x20con\x20để\x20bắt\x20đầu\x20chat.</div>','youtube-player-container','note','autoBackup','#btnSaveNote','cycles','click','\x22\x0a-\x20Ghi\x20chú\x20của\x20người\x20dùng\x20sau\x20một\x20phiên\x20làm\x20việc:\x20\x22','object','B_work','#set_theme_color','#statTasks','305102KvBIdV','Thêm\x20tùy\x20chọn','#timerPresetSelector\x20button','display','\x20(A)','div','A_long','actions-menu','opacity','documentElement','floor','https://www.youtube.com/embed/','Tóm\x20tắt\x20thất\x20bại.','.tab-content','all','#btnTestSound','lastPersist','Failed\x20to\x20save\x20data:','message','file:','content','about:blank','isConnected','24dFeFjs','removeChild','https://www.youtube.com/iframe_api','Creating\x20backup\x20for\x20','removeProperty','findIndex','map','#dashboardContent','command','target','text/plain','backgroundImage','#btnStart','resolve','\x22?\x20Mọi\x20chủ\x20đề\x20con\x20và\x20dữ\x20liệu\x20liên\x20quan\x20sẽ\x20bị\x20mất.','break','Chưa\x20có\x20ghi\x20chú\x20để\x20tóm\x20tắt.','Đã\x20xóa\x20hình\x20nền\x20tùy\x20chỉnh.','Bạn\x20có\x20chắc\x20muốn\x20xóa\x20toàn\x20bộ\x20lịch\x20sử\x20chat\x20của\x20chủ\x20đề\x20con\x20này?','TẠM\x20DỪNG','Đã\x20nhập\x20dữ\x20liệu\x20thành\x20công!','toggle','Đã\x20xóa\x20tóm\x20tắt.','#newSubtopicTaskInput','sort','strokeDashoffset','querySelectorAll','getMonth','contentWindow','height','<svg\x20xmlns=\x22http://www.w3.org/2000/svg\x22\x20width=\x2216\x22\x20height=\x2216\x22\x20viewBox=\x220\x200\x2024\x2024\x22\x20fill=\x22none\x22\x20stroke=\x22currentColor\x22\x20stroke-width=\x222\x22\x20stroke-linecap=\x22round\x22\x20stroke-linejoin=\x22round\x22><path\x20d=\x22M9.88\x209.88a3\x203\x200\x201\x200\x204.24\x204.24\x22/><path\x20d=\x22M10.73\x205.08A10.43\x2010.43\x200\x200\x201\x2012\x205c7\x200\x2010\x207\x2010\x207a13.16\x2013.16\x200\x200\x201-1.67\x202.68\x22/><path\x20d=\x22M6.61\x206.61A13.526\x2013.526\x200\x200\x200\x202\x2012s3\x207\x2010\x207a9.74\x209.74\x200\x200\x200\x205.39-1.61\x22/><line\x20x1=\x222\x22\x20y1=\x222\x22\x20x2=\x2222\x22\x20y2=\x2222\x22/></svg>','</td></tr>','pauseVideo','onYouTubeIframeAPIReady','Đã\x20khôi\x20phục\x20mặc\x20định','Xóa','createObjectURL','activeElement','data:','select','skip','long_end','querySelector','getDate','Đã\x20lưu\x20ghi\x20chú','durations','frequency','iframe','localeCompare','autoplay;\x20encrypted-media;\x20picture-in-picture','fullscreenElement','Đã\x20lưu\x20cài\x20đặt','style','#btnClearBg','Space','<div\x20class=\x22spinner\x22></div>','NGHỈ\x20DÀI','Không\x20nhận\x20được\x20nội\x20dung\x20hợp\x20lệ\x20từ\x20AI.','.tab-btn','Gửi','Tên\x20Chủ\x20đề\x20mới?','href','relative','bottom','Bạn\x20có\x20chắc\x20muốn\x20chuyển\x20sang\x20Kiểu\x20','acc','#set_youtubeUrl','delete','#chatMessages','<div>','#genericTitle','Lỗi\x20khởi\x20tạo:\x20','\x20phút','item'];_0x40f8=function(){return _0x150f2b;};return _0x40f8();}function _0x4681(_0x4d7b84,_0x12d27b){const _0x40f8ed=_0x40f8();return _0x4681=function(_0x468131,_0x1cb0a1){_0x468131=_0x468131-0x17e;let _0x22811b=_0x40f8ed[_0x468131];return _0x22811b;},_0x4681(_0x4d7b84,_0x12d27b);}function applyCustomBg(){const _0x36074b=_0x3ea952,_0x500dca=data['settings'][_0x36074b(0x25b)],_0x29ad00=data[_0x36074b(0x34c)][_0x36074b(0x197)],_0x2f6cf1=['lofi','space'][_0x36074b(0x2ad)](_0x29ad00),_0x4f9fcf=_0x29ad00==='light'||_0x29ad00===_0x36074b(0x278),_0x5914cf=()=>{const _0xc7923a=_0x36074b;try{document[_0xc7923a(0x3d8)][_0xc7923a(0x219)][_0xc7923a(0x1f0)]='';}catch(_0x2154f4){}};if(_0x500dca){const _0x21fe85=_0x500dca[_0x36074b(0x2bd)](_0x36074b(0x20b))||_0x500dca[_0x36074b(0x2bd)](_0x36074b(0x344))||_0x500dca[_0x36074b(0x2bd)](_0x36074b(0x2a4))?Promise[_0x36074b(0x1f2)](_0x500dca):getStoredFileUrl(_0x500dca);_0x21fe85['then'](_0xd66751=>{const _0x1362ff=_0x36074b;_0xd66751?document[_0x1362ff(0x3d8)][_0x1362ff(0x219)]['setProperty']('--bg-image',_0x1362ff(0x1be)+_0xd66751+')'):document[_0x1362ff(0x3d8)][_0x1362ff(0x219)][_0x1362ff(0x1a7)](_0x1362ff(0x418),_0x4f9fcf?_0x1362ff(0x3bc):''),_0x5914cf();});}else!_0x2f6cf1?_0x4f9fcf?(document['body']['style']['setProperty']('--bg-image',_0x36074b(0x3bc)),_0x5914cf()):document[_0x36074b(0x3d8)][_0x36074b(0x219)][_0x36074b(0x1a7)]('--bg-image',_0x36074b(0x2e9)):(document[_0x36074b(0x3d8)][_0x36074b(0x219)][_0x36074b(0x1e9)](_0x36074b(0x418)),_0x5914cf());}function applyPanelOpacity(){const _0x3c4f70=_0x3ea952;document[_0x3c4f70(0x1d7)][_0x3c4f70(0x219)][_0x3c4f70(0x1a7)]('--panel-opacity',data['settings']['panelOpacity']);}function renderDashboard(){const _0x543af4=_0x3ea952,_0x5bb78f=data[_0x543af4(0x345)][_0x543af4(0x195)](_0xe7aba8=>_0xe7aba8['subtopics'][_0x543af4(0x1eb)](_0x3e9c6c=>({'topic':_0xe7aba8[_0x543af4(0x3c6)],'subtopic':_0x3e9c6c[_0x543af4(0x3c6)],'m':_0x3e9c6c[_0x543af4(0x18d)][_0x543af4(0x3e2)]||0x0,'c':_0x3e9c6c[_0x543af4(0x18d)]['sessionsCompleted']||0x0,'t':_0x3e9c6c[_0x543af4(0x18d)]['tasksCompleted']||0x0}))),_0x36b2bf=_0x5bb78f[_0x543af4(0x2ba)]((_0x2e55c9,_0x2a8ea7)=>_0x2e55c9+_0x2a8ea7['m'],0x0),_0x295ea0=_0x5bb78f['reduce']((_0x36654b,_0x158280)=>_0x36654b+_0x158280['c'],0x0),_0x3e215d=_0x5bb78f['reduce']((_0xb5bac5,_0x351e35)=>_0xb5bac5+_0x351e35['t'],0x0);let _0x485f62=_0x543af4(0x387)+formatDaysHoursMinutes(_0x36b2bf)+_0x543af4(0x3c9)+_0x295ea0+_0x543af4(0x2fb)+_0x3e215d+_0x543af4(0x271);_0x5bb78f[_0x543af4(0x294)](_0x4ffda8=>{const _0x1f42d8=_0x543af4;_0x485f62+='<tr><td>'+escapeHTML(_0x4ffda8['topic'])+_0x1f42d8(0x38a)+escapeHTML(_0x4ffda8[_0x1f42d8(0x302)])+_0x1f42d8(0x38a)+formatDaysHoursMinutes(_0x4ffda8['m'])+_0x1f42d8(0x38a)+_0x4ffda8['c']+_0x1f42d8(0x38a)+_0x4ffda8['t']+_0x1f42d8(0x204);}),_0x485f62+='</tbody></table>';const _0x1b842b=$(_0x543af4(0x1ec));if(_0x1b842b)_0x1b842b[_0x543af4(0x28f)]=_0x485f62;}function getMilestones(){const _0x4616c0=_0x3ea952;return[{'hours':0x2710,'title':'Gửi\x20bạn,\x2010.000+\x20giờ\x20(Chân\x20Sư)','message':_0x4616c0(0x404)},{'hours':0x1388,'title':_0x4616c0(0x354),'message':_0x4616c0(0x30d)},{'hours':0x3e8,'title':_0x4616c0(0x3e9),'message':_0x4616c0(0x313)},{'hours':0x64,'title':_0x4616c0(0x329),'message':'Bạn\x20đã\x20vượt\x20qua\x20được\x20giai\x20đoạn\x20khó\x20khăn\x20nhất\x20và\x20giờ\x20đây,\x20kỹ\x20năng\x20này\x20đang\x20thực\x20sự\x20\x22ngấm\x22\x20vào\x20bạn.\x20Những\x20tia\x20sáng\x20của\x20sự\x20thành\x20thạo\x20đã\x20bắt\x20đầu\x20xuất\x20hiện.\x20Thật\x20tuyệt\x20vời!\x0aĐây\x20là\x20giai\x20đoạn\x20bạn\x20cảm\x20thấy\x20hứng\x20khởi\x20nhất,\x20nhưng\x20cũng\x20là\x20lúc\x20dễ\x20rơi\x20vào\x20cái\x20bẫy\x20\x22biết\x20đủ\x20rồi\x22.\x20Đừng\x20dừng\x20lại.\x20Hãy\x20bắt\x20đầu\x20khám\x20phá\x20sâu\x20hơn,\x20thử\x20nghiệm\x20những\x20kỹ\x20thuật\x20mới\x20và\x20đừng\x20ngại\x20phá\x20vỡ\x20các\x20quy\x20tắc\x20bạn\x20vừa\x20học\x20được.\x20Hãy\x20tìm\x20một\x20cộng\x20đồng\x20hoặc\x20một\x20người\x20hướng\x20dẫn\x20để\x20nhận\x20được\x20phản\x20hồi.\x20Sự\x20tò\x20mò\x20chính\x20là\x20nhiên\x20liệu\x20tốt\x20nhất\x20để\x20đưa\x20bạn\x20tiến\x20xa\x20hơn.\x20Hãy\x20biến\x20kỹ\x20năng\x20này\x20thành\x20của\x20riêng\x20bạn.'},{'hours':0x14,'title':'Gửi\x20bạn,\x2020\x20giờ\x20(Khai\x20Mở)','message':_0x4616c0(0x3e6)}];}async function checkAndShowMilestones(){const _0x4c4690=_0x3ea952;if(!data||!data[_0x4c4690(0x34c)])return;if(!Array[_0x4c4690(0x1c1)](data['settings'][_0x4c4690(0x24e)]))data['settings']['achievedMilestones']=[];const _0x2310a1=data[_0x4c4690(0x345)]['reduce']((_0x58148a,_0x2e8c52)=>{const _0x3e2260=_0x4c4690;return _0x58148a+_0x2e8c52[_0x3e2260(0x2ae)][_0x3e2260(0x2ba)]((_0x13c3a6,_0x1ee0ea)=>{const _0x2f43cf=_0x3e2260;return _0x13c3a6+(_0x1ee0ea['stats'][_0x2f43cf(0x3e2)]||0x0);},0x0);},0x0),_0x1c4168=_0x2310a1/0x3c,_0x2db441=getMilestones(),_0x23cdc5=Array[_0x4c4690(0x1c1)](data[_0x4c4690(0x34c)][_0x4c4690(0x24e)])?data['settings']['achievedMilestones']:[],_0x5360bc=_0x2db441['filter'](_0x629daa=>_0x1c4168>=_0x629daa[_0x4c4690(0x3c2)]&&!_0x23cdc5['includes'](_0x629daa[_0x4c4690(0x3c2)]));if(_0x5360bc[_0x4c4690(0x30e)]===0x0)return![];const _0x173027=_0x5360bc[_0x4c4690(0x2ba)]((_0x2afc88,_0x40fcb9)=>_0x2afc88&&_0x2afc88[_0x4c4690(0x3c2)]>_0x40fcb9[_0x4c4690(0x3c2)]?_0x2afc88:_0x40fcb9,null);if(!_0x173027)return![];$('#milestoneTitle')['textContent']=_0x173027[_0x4c4690(0x2de)],$(_0x4c4690(0x2af))[_0x4c4690(0x2e0)]=_0x173027['message'],$(_0x4c4690(0x2bc))['classList'][_0x4c4690(0x328)](_0x4c4690(0x2cf));try{trapFocus($(_0x4c4690(0x2bc)));}catch(_0x59ab18){}return data[_0x4c4690(0x34c)][_0x4c4690(0x24e)]['push'](_0x173027[_0x4c4690(0x3c2)]),await saveData(),!![];}async function seedAchievedMilestones(){const _0x9842e7=_0x3ea952;if(!data||!data[_0x9842e7(0x34c)])return;!Array[_0x9842e7(0x1c1)](data[_0x9842e7(0x34c)][_0x9842e7(0x24e)])&&(data[_0x9842e7(0x34c)][_0x9842e7(0x24e)]=[],await saveData());}async function handleSendMessage(){const _0x4e4d12=_0x3ea952,_0x15d71f=$(_0x4e4d12(0x28c)),_0x4496d2=$(_0x4e4d12(0x181)),_0x9cb408=_0x4496d2[_0x4e4d12(0x24c)][_0x4e4d12(0x261)](),_0x406dab=getCurrentSubtopic();if(!_0x9cb408)return;if(!_0x406dab){toast(t(_0x4e4d12(0x290)));return;}_0x4496d2[_0x4e4d12(0x24c)]='',_0x15d71f[_0x4e4d12(0x310)]=!![],_0x15d71f[_0x4e4d12(0x28f)]=_0x4e4d12(0x21c),_0x406dab[_0x4e4d12(0x260)][_0x4e4d12(0x243)]({'role':'user','text':_0x9cb408}),renderChat();const _0x2b2d9c=await callGeminiAPI(_0x9cb408);_0x2b2d9c&&(_0x406dab[_0x4e4d12(0x260)][_0x4e4d12(0x243)]({'role':_0x4e4d12(0x2f9),'text':_0x2b2d9c}),await saveData(),renderChat()),_0x15d71f['disabled']=![],_0x15d71f['innerHTML']=_0x4e4d12(0x220);}function renderChat(){const _0x5501e6=_0x3ea952,_0x43e106=getCurrentSubtopic(),_0x5cd211=$(_0x5501e6(0x229)),_0x343a66=$(_0x5501e6(0x181)),_0x5c054d=$(_0x5501e6(0x28c));if(!_0x5cd211||!_0x343a66||!_0x5c054d)return;if(!_0x43e106){_0x5cd211[_0x5501e6(0x28f)]=_0x5501e6(0x1c2),_0x343a66[_0x5501e6(0x310)]=!![],_0x5c054d['disabled']=!![];return;}_0x343a66['disabled']=![],_0x5c054d[_0x5501e6(0x310)]=![],_0x5cd211[_0x5501e6(0x28f)]='';if(!_0x43e106[_0x5501e6(0x260)]||_0x43e106['chatHistory'][_0x5501e6(0x30e)]===0x0){_0x5cd211['innerHTML']=_0x5501e6(0x3ab);return;}_0x43e106[_0x5501e6(0x260)][_0x5501e6(0x294)](_0x2187a4=>{const _0x2db301=_0x5501e6,_0x51dd08=document[_0x2db301(0x3d4)]('div');_0x51dd08[_0x2db301(0x251)]='chat-msg\x20'+_0x2187a4[_0x2db301(0x29a)],_0x51dd08[_0x2db301(0x2e0)]=_0x2187a4[_0x2db301(0x1a6)],_0x5cd211[_0x2db301(0x336)](_0x51dd08);}),_0x5cd211[_0x5501e6(0x342)]=_0x5cd211['scrollHeight'];}async function handleSummarizeNote(){const _0x4fe88e=_0x3ea952,_0x4e557a=$(_0x4fe88e(0x3fc)),_0x3dc8b7=$(_0x4fe88e(0x408)),_0xae15c9=_0x3dc8b7['value']['trim'](),_0x4a31aa=getCurrentSubtopic();if(!_0xae15c9){toast(_0x4fe88e(0x2e6));return;}const _0x1f8e9a=_0x4e557a[_0x4fe88e(0x28f)];_0x4e557a[_0x4fe88e(0x28f)]='<div\x20class=\x22spinner\x22></div>',_0x4e557a[_0x4fe88e(0x310)]=!![];const _0x167135=_0x4fe88e(0x3d5)+(_0x4a31aa?.['name']||'không\x20rõ')+_0x4fe88e(0x1c9)+_0xae15c9+_0x4fe88e(0x2c2),_0x4ff661=await callGeminiAPI(_0x167135);_0x4ff661&&(_0x3dc8b7[_0x4fe88e(0x24c)]+='\x0a\x0a'+_0x4ff661),_0x4e557a[_0x4fe88e(0x28f)]=_0x1f8e9a,_0x4e557a['disabled']=![];}function clearChat(){const _0x3274b7=_0x3ea952,_0x2a7d27=getCurrentSubtopic();if(!_0x2a7d27){toast(t('timer.selectSubtopicPrompt'));return;}showConfirmModal(_0x3274b7(0x24a),_0x3274b7(0x1f7),async _0x4d2d9b=>{const _0x4a4de1=_0x3274b7;_0x4d2d9b&&(_0x2a7d27[_0x4a4de1(0x260)]=[],await saveData(),renderChat(),toast('Đã\x20xóa\x20lịch\x20sử\x20chat.'));});}let ytPlayer,ytUserPaused=![],ytFallbackFrame=null,ytFallbackIsPlaying=![];function buildFallbackSrc(_0x25a8e1,{autoplay:autoplay=0x1,mute:mute=0x1}={}){const _0x18458e=_0x3ea952,_0x482ad2=new URLSearchParams({'autoplay':String(autoplay),'mute':String(mute),'controls':'0','playsinline':'1','loop':'1','playlist':_0x25a8e1,'enablejsapi':'1','origin':_0x18458e(0x362)})[_0x18458e(0x3ef)]();return _0x18458e(0x1d9)+_0x25a8e1+'?'+_0x482ad2;}function ensureFallbackFrame(){const _0x27b8f0=_0x3ea952,_0x769507=document['getElementById'](_0x27b8f0(0x1c3));if(!_0x769507)return null;if(ytFallbackFrame&&ytFallbackFrame[_0x27b8f0(0x1e4)])return ytFallbackFrame;const _0x333c24=document[_0x27b8f0(0x3d4)](_0x27b8f0(0x214));return _0x333c24['id']='yt-fallback',_0x333c24[_0x27b8f0(0x3bb)]='1',_0x333c24['height']='1',_0x333c24[_0x27b8f0(0x219)]['position']=_0x27b8f0(0x185),_0x333c24[_0x27b8f0(0x219)]['top']=_0x27b8f0(0x236),_0x333c24[_0x27b8f0(0x219)][_0x27b8f0(0x2a7)]=_0x27b8f0(0x236),_0x333c24[_0x27b8f0(0x36e)]=_0x27b8f0(0x216),_0x769507['innerHTML']='',_0x769507[_0x27b8f0(0x336)](_0x333c24),ytFallbackFrame=_0x333c24,_0x333c24;}function fallbackLoadVideo(_0x4c8ca5,{autoplay:autoplay=0x1,mute:mute=0x1}={}){const _0x137235=_0x3ea952,_0x562f9c=document[_0x137235(0x292)](_0x137235(0x1c3));if(!_0x562f9c)return;_0x562f9c[_0x137235(0x28f)]='';const _0x365fb0=document['createElement'](_0x137235(0x214));_0x365fb0['id']=_0x137235(0x405),_0x365fb0[_0x137235(0x3bb)]='1',_0x365fb0[_0x137235(0x202)]='1',_0x365fb0[_0x137235(0x219)][_0x137235(0x2b8)]=_0x137235(0x185),_0x365fb0[_0x137235(0x219)][_0x137235(0x1b0)]=_0x137235(0x236),_0x365fb0[_0x137235(0x219)]['left']=_0x137235(0x236),_0x365fb0[_0x137235(0x36e)]='autoplay;\x20encrypted-media;\x20picture-in-picture',_0x365fb0['src']=buildFallbackSrc(_0x4c8ca5,{'autoplay':autoplay,'mute':mute}),_0x562f9c[_0x137235(0x336)](_0x365fb0),ytFallbackFrame=_0x365fb0,ytFallbackIsPlaying=!!autoplay;try{const _0x370b06=document['getElementById'](_0x137235(0x3a9));if(_0x370b06)_0x370b06[_0x137235(0x2e0)]=ytFallbackIsPlaying?'⏸️':'▶️';}catch(_0x2f19fa){}}function fallbackPostMessage(_0x31481b,_0x2335ba=[]){const _0x3cecb3=_0x3ea952;try{if(!ytFallbackFrame||!ytFallbackFrame[_0x3cecb3(0x201)])return;ytFallbackFrame[_0x3cecb3(0x201)]['postMessage'](JSON[_0x3cecb3(0x2d6)]({'event':_0x3cecb3(0x1ed),'func':_0x31481b,'args':_0x2335ba}),_0x3cecb3(0x362));}catch(_0x5051d1){}}function fallbackPlay(){const _0x4e125f=_0x3ea952;fallbackPostMessage(_0x4e125f(0x2a1));}function fallbackStop(){const _0x19d082=_0x3ea952;try{ytFallbackFrame&&(ytFallbackFrame[_0x19d082(0x3b2)]=_0x19d082(0x1e3),ytFallbackIsPlaying=![]);}catch(_0x1d8416){}}function fallbackPause(){fallbackStop();}function fallbackUnMute(){const _0x31f855=_0x3ea952;fallbackPostMessage(_0x31f855(0x1a4));}function fallbackMute(){const _0x1ff3d8=_0x3ea952;fallbackPostMessage(_0x1ff3d8(0x1b4));}window[_0x3ea952(0x206)]=function(){const _0xcc6588=_0x3ea952;if(IS_FILE_PROTOCOL){try{window[_0xcc6588(0x36b)]&&window[_0xcc6588(0x36b)]['cancel']();}catch(_0x351557){}return;}const _0x2206bb={'height':'1','width':'1','playerVars':{'autoplay':0x0,'controls':0x0,'playsinline':0x1},'events':{'onReady':onPlayerReady,'onStateChange':onPlayerStateChange},'host':_0xcc6588(0x362)};(window[_0xcc6588(0x368)][_0xcc6588(0x24f)]===_0xcc6588(0x2d3)||window[_0xcc6588(0x368)][_0xcc6588(0x24f)]==='https:')&&(_0x2206bb[_0xcc6588(0x35f)]=window['location'][_0xcc6588(0x35f)]);ytPlayer=new YT[(_0xcc6588(0x32a))](_0xcc6588(0x1c3),_0x2206bb);try{window[_0xcc6588(0x36b)]&&window['__ytApiWatchdog'][_0xcc6588(0x35c)]();const _0x5370cf=document['getElementById'](_0xcc6588(0x3a3));_0x5370cf&&(_0x5370cf[_0xcc6588(0x2e0)]='');}catch(_0x24414f){}};let _ytPrimed=![],_ytUnlocked=![];try{_ytUnlocked=localStorage[_0x3ea952(0x379)](_0x3ea952(0x3e4))==='1';}catch(_0x26f7d0){}function showSoundPermission(){const _0x3ccc85=_0x3ea952,_0xff586a=document[_0x3ccc85(0x292)](_0x3ccc85(0x395));if(!_0xff586a)return;if(_ytUnlocked){_0xff586a[_0x3ccc85(0x367)][_0x3ccc85(0x295)](_0x3ccc85(0x2cf));return;}_0xff586a[_0x3ccc85(0x367)][_0x3ccc85(0x328)]('show');}function hideSoundPermission(){const _0x5d6604=_0x3ea952,_0xbaebdd=document['getElementById'](_0x5d6604(0x395));if(!_0xbaebdd)return;_0xbaebdd[_0x5d6604(0x367)][_0x5d6604(0x295)](_0x5d6604(0x2cf));}function unlockAudioChain(){const _0x456585=_0x3ea952;try{if(AUDIO_CTX&&typeof AUDIO_CTX[_0x456585(0x30f)]===_0x456585(0x258))AUDIO_CTX[_0x456585(0x30f)]();}catch(_0x55ca28){}try{if(IS_FILE_PROTOCOL)fallbackUnMute(),fallbackPlay();else ytPlayer&&ytPlayer[_0x456585(0x1a4)]&&(ytPlayer[_0x456585(0x1a4)](),ytPlayer['playVideo']());}catch(_0x130bb7){}_ytUnlocked=!![];try{localStorage['setItem'](_0x456585(0x3e4),'1');}catch(_0x34b535){}hideSoundPermission(),toast(_0x456585(0x36c));}function onPlayerReady(_0x4893dd){const _0x5db121=_0x3ea952;try{const _0x41407f=ytPlayer&&ytPlayer[_0x5db121(0x3f1)]?ytPlayer[_0x5db121(0x3f1)]():null;_0x41407f&&_0x41407f[_0x5db121(0x196)]('allow',_0x5db121(0x216));}catch(_0x464c6b){}try{if(ytPlayer&&ytPlayer[_0x5db121(0x318)])ytPlayer[_0x5db121(0x318)](data&&data[_0x5db121(0x34c)]&&data['settings'][_0x5db121(0x1ab)]||0x50);}catch(_0x5dfae8){}try{const _0x73ebe0=getActiveVideoId&&getActiveVideoId();if(_0x73ebe0&&ytPlayer&&ytPlayer[_0x5db121(0x1b4)]&&ytPlayer['playVideo']){ytPlayer[_0x5db121(0x1b4)](),ytPlayer[_0x5db121(0x2a1)](),_ytPrimed=!![];const _0x9de0dc=()=>{const _0x8b5c67=_0x5db121;if(_ytUnlocked)return;try{unlockAudioChain();}catch(_0x65b44d){}window[_0x8b5c67(0x364)](_0x8b5c67(0x1a1),_0x9de0dc,!![]),window[_0x8b5c67(0x364)](_0x8b5c67(0x3ff),_0x9de0dc,!![]);};window[_0x5db121(0x2ce)](_0x5db121(0x1a1),_0x9de0dc,!![]),window[_0x5db121(0x2ce)](_0x5db121(0x3ff),_0x9de0dc,!![]),showSoundPermission();}}catch(_0x3b164a){}updateYouTubePlayer();}function onPlayerStateChange(_0x110c49){const _0x194691=_0x3ea952,_0x210c82=$(_0x194691(0x1af));_0x110c49[_0x194691(0x26f)]==YT[_0x194691(0x32e)]['PLAYING']?(_0x210c82[_0x194691(0x2e0)]='⏸️',hideSoundPermission()):_0x210c82['textContent']='▶️';if(_0x110c49[_0x194691(0x26f)]===YT[_0x194691(0x32e)]['ENDED']){if(!ytUserPaused)ytPlayer[_0x194691(0x2a1)]();}}async function ytFadeTo(_0x3522fb,_0x3c0ae9=0xfa){const _0x2119c3=_0x3ea952;try{if(!ytPlayer||!ytPlayer[_0x2119c3(0x32f)]||!ytPlayer['setVolume'])return;ytPlayer[_0x2119c3(0x1a4)]();const _0x38df09=ytPlayer[_0x2119c3(0x32f)](),_0x2ddd34=_0x3522fb-_0x38df09;if(Math[_0x2119c3(0x35b)](_0x2ddd34)<0x1||_0x3c0ae9<=0x0){ytPlayer[_0x2119c3(0x318)](_0x3522fb);return;}const _0x3f7e5d=performance[_0x2119c3(0x3e5)]();await new Promise(_0x4d9166=>{const _0x12f51c=_0x4f8070=>{const _0x2bc630=_0x4681,_0x26807c=Math['min'](0x1,(_0x4f8070-_0x3f7e5d)/_0x3c0ae9),_0x17d93e=Math[_0x2bc630(0x2ed)](_0x38df09+_0x2ddd34*_0x26807c);ytPlayer[_0x2bc630(0x318)](_0x17d93e);if(_0x26807c<0x1)requestAnimationFrame(_0x12f51c);else _0x4d9166();};requestAnimationFrame(_0x12f51c);});}catch(_0x43a15a){}}async function ytFadeInPlay(_0x2dd446=0xdc){const _0x4883ef=_0x3ea952;try{const _0x584134=Math['max'](0x0,Math[_0x4883ef(0x3a4)](0x64,data&&data['settings']&&data['settings'][_0x4883ef(0x1ab)]||0x50));if(!IS_FILE_PROTOCOL){if(!ytPlayer)return;ytPlayer[_0x4883ef(0x1a4)](),ytPlayer[_0x4883ef(0x2a1)]();try{ytPlayer[_0x4883ef(0x318)](0x0);}catch(_0x4a1f04){}await ytFadeTo(_0x584134,_0x2dd446);}else{const _0x2b8986=getActiveVideoId();_0x2b8986&&fallbackLoadVideo(_0x2b8986,{'autoplay':0x1,'mute':0x0});}}catch(_0x13130c){}}async function ytFadeOutPause(_0x7e92dc=0xb4){const _0x3faf35=_0x3ea952;try{const _0x3689aa=Math[_0x3faf35(0x1bc)](0x0,Math[_0x3faf35(0x3a4)](0x64,data&&data['settings']&&data[_0x3faf35(0x34c)][_0x3faf35(0x1ab)]||0x50));if(!IS_FILE_PROTOCOL){if(!ytPlayer)return;await ytFadeTo(0x0,_0x7e92dc);try{ytPlayer['pauseVideo'](),ytPlayer['setVolume'](_0x3689aa);}catch(_0x1868ad){}}else try{fallbackPause();}catch(_0x115481){}}catch(_0x5b6c61){}}async function updateYouTubePlayer(){const _0x1efd41=_0x3ea952,_0x40d7cb=getActiveVideoId();if(data['settings'][_0x1efd41(0x33f)]&&_0x40d7cb){const _0x469822='https://img.youtube.com/vi/'+_0x40d7cb+_0x1efd41(0x2f2),_0x1eb312=new Image();_0x1eb312[_0x1efd41(0x25f)]=async()=>{const _0x257a07=_0x1efd41;data[_0x257a07(0x34c)][_0x257a07(0x25b)]=_0x469822,await saveData(),applyCustomBg();},_0x1eb312[_0x1efd41(0x366)]=async()=>{const _0x55eba8=_0x1efd41,_0x8ffee2=_0x55eba8(0x333)+_0x40d7cb+'/hqdefault.jpg';data[_0x55eba8(0x34c)]['customBg']=_0x8ffee2,await saveData(),applyCustomBg();},_0x1eb312['src']=_0x469822;}else!_0x40d7cb&&(data[_0x1efd41(0x34c)]['customBg']='',await saveData(),applyCustomBg());if(IS_FILE_PROTOCOL){if(!_0x40d7cb){fallbackStop(),hideSoundPermission();return;}const _0x456f0f=_ytUnlocked?0x0:0x1;fallbackLoadVideo(_0x40d7cb,{'autoplay':0x1,'mute':_0x456f0f});!_ytUnlocked&&showSoundPermission();return;}if(!ytPlayer||!ytPlayer[_0x1efd41(0x40e)]){try{ensureYouTubeAPI();}catch(_0x4e28f3){}return;}if(!_0x40d7cb){if(ytPlayer[_0x1efd41(0x365)])ytPlayer[_0x1efd41(0x365)]();hideSoundPermission();return;}ytPlayer[_0x1efd41(0x40e)](_0x40d7cb),ytPlayer[_0x1efd41(0x318)](data[_0x1efd41(0x34c)]['youtubeVolume']);}function toggleYtSound(){const _0x6b44f6=_0x3ea952;if(!_ytUnlocked){try{ensureAudio();}catch(_0x1fe6a9){}try{unlockAudioChain();}catch(_0x2ca71c){}return;}if(IS_FILE_PROTOCOL){const _0x2fbbac=getActiveVideoId();if(!ytFallbackFrame||!ytFallbackFrame[_0x6b44f6(0x1e4)]){if(!_0x2fbbac){toast(_0x6b44f6(0x337));return;}fallbackLoadVideo(_0x2fbbac,{'autoplay':0x1,'mute':0x0}),ytFallbackIsPlaying=!![];try{const _0x237ecb=document['getElementById'](_0x6b44f6(0x3a9));if(_0x237ecb)_0x237ecb[_0x6b44f6(0x2e0)]='⏸️';}catch(_0x33586a){}toast(_0x6b44f6(0x3f6));return;}if(ytFallbackIsPlaying)fallbackPostMessage(_0x6b44f6(0x205)),ytFallbackIsPlaying=![],toast(_0x6b44f6(0x293));else{if(!_0x2fbbac){toast(_0x6b44f6(0x337));return;}fallbackPostMessage(_0x6b44f6(0x2a1)),ytFallbackIsPlaying=!![],toast(_0x6b44f6(0x3f6));}try{const _0x384ec5=document[_0x6b44f6(0x292)]('btnToggleYtSound');if(_0x384ec5)_0x384ec5[_0x6b44f6(0x2e0)]=ytFallbackIsPlaying?'⏸️':'▶️';}catch(_0x266908){}return;}if(!ytPlayer||typeof ytPlayer[_0x6b44f6(0x29f)]!==_0x6b44f6(0x258)){try{ensureYouTubeAPI();}catch(_0x4aee21){}return;}const _0x19defa=ytPlayer[_0x6b44f6(0x29f)]();_0x19defa===YT[_0x6b44f6(0x32e)]['PLAYING']||_0x19defa===YT[_0x6b44f6(0x32e)][_0x6b44f6(0x359)]?(ytFadeOutPause(),ytUserPaused=!![],toast(_0x6b44f6(0x293))):(ytFadeInPlay(),ytUserPaused=![],toast('Đang\x20phát\x20nhạc\x20nền...'));}function bindEvents(){const _0x3f001a=_0x3ea952;on($(_0x3f001a(0x353)),_0x3f001a(0x1c8),toggleBackgroundView),on($(_0x3f001a(0x297)),'click',()=>{const _0x4a8719=_0x3f001a;$(_0x4a8719(0x2bc))[_0x4a8719(0x367)]['remove']('show');try{releaseFocus();}catch(_0x22a5de){}}),on($(_0x3f001a(0x388)),'click',()=>showInputModal(_0x3f001a(0x221),async _0xc249=>{const _0x4895ce=_0x3f001a;if(!_0xc249)return;data[_0x4895ce(0x345)][_0x4895ce(0x243)]({'id':uid('t'),'name':_0xc249,'subtopics':[]}),await saveData(),renderTopics();})),on($(_0x3f001a(0x255)),_0x3f001a(0x1c8),()=>storageManager[_0x3f001a(0x3aa)](data)),on($(_0x3f001a(0x33c)),_0x3f001a(0x298),_0x53c90f=>{const _0x304d30=_0x3f001a,_0x447f62=_0x53c90f['target'][_0x304d30(0x259)][0x0];if(!_0x447f62)return;storageManager[_0x304d30(0x373)](_0x447f62)[_0x304d30(0x1bb)](async _0x2e3e3a=>{const _0x1e1d9d=_0x304d30;data=_0x2e3e3a,normalizeDataStructure(data),await ensureValidSelection(),await seedAchievedMilestones(),toast(_0x1e1d9d(0x1f9)),renderAll();})[_0x304d30(0x301)](_0x125404=>toast(_0x304d30(0x1b5)+_0x125404[_0x304d30(0x1e0)])),_0x53c90f[_0x304d30(0x1ee)]['value']=null;}),on($(_0x3f001a(0x2c1)),_0x3f001a(0x1c8),()=>{const _0x1a9335=_0x3f001a,_0x441659=$(_0x1a9335(0x291)),_0x5e7d37=_0x441659?_0x441659['value']:'';if(!_0x5e7d37){toast(_0x1a9335(0x378));return;}showConfirmModal(_0x1a9335(0x3db),'Bạn\x20có\x20chắc\x20muốn\x20phục\x20hồi\x20dữ\x20liệu\x20từ\x20ngày\x20'+new Date(_0x5e7d37)['toLocaleDateString']()+'?\x20Dữ\x20liệu\x20hiện\x20tại\x20sẽ\x20bị\x20ghi\x20đè.',_0x5407e4=>{const _0xe3f107=_0x1a9335;_0x5407e4&&storageManager['restoreBackup'](_0x5e7d37)[_0xe3f107(0x1bb)](_0x4d1016=>{const _0x1223e6=_0xe3f107;data=_0x4d1016,toast(_0x1223e6(0x191)),setTimeout(()=>window[_0x1223e6(0x368)]['reload'](),0x5dc);})[_0xe3f107(0x301)](_0x8e8f8e=>{const _0x12904e=_0xe3f107;toast(_0x12904e(0x3da)+_0x8e8f8e[_0x12904e(0x1e0)]);});});}),on($(_0x3f001a(0x1cc)),_0x3f001a(0x2d9),_0x450276=>{const _0x28af8a=_0x3f001a,_0x5e8ab7=_0x450276[_0x28af8a(0x1ee)]['value'];applyTheme(_0x5e8ab7);if(_0x5e8ab7===_0x28af8a(0x3d6)||_0x5e8ab7===_0x28af8a(0x278)){const _0x403f76=$('#set_ytThumbAsBg');_0x403f76&&(_0x403f76[_0x28af8a(0x3f9)]=![],toast('Đã\x20tắt\x20nền\x20YouTube\x20để\x20hợp\x20với\x20theme\x20sáng.',0x7d0));try{document[_0x28af8a(0x3d8)][_0x28af8a(0x219)][_0x28af8a(0x1a7)](_0x28af8a(0x418),_0x28af8a(0x3bc));}catch(_0x5180a5){}}else{const _0x526e4c=$(_0x28af8a(0x265));_0x526e4c&&(_0x526e4c[_0x28af8a(0x3f9)]=!![]);try{updateYouTubePlayer();}catch(_0x3111be){}}}),on($(_0x3f001a(0x19f)),_0x3f001a(0x1c8),openSettings),on($(_0x3f001a(0x2da)),'click',()=>{const _0x416e9c=_0x3f001a;switchView(_0x416e9c(0x345)),$('#btnAddTopic')['click']();}),on($(_0x3f001a(0x334)),_0x3f001a(0x1c8),()=>{const _0xadb65f=_0x3f001a;renderDashboard(),$('#modalDashboard')[_0xadb65f(0x367)][_0xadb65f(0x328)](_0xadb65f(0x2cf));}),on($('#btnCloseDashboard'),_0x3f001a(0x1c8),()=>{const _0x7bee00=_0x3f001a;$(_0x7bee00(0x3ae))[_0x7bee00(0x367)][_0x7bee00(0x295)](_0x7bee00(0x2cf));}),on($(_0x3f001a(0x1a9)),_0x3f001a(0x1c8),closeSettings),on($(_0x3f001a(0x198)),'click',saveSettings),on($('#btnDefaults'),_0x3f001a(0x1c8),setDefaults),on($(_0x3f001a(0x1dd)),_0x3f001a(0x1c8),()=>{const _0x34d072=_0x3f001a;ensureAudio(),playSound(_0x34d072(0x41a));}),on($(_0x3f001a(0x2e1)),'click',_0x3ec762=>{const _0x24b46c=_0x3f001a;_0x3ec762[_0x24b46c(0x412)]();const _0x1a542b=$(_0x24b46c(0x1bd));if(_0x1a542b)_0x1a542b['classList'][_0x24b46c(0x1fa)]('hidden');}),on($(_0x3f001a(0x1c6)),'click',async()=>{const _0x356b8c=_0x3f001a,_0xdfea0b=getCurrentSubtopic();if(!_0xdfea0b)return;const _0x449529=pendingNoteSessionId,_0x4e49c3=_0xdfea0b[_0x356b8c(0x30c)][_0x356b8c(0x1c0)](_0x19956f=>_0x19956f['id']===_0x449529);_0x4e49c3&&(_0x4e49c3['note']=$(_0x356b8c(0x408))[_0x356b8c(0x24c)]['trim'](),await saveData(),renderStatsHistory(),toast(_0x356b8c(0x211))),closeNoteModal();}),on($(_0x3f001a(0x335)),'click',()=>closeNoteModal()),on($(_0x3f001a(0x186)),'click',addGeneralNote),on($(_0x3f001a(0x3fc)),_0x3f001a(0x1c8),handleSummarizeNote),on($(_0x3f001a(0x28c)),'click',handleSendMessage),on($(_0x3f001a(0x181)),_0x3f001a(0x3ff),_0x2cbdd6=>{const _0x5a7e75=_0x3f001a;if(_0x2cbdd6[_0x5a7e75(0x29b)]===_0x5a7e75(0x3fe))handleSendMessage();}),$$(_0x3f001a(0x349))['forEach'](_0x3f5037=>{const _0x366cd7=_0x3f001a;on(_0x3f5037,_0x366cd7(0x1c8),()=>{const _0x2e8ab0=_0x366cd7,_0x2df5af=_0x3f5037[_0x2e8ab0(0x3b7)]['prompt'];$(_0x2e8ab0(0x181))[_0x2e8ab0(0x24c)]=_0x2df5af,$(_0x2e8ab0(0x181))[_0x2e8ab0(0x1b3)]();});}),on($('#btnClearChat'),'click',clearChat),on($(_0x3f001a(0x397)),_0x3f001a(0x1c8),addSubtopicTask),on($('#newSubtopicTaskInput'),'keydown',_0x4db5aa=>{const _0x2642cf=_0x3f001a;if(_0x4db5aa[_0x2642cf(0x29b)]===_0x2642cf(0x3fe))addSubtopicTask();}),on($(_0x3f001a(0x1af)),_0x3f001a(0x1c8),toggleYtSound),on($(_0x3f001a(0x3cf)),'click',()=>{ensureAudio(),unlockAudioChain();}),on($('#ytSoundVolume'),_0x3f001a(0x2d9),_0x47b5cb=>{const _0x4b071a=_0x3f001a,_0x30142e=parseInt(_0x47b5cb[_0x4b071a(0x1ee)][_0x4b071a(0x24c)],0xa);ytPlayer&&ytPlayer[_0x4b071a(0x318)]&&ytPlayer[_0x4b071a(0x318)](_0x30142e);}),on($(_0x3f001a(0x227)),_0x3f001a(0x2d9),handleYoutubeUrlInput),$$(_0x3f001a(0x37a))[_0x3f001a(0x294)](_0x34de73=>_0x34de73['addEventListener'](_0x3f001a(0x1c8),()=>switchView(_0x34de73[_0x3f001a(0x3b7)][_0x3f001a(0x2cb)]))),$$(_0x3f001a(0x21f))[_0x3f001a(0x294)](_0x58ebd3=>{const _0x34717f=_0x3f001a;_0x58ebd3[_0x34717f(0x2ce)](_0x34717f(0x1c8),()=>{const _0x47fd85=_0x34717f,_0x263b59=_0x58ebd3[_0x47fd85(0x3b7)]['tab'],_0x27ecd3=_0x58ebd3[_0x47fd85(0x38b)]('.aux-panel,\x20.modal-card');if(!_0x27ecd3)return;_0x27ecd3[_0x47fd85(0x1ff)](_0x47fd85(0x21f))[_0x47fd85(0x294)](_0x1887f9=>_0x1887f9[_0x47fd85(0x367)][_0x47fd85(0x295)](_0x47fd85(0x384))),_0x58ebd3[_0x47fd85(0x367)][_0x47fd85(0x328)](_0x47fd85(0x384)),_0x27ecd3[_0x47fd85(0x1ff)](_0x47fd85(0x1db))[_0x47fd85(0x294)](_0x4fc958=>{const _0x235d02=_0x47fd85;_0x4fc958[_0x235d02(0x367)]['remove'](_0x235d02(0x384)),_0x4fc958[_0x235d02(0x219)][_0x235d02(0x1d1)]=_0x235d02(0x3bc);});const _0x39e31b=_0x27ecd3[_0x47fd85(0x20f)]('#'+_0x263b59);_0x39e31b&&(_0x39e31b[_0x47fd85(0x367)][_0x47fd85(0x328)](_0x47fd85(0x384)),_0x39e31b[_0x47fd85(0x219)][_0x47fd85(0x1d1)]=_0x47fd85(0x19d),_0x27ecd3[_0x47fd85(0x38b)](_0x47fd85(0x3df))&&(_0x39e31b[_0x47fd85(0x219)][_0x47fd85(0x1d1)]=_0x47fd85(0x3ec)));});}),$$(_0x3f001a(0x1d0))['forEach'](_0x5811f3=>{const _0x21fe60=_0x3f001a;_0x5811f3['addEventListener'](_0x21fe60(0x1c8),()=>{const _0x2ed0f8=_0x21fe60;editingPreset=_0x5811f3[_0x2ed0f8(0x3b7)]['presetTarget'],highlightPresetSelector(),loadEditingPresetFields();});}),$$(_0x3f001a(0x3cc))[_0x3f001a(0x294)](_0x396720=>{const _0x272d2=_0x3f001a;_0x396720[_0x272d2(0x2ce)](_0x272d2(0x1c8),_0x492a06=>{const _0x2acd0e=_0x272d2,_0x339b6b=_0x492a06[_0x2acd0e(0x1ee)]['dataset']['preset'],_0x4e3721=data['settings'][_0x2acd0e(0x311)];if(_0x339b6b===_0x4e3721)return;timer[_0x2acd0e(0x416)]!==_0x2acd0e(0x2e5)?showConfirmModal(_0x2acd0e(0x300),_0x2acd0e(0x225)+_0x339b6b+_0x2acd0e(0x256),_0x52eea1=>{const _0x265507=_0x2acd0e;_0x52eea1&&(timer['reset'](),timer[_0x265507(0x40b)](_0x339b6b),renderAll(),toast(_0x265507(0x234)+_0x339b6b+'.'));}):(timer[_0x2acd0e(0x40b)](_0x339b6b),renderAll(),toast('Đã\x20chuyển\x20sang\x20Kiểu\x20'+_0x339b6b+'.'));});}),on($(_0x3f001a(0x1f1)),_0x3f001a(0x1c8),()=>timer[_0x3f001a(0x31d)]()),on($(_0x3f001a(0x321)),_0x3f001a(0x1c8),()=>timer['pause']()),on($(_0x3f001a(0x26e)),_0x3f001a(0x1c8),()=>timer[_0x3f001a(0x30f)]()),on($('#btnSkip'),_0x3f001a(0x1c8),()=>timer[_0x3f001a(0x20d)]()),on($(_0x3f001a(0x323)),_0x3f001a(0x1c8),()=>timer['reset']()),on($(_0x3f001a(0x189)),_0x3f001a(0x298),_0xc6da51=>{const _0x3f74d9=_0x3f001a;handleFileUpload(_0xc6da51[_0x3f74d9(0x1ee)][_0x3f74d9(0x259)][0x0],async _0x4c6671=>{const _0x1eb2b8=_0x3f74d9;data[_0x1eb2b8(0x34c)]['customBg']=_0x4c6671,await saveData(),applyCustomBg(),toast(_0x1eb2b8(0x39d));}),_0xc6da51['target']['value']=null;}),on($(_0x3f001a(0x21a)),'click',async()=>{const _0x190235=_0x3f001a;data[_0x190235(0x34c)][_0x190235(0x25b)]='',data[_0x190235(0x34c)][_0x190235(0x33f)]=![],await saveData(),applyCustomBg(),toast(_0x190235(0x1f6)),$('#modalSettings')[_0x190235(0x367)]['contains'](_0x190235(0x2cf))&&openSettings();}),on($(_0x3f001a(0x183)),'change',_0x4ea685=>{const _0x2dc2f6=_0x3f001a;handleFileUpload(_0x4ea685['target'][_0x2dc2f6(0x259)][0x0],async _0xdd5bbf=>{const _0x213fa6=_0x2dc2f6;data[_0x213fa6(0x34c)][_0x213fa6(0x330)]['work_end']=_0xdd5bbf,await saveData(),toast(_0x213fa6(0x40a));}),_0x4ea685[_0x2dc2f6(0x1ee)][_0x2dc2f6(0x24c)]=null;}),on($(_0x3f001a(0x308)),_0x3f001a(0x298),_0x40d42a=>{const _0x390631=_0x3f001a;handleFileUpload(_0x40d42a[_0x390631(0x1ee)][_0x390631(0x259)][0x0],async _0x46f16f=>{const _0x58747d=_0x390631;data[_0x58747d(0x34c)]['customSounds'][_0x58747d(0x272)]=_0x46f16f,await saveData(),toast('Đã\x20lưu\x20âm\x20báo\x20hết\x20NGHỈ\x20NGẮN.');}),_0x40d42a['target'][_0x390631(0x24c)]=null;}),on($(_0x3f001a(0x3d2)),_0x3f001a(0x298),_0x26492e=>{const _0x513a77=_0x3f001a;handleFileUpload(_0x26492e['target']['files'][0x0],async _0x40e82c=>{const _0x20e628=_0x4681;data[_0x20e628(0x34c)][_0x20e628(0x330)][_0x20e628(0x20e)]=_0x40e82c,await saveData(),toast(_0x20e628(0x2ef));}),_0x26492e[_0x513a77(0x1ee)][_0x513a77(0x24c)]=null;}),on($(_0x3f001a(0x326)),_0x3f001a(0x1c8),toggleFullScreen),document[_0x3f001a(0x2ce)](_0x3f001a(0x28b),updateFullscreenButton),window[_0x3f001a(0x2ce)](_0x3f001a(0x3ff),_0x225d8b=>{const _0xc7b8c2=_0x3f001a,_0x31531e=(_0x225d8b[_0xc7b8c2(0x1ee)][_0xc7b8c2(0x2e4)]||'')['toLowerCase'](),_0x616ed5=['input',_0xc7b8c2(0x2a2),_0xc7b8c2(0x20c)][_0xc7b8c2(0x2ad)](_0x31531e);if(_0x225d8b[_0xc7b8c2(0x27f)]===_0xc7b8c2(0x21b)&&!_0x616ed5){_0x225d8b[_0xc7b8c2(0x412)]();if(timer[_0xc7b8c2(0x416)]===_0xc7b8c2(0x2e5)||timer[_0xc7b8c2(0x416)]===_0xc7b8c2(0x264))timer[_0xc7b8c2(0x31d)]();else timer[_0xc7b8c2(0x358)]();}(_0x225d8b['key']==='n'||_0x225d8b[_0xc7b8c2(0x29b)]==='N')&&(!_0x616ed5&&(_0x225d8b[_0xc7b8c2(0x412)](),timer[_0xc7b8c2(0x20d)]()));if(_0x225d8b[_0xc7b8c2(0x29b)]==='Escape'){$$(_0xc7b8c2(0x383))[_0xc7b8c2(0x294)](_0x47a495=>_0x47a495['classList'][_0xc7b8c2(0x295)](_0xc7b8c2(0x2cf)));try{releaseFocus();}catch(_0x385e75){}}if(_0x225d8b[_0xc7b8c2(0x419)]&&!_0x616ed5){if(_0x225d8b[_0xc7b8c2(0x29b)]===_0xc7b8c2(0x38f))_0x225d8b[_0xc7b8c2(0x412)](),_0x4963ce(0x0,-0xa);else{if(_0x225d8b['key']===_0xc7b8c2(0x41b))_0x225d8b[_0xc7b8c2(0x412)](),_0x4963ce(0x0,0xa);else{if(_0x225d8b[_0xc7b8c2(0x29b)]===_0xc7b8c2(0x357))_0x225d8b[_0xc7b8c2(0x412)](),_0x4963ce(-0xa,0x0);else _0x225d8b[_0xc7b8c2(0x29b)]==='ArrowRight'&&(_0x225d8b[_0xc7b8c2(0x412)](),_0x4963ce(0xa,0x0));}}}}),$$(_0x3f001a(0x383))['forEach'](_0x2a6930=>_0x2a6930[_0x3f001a(0x2ce)](_0x3f001a(0x1c8),_0x6e2f80=>{const _0x49f69d=_0x3f001a;if(_0x6e2f80[_0x49f69d(0x1ee)]===_0x2a6930){_0x2a6930['classList'][_0x49f69d(0x295)]('show');try{releaseFocus();}catch(_0x253d89){}}})),window['addEventListener'](_0x3f001a(0x1c8),_0x2b5625=>{const _0x5063e4=_0x3f001a;!_0x2b5625['target'][_0x5063e4(0x38b)](_0x5063e4(0x385))&&!_0x2b5625[_0x5063e4(0x1ee)][_0x5063e4(0x38b)](_0x5063e4(0x3a1))&&closeAllMenus();}),window['addEventListener'](_0x3f001a(0x376),()=>timer[_0x3f001a(0x37d)](!![]));const _0x2e7e83=$(_0x3f001a(0x18f));let _0x2bac52=![],_0x292ac7,_0x167484;_0x2e7e83&&(_0x2e7e83['addEventListener'](_0x3f001a(0x2bf),_0x441d8b=>{const _0x5bc9aa=_0x3f001a;_0x2bac52=!![];const _0x130c02=_0x2e7e83['getBoundingClientRect']();_0x292ac7=_0x441d8b[_0x5bc9aa(0x267)]-_0x130c02[_0x5bc9aa(0x2a7)],_0x167484=_0x441d8b['clientY']-_0x130c02[_0x5bc9aa(0x1b0)],_0x2e7e83[_0x5bc9aa(0x219)][_0x5bc9aa(0x2c7)]=_0x5bc9aa(0x3bc);}),document['addEventListener'](_0x3f001a(0x18e),_0x3accb5=>{const _0x4e6737=_0x3f001a;if(!_0x2bac52)return;let _0x1e20fe=_0x3accb5[_0x4e6737(0x267)]-_0x292ac7,_0x426b14=_0x3accb5['clientY']-_0x167484;const _0x313942=window[_0x4e6737(0x401)]-_0x2e7e83['offsetWidth'],_0x49bed0=window[_0x4e6737(0x394)]-_0x2e7e83[_0x4e6737(0x25a)];_0x1e20fe=Math[_0x4e6737(0x1bc)](0x0,Math[_0x4e6737(0x3a4)](_0x1e20fe,_0x313942)),_0x426b14=Math[_0x4e6737(0x1bc)](0x0,Math[_0x4e6737(0x3a4)](_0x426b14,_0x49bed0)),_0x2e7e83[_0x4e6737(0x219)][_0x4e6737(0x2a7)]=_0x1e20fe+'px',_0x2e7e83[_0x4e6737(0x219)]['top']=_0x426b14+'px',_0x2e7e83['style'][_0x4e6737(0x224)]='auto',_0x2e7e83[_0x4e6737(0x219)][_0x4e6737(0x2f3)]=_0x4e6737(0x406);}),document[_0x3f001a(0x2ce)]('mouseup',()=>{const _0x4b6dbc=_0x3f001a;if(!_0x2bac52)return;_0x2bac52=![],_0x2e7e83[_0x4b6dbc(0x219)]['transition']='';}));function _0x3cebe6(_0x577e5d){const _0xa3bcd2=_0x3f001a,_0x12e23a=$(_0xa3bcd2(0x18f));if(!_0x12e23a)return;_0x12e23a[_0xa3bcd2(0x219)][_0xa3bcd2(0x2b8)]=_0xa3bcd2(0x233),_0x12e23a[_0xa3bcd2(0x219)]['transition']='',_0x12e23a[_0xa3bcd2(0x219)]['left']='auto',_0x12e23a[_0xa3bcd2(0x219)][_0xa3bcd2(0x1b0)]=_0xa3bcd2(0x406),_0x12e23a[_0xa3bcd2(0x219)]['right']=_0xa3bcd2(0x406),_0x12e23a[_0xa3bcd2(0x219)][_0xa3bcd2(0x224)]=_0xa3bcd2(0x406);const _0x2cd849=0x10;_0x577e5d==='tl'&&(_0x12e23a['style'][_0xa3bcd2(0x2a7)]=_0x2cd849+'px',_0x12e23a['style'][_0xa3bcd2(0x1b0)]=_0x2cd849+'px'),_0x577e5d==='tr'&&(_0x12e23a['style'][_0xa3bcd2(0x2f3)]=_0x2cd849+'px',_0x12e23a['style'][_0xa3bcd2(0x1b0)]=_0x2cd849+'px'),_0x577e5d==='bl'&&(_0x12e23a[_0xa3bcd2(0x219)][_0xa3bcd2(0x2a7)]=_0x2cd849+'px',_0x12e23a[_0xa3bcd2(0x219)][_0xa3bcd2(0x224)]=_0x2cd849+'px'),_0x577e5d==='br'&&(_0x12e23a[_0xa3bcd2(0x219)][_0xa3bcd2(0x2f3)]=_0x2cd849+'px',_0x12e23a[_0xa3bcd2(0x219)]['bottom']=_0x2cd849+'px');}function _0x4963ce(_0x9f40b7,_0x373935){const _0x33d447=_0x3f001a,_0x3933eb=$(_0x33d447(0x18f));if(!_0x3933eb)return;const _0x28f9d1=_0x3933eb[_0x33d447(0x2d1)](),_0x50ce67=Math[_0x33d447(0x1bc)](0x0,Math[_0x33d447(0x3a4)](_0x28f9d1[_0x33d447(0x2a7)]+_0x9f40b7,window[_0x33d447(0x401)]-_0x3933eb[_0x33d447(0x3dd)])),_0x2a35bc=Math['max'](0x0,Math[_0x33d447(0x3a4)](_0x28f9d1[_0x33d447(0x1b0)]+_0x373935,window['innerHeight']-_0x3933eb[_0x33d447(0x25a)]));_0x3933eb['style'][_0x33d447(0x2a7)]=_0x50ce67+'px',_0x3933eb[_0x33d447(0x219)]['top']=_0x2a35bc+'px',_0x3933eb['style'][_0x33d447(0x2f3)]=_0x33d447(0x406),_0x3933eb['style'][_0x33d447(0x224)]=_0x33d447(0x406);}}function toggleBackgroundView(){const _0x32b451=_0x3ea952,_0x41b610=document[_0x32b451(0x3d8)];_0x41b610[_0x32b451(0x367)][_0x32b451(0x1fa)](_0x32b451(0x3dc));const _0x326eea=_0x41b610['classList']['contains'](_0x32b451(0x3dc)),_0x20106f=$(_0x32b451(0x353));if(!_0x20106f)return;_0x326eea?(_0x20106f[_0x32b451(0x2de)]=_0x32b451(0x3e1),_0x20106f['innerHTML']=_0x32b451(0x203)):(_0x20106f[_0x32b451(0x2de)]=_0x32b451(0x34a),_0x20106f[_0x32b451(0x28f)]='<svg\x20xmlns=\x22http://www.w3.org/2000/svg\x22\x20width=\x2216\x22\x20height=\x2216\x22\x20viewBox=\x220\x200\x2024\x2024\x22\x20fill=\x22none\x22\x20stroke=\x22currentColor\x22\x20stroke-width=\x222\x22\x20stroke-linecap=\x22round\x22\x20stroke-linejoin=\x22round\x22><path\x20d=\x22M2\x2012s3-7\x2010-7\x2010\x207\x2010\x207-3\x207-10\x207-10-7-10-7Z\x22/><circle\x20cx=\x2212\x22\x20cy=\x2212\x22\x20r=\x223\x22/></svg>');}function updateMainViewVisibility(){const _0x1e887c=_0x3ea952,_0x1848ba=!!getCurrentSubtopic(),_0x4b1242=$(_0x1e887c(0x3ea)),_0x4340b5=$(_0x1e887c(0x3a2));_0x4340b5&&_0x4340b5[_0x1e887c(0x367)][_0x1e887c(0x1fa)](_0x1e887c(0x2aa),_0x1848ba),_0x4b1242&&(_0x1848ba?_0x4b1242[_0x1e887c(0x367)]['remove'](_0x1e887c(0x190)):_0x4b1242[_0x1e887c(0x367)][_0x1e887c(0x328)](_0x1e887c(0x190)));}function updatePresetButtonsText(){const _0x924b8b=_0x3ea952,_0x589362=data[_0x924b8b(0x34c)],_0x47110f=_0x589362['cyclesA'],_0x4e54c3=_0x589362['cyclesB'],_0x24ab7b=_0x589362['durations']['A_work'],_0x424e90=_0x589362[_0x924b8b(0x212)][_0x924b8b(0x1cb)],_0x372140=$(_0x924b8b(0x3e8)),_0x1e9417=$('#btnPresetB');_0x372140&&(_0x372140[_0x924b8b(0x2e0)]=_0x47110f+'×'+_0x24ab7b+_0x924b8b(0x1d2)),_0x1e9417&&(_0x1e9417[_0x924b8b(0x2e0)]=_0x4e54c3+'×'+_0x424e90+'\x20(B)');}function renderAll(){const _0x5bebcc=_0x3ea952;updatePresetButtonsText();const _0x167df3=data[_0x5bebcc(0x34c)][_0x5bebcc(0x311)];$$('.presets\x20button')['forEach'](_0x5f1250=>{const _0x4d3ef8=_0x5bebcc,_0x3277d7=_0x5f1250[_0x4d3ef8(0x3b7)][_0x4d3ef8(0x311)]===_0x167df3;_0x5f1250['classList'][_0x4d3ef8(0x1fa)]('acc',_0x3277d7),_0x5f1250[_0x4d3ef8(0x367)][_0x4d3ef8(0x1fa)](_0x4d3ef8(0x3f2),!_0x3277d7),_0x5f1250[_0x4d3ef8(0x196)](_0x4d3ef8(0x3e3),_0x3277d7);}),updateMainViewVisibility(),timer[_0x5bebcc(0x40b)](data[_0x5bebcc(0x34c)][_0x5bebcc(0x311)],{'silent':!![]}),renderTopics(),renderContextBadge(),renderStatsHistory(),renderGeneralNotes(),renderChat(),applyCustomBg(),applyPanelOpacity(),renderSubtopicTasks(),updateFullscreenButton(),switchView(data[_0x5bebcc(0x34c)][_0x5bebcc(0x235)]);}function toggleFullScreen(){const _0x1403ef=_0x3ea952;!document['fullscreenElement']?document['documentElement'][_0x1403ef(0x306)]()['catch'](_0x84fbee=>{const _0x2e282e=_0x1403ef;toast(_0x2e282e(0x2e3)+_0x84fbee['message']);}):document[_0x1403ef(0x248)]&&document[_0x1403ef(0x248)]();}function updateFullscreenButton(){const _0x528a19=_0x3ea952,_0x4db327=$(_0x528a19(0x326));document[_0x528a19(0x217)]?(_0x4db327[_0x528a19(0x28f)]='↙️',_0x4db327['title']='Thoát\x20toàn\x20màn\x20hình'):(_0x4db327[_0x528a19(0x28f)]='↗️',_0x4db327[_0x528a19(0x2de)]='Toàn\x20màn\x20hình');}async function initializeApp(){const _0x1ddbdc=_0x3ea952;try{await storageManager[_0x1ddbdc(0x3af)]();const [_0x27d128,_0x5abcb4,_0x27dea9]=await Promise[_0x1ddbdc(0x1dc)]([storageManager[_0x1ddbdc(0x27d)](),storageManager[_0x1ddbdc(0x1ad)](_0x1ddbdc(0x345)),storageManager[_0x1ddbdc(0x1ad)](_0x1ddbdc(0x2ae))]);let _0x50e83a;if(!_0x27d128||_0x5abcb4[_0x1ddbdc(0x30e)]===0x0||_0x27dea9[_0x1ddbdc(0x30e)]===0x0){const _0x3b0044=JSON[_0x1ddbdc(0x2ca)](JSON[_0x1ddbdc(0x2d6)](defaults));await storageManager['updateSettings'](_0x3b0044['settings']);for(const _0x56fcad of _0x3b0044[_0x1ddbdc(0x345)]){const {subtopics:_0x31ae41,..._0x5222ca}=_0x56fcad;await storageManager[_0x1ddbdc(0x328)](_0x1ddbdc(0x345),_0x5222ca);for(const _0x2bac21 of _0x31ae41){await storageManager[_0x1ddbdc(0x328)](_0x1ddbdc(0x2ae),{..._0x2bac21,'topicId':_0x56fcad['id']});}}_0x50e83a=_0x3b0044;}else{const _0x4c1447={};for(const _0x130975 of _0x5abcb4)_0x4c1447[_0x130975['id']]={..._0x130975,'subtopics':[]};for(const _0x503551 of _0x27dea9)_0x4c1447[_0x503551[_0x1ddbdc(0x3ed)]]?.[_0x1ddbdc(0x2ae)][_0x1ddbdc(0x243)](_0x503551);_0x50e83a={'version':defaults['version'],'settings':_0x27d128,'topics':Object[_0x1ddbdc(0x3fd)](_0x4c1447)};}data=window[_0x1ddbdc(0x26f)]=_0x50e83a,normalizeDataStructure(data),await ensureValidSelection(),await seedAchievedMilestones(),renderAll();try{storageManager[_0x1ddbdc(0x1c5)](data);}catch(_0xea7bed){console[_0x1ddbdc(0x3f7)](_0x1ddbdc(0x285),_0xea7bed);}bindEvents(),applyTheme();}catch(_0x32d025){console[_0x1ddbdc(0x2a9)](_0x1ddbdc(0x270),_0x32d025),toast(_0x1ddbdc(0x22c)+_0x32d025[_0x1ddbdc(0x1e0)]);}}callGeminiAPI=async function(_0x2dd98e,_0x250130=0x3,_0x4014a6=0x3e8){const _0x372ceb=_0x3ea952,_0xf3391a=data?.[_0x372ceb(0x34c)]?.[_0x372ceb(0x17e)]||'';if(!_0xf3391a)return toast(_0x372ceb(0x417)),null;const _0x2a0307='https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key='+_0xf3391a,_0x5130bb={'contents':[{'role':_0x372ceb(0x3b9),'parts':[{'text':_0x2dd98e}]}]};try{const _0x275428=await fetch(_0x2a0307,{'method':_0x372ceb(0x30b),'headers':{'Content-Type':_0x372ceb(0x28a)},'body':JSON[_0x372ceb(0x2d6)](_0x5130bb)});if(!_0x275428['ok']){if(_0x275428['status']===0x1ad&&_0x250130>0x0)return await new Promise(_0x19e302=>setTimeout(_0x19e302,_0x4014a6)),callGeminiAPI(_0x2dd98e,_0x250130-0x1,_0x4014a6*0x2);let _0x376b58=null;try{_0x376b58=await _0x275428[_0x372ceb(0x286)]();}catch(_0x2bc6b0){}let _0x5b4bfa=_0x372ceb(0x1b9)+_0x275428[_0x372ceb(0x38c)];if(_0x275428['status']===0x190)_0x5b4bfa='Lỗi:\x20Gemini\x20API\x20Key\x20không\x20hợp\x20lệ\x20hoặc\x20đã\x20bị\x20thay\x20đổi.\x20Vui\x20lòng\x20kiểm\x20tra\x20lại\x20trong\x20Cài\x20đặt.';else{if(_0x275428['status']===0x1ad)_0x5b4bfa='Lỗi:\x20Đã\x20vượt\x20quá\x20hạn\x20mức\x20yêu\x20cầu\x20tới\x20Gemini.\x20Vui\x20lòng\x20thử\x20lại\x20sau\x20ít\x20phút.';else _0x376b58?.['error']?.[_0x372ceb(0x1e0)]&&(_0x5b4bfa=_0x372ceb(0x2df)+_0x376b58[_0x372ceb(0x2a9)][_0x372ceb(0x1e0)]);}return toast(_0x5b4bfa,0xfa0),console[_0x372ceb(0x2a9)](_0x372ceb(0x2c5),_0x376b58||_0x275428[_0x372ceb(0x2cd)]),null;}const _0x2a923c=await _0x275428[_0x372ceb(0x286)]();if(_0x2a923c[_0x372ceb(0x31e)]&&_0x2a923c[_0x372ceb(0x31e)][0x0]?.[_0x372ceb(0x1e2)]?.[_0x372ceb(0x34d)]?.[0x0]?.[_0x372ceb(0x1a6)])return formatGeminiResponse(_0x2a923c[_0x372ceb(0x31e)][0x0]['content']['parts'][0x0][_0x372ceb(0x1a6)]);else{console[_0x372ceb(0x2a9)](_0x372ceb(0x2ac),_0x2a923c);if(_0x2a923c['promptFeedback']?.['blockReason'])return _0x372ceb(0x289)+_0x2a923c[_0x372ceb(0x415)][_0x372ceb(0x332)]+_0x372ceb(0x244);return _0x372ceb(0x21e);}}catch(_0x5b0130){return console[_0x372ceb(0x2a9)]('Lỗi\x20khi\x20gọi\x20Gemini\x20API:',_0x5b0130),toast(_0x372ceb(0x274),0xfa0),null;}},loadLanguage(localStorage[_0x3ea952(0x379)]('lang')||'vi')[_0x3ea952(0x1bb)](initializeApp);
+    </script>
+</body>
+</html>
